@@ -3,10 +3,13 @@ package com.mukesh.rickmortyfan.di
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.data.repository.CharactersRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.EpisodesRepositoryImpl
+import com.mukesh.rickmortyfan.data.repository.LocationsRepositoryImpl
 import com.mukesh.rickmortyfan.data.retrofit.RickMortyCharacterApi
 import com.mukesh.rickmortyfan.data.retrofit.RickMortyEpisodesApi
+import com.mukesh.rickmortyfan.data.retrofit.RickMortyLocationApi
 import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
 import com.mukesh.rickmortyfan.domain.repository.EpisodesRepository
+import com.mukesh.rickmortyfan.domain.repository.LocationsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,6 +51,18 @@ object RickMortyModule {
     @Singleton
     fun provideEpisodesRepository(rickMortyEpisodesApi: RickMortyEpisodesApi): EpisodesRepository {
         return EpisodesRepositoryImpl(rickMortyEpisodesApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRickMortyLocationApiClient(retrofit: Retrofit): RickMortyLocationApi {
+        return retrofit.create(RickMortyLocationApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationsRepository(rickMortyLocationApi: RickMortyLocationApi): LocationsRepository {
+        return LocationsRepositoryImpl(rickMortyLocationApi)
     }
 
 }

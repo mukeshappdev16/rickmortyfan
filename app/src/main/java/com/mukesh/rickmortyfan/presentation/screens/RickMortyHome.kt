@@ -31,9 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
+import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListScreen
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -138,15 +137,13 @@ class RickMortyHome : ComponentActivity() {
 
     @Composable
     private fun DisplayLocationsScreen() {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Locations Feature Coming Soon",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-            )
+        LocationListScreen { location ->
+            val intent = Intent(this, LocationDetailActivity::class.java).apply {
+                putExtra(
+                    Constants.LOCATION_ID_KEY, location.id.toString()
+                )
+            }
+            startActivity(intent)
         }
     }
 

@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".presentation.screens.CharacterDetailActivity" />
         <activity android:name=".presentation.screens.EpisodeDetailActivity" />
+        <activity android:name=".presentation.screens.LocationDetailActivity" />
     </application>
 
 </manifest>

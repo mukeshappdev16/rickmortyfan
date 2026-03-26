@@ -1,4 +1,4 @@
-package com.mukesh.rickmortyfan.presentation.composables.character.characterList
+package com.mukesh.rickmortyfan.presentation.composables.location.locationlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,30 +30,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import coil3.compose.AsyncImage
-import com.mukesh.rickmortyfan.R
-import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
+import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
 
 @Composable
-fun CharacterListScreen(
+fun LocationListScreen(
     modifier: Modifier = Modifier,
-    characterListViewModel: CharacterListViewModel = hiltViewModel(),
-    onClickListener: (CharacterDescription) -> Unit
+    viewModel: LocationListViewModel = hiltViewModel(),
+    onClickListener: (LocationDetail) -> Unit
 ) {
-    val characterListState by characterListViewModel.characterListState
+    val state by viewModel.locationListState
 
-    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         when {
-            characterListState.isLoading -> {
+            state.isLoading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(
                         color = MaterialTheme.colorScheme.primary,
@@ -61,11 +59,13 @@ fun CharacterListScreen(
                 }
             }
 
-            characterListState.errorMessage != "" -> {
+            state.errorMessage != "" -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = characterListState.errorMessage,
-                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        text = state.errorMessage,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(32.dp),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center
@@ -73,13 +73,13 @@ fun CharacterListScreen(
                 }
             }
 
-            characterListState.list.isNotEmpty() -> {
+            state.list.isNotEmpty() -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
-                    items(characterListState.list) { item ->
-                        CharacterListRow(item, onClickListener)
+                    items(state.list) { item ->
+                        LocationListRow(item, onClickListener)
                         Spacer(modifier = Modifier.height(12.dp))
                     }
                 }
@@ -89,14 +89,14 @@ fun CharacterListScreen(
 }
 
 @Composable
-fun CharacterListRow(
-    characterDescription: CharacterDescription,
-    onClickListener: (CharacterDescription) -> Unit
+fun LocationListRow(
+    location: LocationDetail,
+    onClickListener: (LocationDetail) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClickListener(characterDescription) },
+            .clickable { onClickListener(location) },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -106,24 +106,28 @@ fun CharacterListRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = characterDescription.image,
-                error = painterResource(R.drawable.account_circle_24),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+            Box(
                 modifier = Modifier
-                    .size(90.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
+                    .size(48.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Public,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = characterDescription.name,
+                    text = location.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -132,45 +136,11 @@ fun CharacterListRow(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = characterDescription.species,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "${location.type} • ${location.dimension}",
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                StatusBadge(characterDescription.status)
             }
         }
-    }
-}
-
-@Composable
-fun StatusBadge(status: String) {
-    val color = when (status.lowercase()) {
-        "alive" -> Color(0xFF4CAF50)
-        "dead" -> Color(0xFFF44336)
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(6.dp)
-                .background(color, CircleShape)
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = status.uppercase(),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Black,
-            color = color,
-            letterSpacing = 0.5.sp
-        )
     }
 }
