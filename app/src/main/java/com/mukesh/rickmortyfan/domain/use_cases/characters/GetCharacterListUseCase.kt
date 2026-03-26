@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class GetCharacterListUseCase @Inject constructor(val characterRepository: CharactersRepository) {
+class GetCharacterListUseCase @Inject constructor(private val characterRepository: CharactersRepository) {
     operator fun invoke(): Flow<Resource<Characters>> = flow {
         try {
             emit(Resource.Loading())

@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.screens.CharacterDetailActivity" />
+        <activity android:name=".presentation.screens.EpisodeDetailActivity" />
     </application>
 
 </manifest>

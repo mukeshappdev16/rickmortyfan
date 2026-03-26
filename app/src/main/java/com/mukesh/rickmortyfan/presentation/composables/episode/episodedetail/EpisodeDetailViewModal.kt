@@ -1,6 +1,5 @@
-package com.mukesh.rickmortyfan.presentation.composables.character.characterdetail
+package com.mukesh.rickmortyfan.presentation.composables.episode.episodedetail
 
-import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterDetailUseCase
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukesh.rickmortyfan.common.Resource
 import com.mukesh.rickmortyfan.common.Utils
-import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetMultipleEpisodesUseCase
+import com.mukesh.rickmortyfan.domain.use_cases.characters.GetMultipleCharacterUseCase
+import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetEpisodeDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
@@ -17,38 +17,36 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharacterDetailViewModal @Inject constructor(
-    val getCharacterDetailUseCase: GetCharacterDetailUseCase,
-    val getMultipleEpisodesUseCase: GetMultipleEpisodesUseCase
+class EpisodeDetailViewModal @Inject constructor(
+    private val getEpisodeDetailUseCase: GetEpisodeDetailUseCase,
+    private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase
 ) :
     ViewModel() {
-
-    private var _characterDetailScreenState: MutableState<CharacterDetailScreenState> =
+    private var _episodeDetailScreenState: MutableState<EpisodeDetailScreenState> =
         mutableStateOf(
-            CharacterDetailScreenState()
+            EpisodeDetailScreenState()
         )
-    var characterDetailScreenState: State<CharacterDetailScreenState> = _characterDetailScreenState
+    var episodeDetailScreenState: State<EpisodeDetailScreenState> = _episodeDetailScreenState
 
-    fun getCharacterDetail(charId: String) {
-        getCharacterDetailUseCase(charId).onEach { result ->
-
+    fun getEpisodeDetail(episodeId: String) {
+        getEpisodeDetailUseCase(episodeId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
-                    _characterDetailScreenState.value = CharacterDetailScreenState(isLoading = true)
+                    _episodeDetailScreenState.value = EpisodeDetailScreenState(isLoading = true)
                 }
 
                 is Resource.Success -> {
-                    _characterDetailScreenState.value =
-                        CharacterDetailScreenState(characterDescription = result.data)
-                    result.data?.episode?.let { idsList ->
-                        getAllEpisodesForCharacter(Utils.getIdsFromUrlList(idsList))
+                    _episodeDetailScreenState.value =
+                        EpisodeDetailScreenState(episode = result.data)
+                    result.data?.characters?.let { idsList ->
+                        getAllCharactersForEpisode(Utils.getIdsFromUrlList(idsList))
                     }
 
                 }
 
                 is Resource.Error -> {
-                    _characterDetailScreenState.value =
-                        CharacterDetailScreenState(
+                    _episodeDetailScreenState.value =
+                        EpisodeDetailScreenState(
                             errorMessage = result.message
                                 ?: "Something went wrong. Please try again later"
                         )
@@ -58,9 +56,9 @@ class CharacterDetailViewModal @Inject constructor(
 
     }
 
-    private fun getAllEpisodesForCharacter(episodeUrlList: List<String>) {
+    private fun getAllCharactersForEpisode(charIdsList: List<String>) {
         viewModelScope.launch {
-            getMultipleEpisodesUseCase(episodeUrlList).onEach { result ->
+            getMultipleCharacterUseCase(charIdsList).onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
                         // Do Nothing or display error message for episode section
@@ -72,9 +70,9 @@ class CharacterDetailViewModal @Inject constructor(
 
                     is Resource.Success -> {
                         result.data?.let {
-                            _characterDetailScreenState.value =
-                                _characterDetailScreenState.value.copy(
-                                    episodes = it
+                            _episodeDetailScreenState.value =
+                                _episodeDetailScreenState.value.copy(
+                                    episodeCharList = it
                                 )
                         }
                     }

@@ -35,7 +35,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import com.mukesh.rickmortyfan.common.Constants
-import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterList
+import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
+import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -89,7 +90,7 @@ class RickMortyHome : ComponentActivity() {
                                 DisplayLocationsScreen()
                             }
                             composable("Episodes") {
-                                DisplayEpisodesScreen()
+                                DisplayEpisodesListScreen()
                             }
                         }
                     }
@@ -109,18 +110,20 @@ class RickMortyHome : ComponentActivity() {
     }
 
     @Composable
-    private fun DisplayEpisodesScreen() {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Episodes")
+    private fun DisplayEpisodesListScreen() {
+        EpisodeListScreen { episode ->
+            val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
+                putExtra(
+                    Constants.EPISODE_ID_KEY, episode.id.toString()
+                )
+            }
+            startActivity(intent)
         }
     }
 
     @Composable
     private fun DisplayCharactersListScreen() {
-        CharacterList { characterDescription ->
+        CharacterListScreen { characterDescription ->
             val intent = Intent(this, CharacterDetailActivity::class.java).apply {
                 putExtra(
                     Constants.CHARACTER_ID_KEY, characterDescription.id.toString()

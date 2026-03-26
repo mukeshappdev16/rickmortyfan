@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,6 +42,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
+import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 
 @Composable
 fun CharacterDetailScreen(
@@ -83,7 +87,8 @@ fun CharacterDetailScreen(
             characterDetailScreenState.characterDescription?.let {
                 CharacterDetail(
                     modifier = modifier,
-                    characterDescription = it
+                    characterDescription = it,
+                    episodeList = characterDetailScreenState.episodes
                 )
             }
 
@@ -94,9 +99,15 @@ fun CharacterDetailScreen(
 }
 
 @Composable
-private fun CharacterDetail(modifier: Modifier, characterDescription: CharacterDescription) {
+private fun CharacterDetail(
+    modifier: Modifier,
+    characterDescription: CharacterDescription,
+    episodeList: List<Episode>
+) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = modifier
+            .verticalScroll(scrollState)
             .fillMaxSize()
             .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -186,6 +197,26 @@ private fun CharacterDetail(modifier: Modifier, characterDescription: CharacterD
             location = characterDescription.location.name
         )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        if (episodeList.isNotEmpty()) {
+            // Episodes Section
+            Text(
+                text = "Episodes",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(bottom = 8.dp)
+            )
+
+            Column(modifier = Modifier.padding(16.dp)) {
+                episodeList.forEach {
+                    EpisodeItem(it)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        }
         Spacer(modifier = Modifier.weight(1f))
     }
 }
@@ -225,6 +256,36 @@ fun LocationItem(icon: ImageVector, title: String, location: String) {
             Column {
                 Text(text = title, fontSize = 12.sp, color = Color.Gray)
                 Text(text = location, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun EpisodeItem(episode: Episode) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Videocam,
+                contentDescription = null,
+                tint = Color.Gray,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Row(Modifier.fillMaxWidth()) {
+                    Text(text = episode.episode, fontSize = 12.sp, color = Color.Gray)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = episode.air_date, fontSize = 12.sp, color = Color.Gray)
+                }
+                Text(text = episode.name, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
             }
         }
     }

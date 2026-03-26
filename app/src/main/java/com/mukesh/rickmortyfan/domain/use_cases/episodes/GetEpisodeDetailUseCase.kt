@@ -1,18 +1,18 @@
-package com.mukesh.rickmortyfan.domain.use_cases.characters
+package com.mukesh.rickmortyfan.domain.use_cases.episodes
 
 import com.mukesh.rickmortyfan.common.Resource
-import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
-import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
+import com.mukesh.rickmortyfan.domain.modal.episode.Episode
+import com.mukesh.rickmortyfan.domain.repository.EpisodesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class GetMultipleCharacterUseCase @Inject constructor(private val characterRepository: CharactersRepository) {
-    operator fun invoke(list: List<String>): Flow<Resource<List<CharacterDescription>>> = flow {
+class GetEpisodeDetailUseCase @Inject constructor(private val episodesRepository: EpisodesRepository) {
+    operator fun invoke(episodeId: String): Flow<Resource<Episode>> = flow {
         try {
             emit(Resource.Loading())
-            emit(Resource.Success(characterRepository.getMultipleCharacters(list)))
+            emit(Resource.Success(episodesRepository.getEpisodeDetail(episodeId)))
         } catch (httpException: HttpException) {
             httpException.printStackTrace()
             emit(Resource.Error("Network error. Please try again later"))
