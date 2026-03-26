@@ -17,7 +17,7 @@ data class CharacterDto(
     val url: String
 )
 
-fun CharacterDto.toCharacter(): CharacterDescription {
+fun CharacterDto.toCharacterDescription(): CharacterDescription {
     return CharacterDescription(
         created = this.created,
         episode = this.episode,

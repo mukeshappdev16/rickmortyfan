@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RickMortyFan">
         <activity
-            android:name=".presentation.RickMortyHome"
+            android:name=".presentation.screens.RickMortyHome"
             android:exported="true"
             android:theme="@style/Theme.RickMortyFan">
             <intent-filter>
@@ -23,6 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".presentation.screens.CharacterDetailActivity" />
     </application>
 
 </manifest>

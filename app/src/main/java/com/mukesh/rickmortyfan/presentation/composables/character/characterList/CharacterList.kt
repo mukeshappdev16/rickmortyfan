@@ -1,6 +1,6 @@
 package com.mukesh.rickmortyfan.presentation.composables.character.characterList
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,41 +30,54 @@ import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun CharacterList(
     modifier: Modifier = Modifier,
-    characterListViewModal: CharacterListViewModal = hiltViewModel()
+    characterListViewModal: CharacterListViewModal = hiltViewModel(),
+    onClickListener: (CharacterDescription) -> Unit
 ) {
     val characterListState by characterListViewModal.characterListState
 
-    if (characterListState.isLoading) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if (characterListState.errorMessage != "") {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = characterListState.errorMessage,
-                modifier = Modifier.fillMaxWidth(),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    } else {
-        LazyColumn(modifier = modifier.fillMaxSize()) {
-            items(characterListState.list) { item ->
-                CharacterListRow(item)
-                HorizontalDivider()
+    when {
+        characterListState.isLoading -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
         }
+
+        characterListState.errorMessage != "" -> {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = characterListState.errorMessage,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        characterListState.list.isNotEmpty() -> {
+            LazyColumn(modifier = modifier.fillMaxSize()) {
+                items(characterListState.list) { item ->
+                    CharacterListRow(item, onClickListener)
+                    HorizontalDivider()
+                }
+            }
+        }
+
     }
 }
 
 @Composable
-fun CharacterListRow(characterDescription: CharacterDescription) {
+fun CharacterListRow(
+    characterDescription: CharacterDescription,
+    onClickListener: (CharacterDescription) -> Unit
+) {
     Row(
         modifier = Modifier
+            .clickable {
+                onClickListener(characterDescription)
+            }
             .fillMaxWidth()
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

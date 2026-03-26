@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukesh.rickmortyfan.common.Resource
-import com.mukesh.rickmortyfan.domain.use_cases.GetCharacterListUseCase
+import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class CharacterListViewModal @Inject constructor(val getCharacterListUseCase: Ge
     }
 
     fun getCharacters() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             getCharacterListUseCase().collect { result ->
                 when (result) {
                     is Resource.Loading -> {

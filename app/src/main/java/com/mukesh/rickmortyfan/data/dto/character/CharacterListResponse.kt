@@ -10,6 +10,6 @@ data class CharacterListResponse(
 fun CharacterListResponse.toCharacters(): Characters {
     return Characters(
         info = this.info.toInfo(),
-        charactersList = this.results.map { it.toCharacter() }
+        charactersList = this.results.map { it.toCharacterDescription() }
     )
 }

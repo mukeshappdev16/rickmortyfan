@@ -1,9 +1,9 @@
 package com.mukesh.rickmortyfan.di
 
 import com.mukesh.rickmortyfan.common.Constants
-import com.mukesh.rickmortyfan.data.repository.CharacterRepositoryImpl
-import com.mukesh.rickmortyfan.data.retrofit.RickMortyApi
-import com.mukesh.rickmortyfan.domain.repository.CharacterRepository
+import com.mukesh.rickmortyfan.data.repository.CharactersRepositoryImpl
+import com.mukesh.rickmortyfan.data.retrofit.RickMortyCharacterApi
+import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,15 +18,15 @@ object RickMortyModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitClient(): RickMortyApi {
+    fun provideRetrofitClient(): RickMortyCharacterApi {
         return Retrofit.Builder().baseUrl(Constants.API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create()).build()
-            .create(RickMortyApi::class.java)
+            .create(RickMortyCharacterApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideCharacterRepository(rickMortyApi: RickMortyApi): CharacterRepository {
-        return CharacterRepositoryImpl(rickMortyApi)
+    fun provideCharacterRepository(rickMortyApi: RickMortyCharacterApi): CharactersRepository {
+        return CharactersRepositoryImpl(rickMortyApi)
     }
 }
