@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.RickMortyFan" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.AppSplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#000000</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.RickMortyFan</item>
+    </style>
 </resources>

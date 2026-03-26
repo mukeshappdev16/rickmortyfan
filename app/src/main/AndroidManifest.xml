@@ -16,7 +16,7 @@
         <activity
             android:name=".presentation.screens.RickMortyHome"
             android:exported="true"
-            android:theme="@style/Theme.RickMortyFan">
+            android:theme="@style/Theme.AppSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

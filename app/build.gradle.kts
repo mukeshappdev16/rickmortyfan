@@ -7,11 +7,7 @@ plugins {
 
 android {
     namespace = "com.mukesh.rickmortyfan"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.mukesh.rickmortyfan"
@@ -88,7 +84,6 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.compose.material.icons.extended)
 
-
-
-
+    // Splash Screen
+    implementation(libs.androidx.core.splashscreen)
 }
