@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -52,25 +53,24 @@ import dagger.hilt.android.AndroidEntryPoint
 class RickMortyHome : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             RickMortyFanTheme {
                 val navController = rememberNavController()
-                var selectedItemIndex by remember { mutableIntStateOf(0) }
-                
+                var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { 
+                            title = {
                                 Text(
                                     text = "Rick & Morty",
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Black,
                                     letterSpacing = (-1).sp
-                                ) 
+                                )
                             },
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = MaterialTheme.colorScheme.surface,
@@ -97,17 +97,19 @@ class RickMortyHome : ComponentActivity() {
                                             contentDescription = screen.title
                                         )
                                     },
-                                    label = { 
+                                    label = {
                                         Text(
                                             text = screen.title,
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                        ) 
+                                        )
                                     },
                                     colors = NavigationBarItemDefaults.colors(
                                         selectedIconColor = MaterialTheme.colorScheme.primary,
                                         selectedTextColor = MaterialTheme.colorScheme.primary,
-                                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        indicatorColor = MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0.1f
+                                        ),
                                         unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -116,7 +118,11 @@ class RickMortyHome : ComponentActivity() {
                         }
                     }
                 ) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
+                    Box(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .background(MaterialTheme.colorScheme.background)
+                    ) {
                         NavHost(
                             navController = navController,
                             startDestination = "Characters"
