@@ -48,11 +48,11 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 fun CharacterDetailScreen(
     characterId: String,
     modifier: Modifier,
-    characterDetailViewModal: CharacterDetailViewModal = hiltViewModel()
+    characterDetailViewModel: CharacterDetailViewModel = hiltViewModel()
 ) {
-    val characterDetailScreenState by characterDetailViewModal.characterDetailScreenState
+    val characterDetailScreenState by characterDetailViewModel.characterDetailScreenState
     LaunchedEffect(characterId) {
-        characterDetailViewModal.getCharacterDetail(characterId)
+        characterDetailViewModel.getCharacterDetail(characterId)
     }
 
     when {

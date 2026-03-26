@@ -1,7 +1,6 @@
 package com.mukesh.rickmortyfan.presentation.composables.episode.episodedetail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -49,12 +47,12 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 fun EpisodeDetailScreen(
     episodeId: String,
     modifier: Modifier,
-    episodeDetailViewModal: EpisodeDetailViewModal = hiltViewModel()
+    episodeDetailViewModel: EpisodeDetailViewModel = hiltViewModel()
 ) {
-    val episodeDetailScreenState by episodeDetailViewModal.episodeDetailScreenState
+    val episodeDetailScreenState by episodeDetailViewModel.episodeDetailScreenState
 
     LaunchedEffect(episodeId) {
-        episodeDetailViewModal.getEpisodeDetail(episodeId)
+        episodeDetailViewModel.getEpisodeDetail(episodeId)
     }
 
     when {

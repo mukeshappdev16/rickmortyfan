@@ -31,36 +31,34 @@ class EpisodeDetailActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RickMortyFanTheme {
-                RickMortyFanTheme {
-                    Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                        TopAppBar(
-                            title = { Text(text = "Episode Detail") },
-                            navigationIcon = {
-                                IconButton(onClick = { finish() }) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Go back"
-                                    )
-                                }
-                            },
-                            actions = {
-                                IconButton(onClick = {
-                                    // Favourite implementation
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.FavoriteBorder,
-                                        contentDescription = "Mark as favorite"
-                                    )
-                                }
+                Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+                    TopAppBar(
+                        title = { Text(text = "Episode Detail") },
+                        navigationIcon = {
+                            IconButton(onClick = { finish() }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Go back"
+                                )
                             }
-                        )
-                    }
-                    ) { innerPadding ->
-                        EpisodeDetailScreen(
-                            episodeId = episodeId,
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                    }
+                        },
+                        actions = {
+                            IconButton(onClick = {
+                                // Favourite implementation
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.FavoriteBorder,
+                                    contentDescription = "Mark as favorite"
+                                )
+                            }
+                        }
+                    )
+                }
+                ) { innerPadding ->
+                    EpisodeDetailScreen(
+                        episodeId = episodeId,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }

@@ -14,5 +14,5 @@ interface RickMortyCharacterApi {
     suspend fun getCharacterDetail(@Path("charId") charId: String): CharacterDto
 
     @GET("character/{multipleCharId}")
-    suspend fun getMultipleCharacters(@Path("multipleCharId") charId: String): List<CharacterDto>
+    suspend fun getMultipleCharacters(@Path("multipleCharId") multipleCharId: String): List<CharacterDto>
 }

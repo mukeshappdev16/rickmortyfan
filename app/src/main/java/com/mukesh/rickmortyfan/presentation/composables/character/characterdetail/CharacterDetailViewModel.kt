@@ -1,6 +1,5 @@
 package com.mukesh.rickmortyfan.presentation.composables.character.characterdetail
 
-import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterDetailUseCase
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,30 +7,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukesh.rickmortyfan.common.Resource
 import com.mukesh.rickmortyfan.common.Utils
+import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterDetailUseCase
 import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetMultipleEpisodesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharacterDetailViewModal @Inject constructor(
-    val getCharacterDetailUseCase: GetCharacterDetailUseCase,
-    val getMultipleEpisodesUseCase: GetMultipleEpisodesUseCase
-) :
-    ViewModel() {
+class CharacterDetailViewModel @Inject constructor(
+    private val getCharacterDetailUseCase: GetCharacterDetailUseCase,
+    private val getMultipleEpisodesUseCase: GetMultipleEpisodesUseCase
+) : ViewModel() {
 
-    private var _characterDetailScreenState: MutableState<CharacterDetailScreenState> =
-        mutableStateOf(
-            CharacterDetailScreenState()
-        )
-    var characterDetailScreenState: State<CharacterDetailScreenState> = _characterDetailScreenState
+    private val _characterDetailScreenState: MutableState<CharacterDetailScreenState> =
+        mutableStateOf(CharacterDetailScreenState())
+    val characterDetailScreenState: State<CharacterDetailScreenState> = _characterDetailScreenState
 
     fun getCharacterDetail(charId: String) {
         getCharacterDetailUseCase(charId).onEach { result ->
-
             when (result) {
                 is Resource.Loading -> {
                     _characterDetailScreenState.value = CharacterDetailScreenState(isLoading = true)
@@ -43,7 +37,6 @@ class CharacterDetailViewModal @Inject constructor(
                     result.data?.episode?.let { idsList ->
                         getAllEpisodesForCharacter(Utils.getIdsFromUrlList(idsList))
                     }
-
                 }
 
                 is Resource.Error -> {
@@ -55,31 +48,28 @@ class CharacterDetailViewModal @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-
     }
 
     private fun getAllEpisodesForCharacter(episodeUrlList: List<String>) {
-        viewModelScope.launch {
-            getMultipleEpisodesUseCase(episodeUrlList).onEach { result ->
-                when (result) {
-                    is Resource.Loading -> {
-                        // Do Nothing or display error message for episode section
-                    }
+        getMultipleEpisodesUseCase(episodeUrlList).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    // Do Nothing or display error message for episode section
+                }
 
-                    is Resource.Error -> {
-                        // Do Nothing or display error message for episode section
-                    }
+                is Resource.Error -> {
+                    // Do Nothing or display error message for episode section
+                }
 
-                    is Resource.Success -> {
-                        result.data?.let {
-                            _characterDetailScreenState.value =
-                                _characterDetailScreenState.value.copy(
-                                    episodes = it
-                                )
-                        }
+                is Resource.Success -> {
+                    result.data?.let {
+                        _characterDetailScreenState.value =
+                            _characterDetailScreenState.value.copy(
+                                episodes = it
+                            )
                     }
                 }
-            }.collect()
-        }
+            }
+        }.launchIn(viewModelScope)
     }
 }

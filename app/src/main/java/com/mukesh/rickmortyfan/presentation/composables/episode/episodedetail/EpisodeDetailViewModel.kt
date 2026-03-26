@@ -10,23 +10,19 @@ import com.mukesh.rickmortyfan.common.Utils
 import com.mukesh.rickmortyfan.domain.use_cases.characters.GetMultipleCharacterUseCase
 import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetEpisodeDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EpisodeDetailViewModal @Inject constructor(
+class EpisodeDetailViewModel @Inject constructor(
     private val getEpisodeDetailUseCase: GetEpisodeDetailUseCase,
     private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase
-) :
-    ViewModel() {
-    private var _episodeDetailScreenState: MutableState<EpisodeDetailScreenState> =
-        mutableStateOf(
-            EpisodeDetailScreenState()
-        )
-    var episodeDetailScreenState: State<EpisodeDetailScreenState> = _episodeDetailScreenState
+) : ViewModel() {
+
+    private val _episodeDetailScreenState: MutableState<EpisodeDetailScreenState> =
+        mutableStateOf(EpisodeDetailScreenState())
+    val episodeDetailScreenState: State<EpisodeDetailScreenState> = _episodeDetailScreenState
 
     fun getEpisodeDetail(episodeId: String) {
         getEpisodeDetailUseCase(episodeId).onEach { result ->
@@ -41,7 +37,6 @@ class EpisodeDetailViewModal @Inject constructor(
                     result.data?.characters?.let { idsList ->
                         getAllCharactersForEpisode(Utils.getIdsFromUrlList(idsList))
                     }
-
                 }
 
                 is Resource.Error -> {
@@ -53,31 +48,28 @@ class EpisodeDetailViewModal @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-
     }
 
     private fun getAllCharactersForEpisode(charIdsList: List<String>) {
-        viewModelScope.launch {
-            getMultipleCharacterUseCase(charIdsList).onEach { result ->
-                when (result) {
-                    is Resource.Loading -> {
-                        // Do Nothing or display error message for episode section
-                    }
+        getMultipleCharacterUseCase(charIdsList).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    // Do Nothing or display error message for episode section
+                }
 
-                    is Resource.Error -> {
-                        // Do Nothing or display error message for episode section
-                    }
+                is Resource.Error -> {
+                    // Do Nothing or display error message for episode section
+                }
 
-                    is Resource.Success -> {
-                        result.data?.let {
-                            _episodeDetailScreenState.value =
-                                _episodeDetailScreenState.value.copy(
-                                    episodeCharList = it
-                                )
-                        }
+                is Resource.Success -> {
+                    result.data?.let {
+                        _episodeDetailScreenState.value =
+                            _episodeDetailScreenState.value.copy(
+                                episodeCharList = it
+                            )
                     }
                 }
-            }.collect()
-        }
+            }
+        }.launchIn(viewModelScope)
     }
 }

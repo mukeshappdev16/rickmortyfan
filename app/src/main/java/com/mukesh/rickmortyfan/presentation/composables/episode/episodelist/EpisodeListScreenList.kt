@@ -33,10 +33,10 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 @Composable
 fun EpisodeListScreen(
     modifier: Modifier = Modifier,
-    episodeListViewModal: EpisodeListViewModal = hiltViewModel(),
+    episodeListViewModel: EpisodeListViewModel = hiltViewModel(),
     onClickListener: (Episode) -> Unit
 ) {
-    val episodeListState by episodeListViewModal.episodeListState
+    val episodeListState by episodeListViewModel.episodeListState
 
     when {
         episodeListState.isLoading -> {
