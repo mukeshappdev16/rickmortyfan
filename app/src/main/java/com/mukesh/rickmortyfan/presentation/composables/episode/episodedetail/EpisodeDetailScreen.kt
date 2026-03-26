@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,37 +56,39 @@ fun EpisodeDetailScreen(
         episodeDetailViewModel.getEpisodeDetail(episodeId)
     }
 
-    when {
-        episodeDetailScreenState.isLoading -> {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        when {
+            episodeDetailScreenState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp
+                    )
+                }
             }
-        }
 
-        episodeDetailScreenState.errorMessage != "" -> {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = episodeDetailScreenState.errorMessage,
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center
-                )
+            episodeDetailScreenState.errorMessage != "" -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = episodeDetailScreenState.errorMessage,
+                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-        }
 
-        episodeDetailScreenState.episode != null -> {
-            episodeDetailScreenState.episode?.let {
-                EpisodeDetail(it, episodeDetailScreenState.episodeCharList)
+            episodeDetailScreenState.episode != null -> {
+                episodeDetailScreenState.episode?.let {
+                    EpisodeDetail(it, episodeDetailScreenState.episodeCharList)
+                }
             }
         }
     }
@@ -97,147 +100,122 @@ fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>)
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
     ) {
-
-        HeaderSection(episode.name)
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            InfoCard("Episode", episode.episode, Modifier.weight(1f))
-            InfoCard("Air Date", episode.air_date, Modifier.weight(1f))
+        // Hero Header Section
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(24.dp)
+        ) {
+            Column {
+                Text(
+                    text = episode.episode,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 2.sp
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Text(
+                    text = episode.name,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (episodeCharList.isNotEmpty()) {
-            Text(
-                "Characters",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            InfoItem(
+                label = "RELEASE DATE",
+                value = episode.air_date
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-            episodeCharList.forEach {
-                CharacterListItem(it)
+            if (episodeCharList.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    text = "CAST",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 1.5.sp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    episodeCharList.forEach {
+                        CastMemberItem(it)
+                    }
+                }
             }
 
+            Spacer(modifier = Modifier.height(40.dp))
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
     }
 }
 
-
 @Composable
-fun HeaderSection(title: String) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFE0E0E0)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Default.Videocam, contentDescription = null)
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text("Episode", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-
+fun InfoItem(label: String, value: String) {
+    Column {
         Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
+            text = label, 
+            style = MaterialTheme.typography.labelSmall, 
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Black,
+            letterSpacing = 1.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value, 
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
 
 @Composable
-fun InfoCard(title: String, value: String, modifier: Modifier = Modifier) {
+fun CastMemberItem(characterDescription: CharacterDescription) {
     Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(title, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-            Text(value, fontWeight = FontWeight.Medium)
-        }
-    }
-}
-
-@Composable
-fun CharacterListItem(characterDescription: CharacterDescription) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-        ,
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White // Light background
-        ),
-        elevation = CardDefaults.cardElevation(2.dp)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = characterDescription.image,
                 error = painterResource(R.drawable.account_circle_24),
-                contentDescription = "Avatar of ${characterDescription.name}",
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(8.dp)) // Slightly rounded square looks modern
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column {
                 Text(
                     text = characterDescription.name,
-                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1A1A), // Near black for high legibility
-                    textAlign = TextAlign.Left
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Gender Label
                 Text(
-                    text = "Gender: ${characterDescription.gender}",
-                    fontSize = 14.sp,
-                    color = Color.DarkGray,
-                    textAlign = TextAlign.Left
-                )
-
-                // Status with a subtle color hint
-                Text(
-                    text = "Status: ${characterDescription.status}",
-                    fontSize = 14.sp,
-                    color = when (characterDescription.status.lowercase()) {
-                        "alive" -> Color(0xFF2E7D32) // Soft Green
-                        "dead" -> Color(0xFFC62828)  // Soft Red
-                        else -> Color.DarkGray
-                    },
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Left
+                    text = characterDescription.species,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

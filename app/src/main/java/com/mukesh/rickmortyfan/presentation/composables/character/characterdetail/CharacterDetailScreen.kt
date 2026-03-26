@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +24,9 @@ import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,8 +34,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,218 +60,266 @@ fun CharacterDetailScreen(
         characterDetailViewModel.getCharacterDetail(characterId)
     }
 
-    when {
-        characterDetailScreenState.isLoading -> {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        characterDetailScreenState.errorMessage != "" -> {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = characterDetailScreenState.errorMessage,
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-        characterDetailScreenState.characterDescription != null -> {
-            characterDetailScreenState.characterDescription?.let {
-                CharacterDetail(
-                    modifier = modifier,
-                    characterDescription = it,
-                    episodeList = characterDetailScreenState.episodes
-                )
+    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        when {
+            characterDetailScreenState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp
+                    )
+                }
             }
 
+            characterDetailScreenState.errorMessage != "" -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = characterDetailScreenState.errorMessage,
+                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            characterDetailScreenState.characterDescription != null -> {
+                characterDetailScreenState.characterDescription?.let {
+                    CharacterDetail(
+                        characterDescription = it,
+                        episodeList = characterDetailScreenState.episodes
+                    )
+                }
+            }
         }
     }
-
-
 }
 
 @Composable
 private fun CharacterDetail(
-    modifier: Modifier,
     characterDescription: CharacterDescription,
     episodeList: List<Episode>
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = modifier
+        modifier = Modifier
             .verticalScroll(scrollState)
             .fillMaxSize()
-            .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Profile Image Placeholder
+        // Hero Image with Gradient Overlay
         Box(
             modifier = Modifier
-                .size(148.dp)
-                .clip(CircleShape)
-                .background(Color.Green.copy(alpha = 0.2f))
-                .padding(4.dp)
+                .fillMaxWidth()
+                .aspectRatio(1f)
         ) {
             AsyncImage(
                 model = characterDescription.image,
                 error = painterResource(R.drawable.account_circle_24),
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
-        }
-
-        Text(
-            text = "Status: ${characterDescription.status}",
-            color = if (characterDescription.status == "Alive") {
-                Color.Green
-            } else {
-                Color.Red
-            },
-            fontSize = 16.sp,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Text(
-            text = characterDescription.name,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Stats Row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            InfoCard(
-                label = "Gender",
-                value = characterDescription.gender,
-                modifier = Modifier.weight(1f)
-            )
-            InfoCard(
-                label = "Species",
-                value = characterDescription.species,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        if (characterDescription.type.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
-            InfoCard(
-                label = "Type",
-                value = characterDescription.type,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Location Section
-        Text(
-            text = "Location",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(bottom = 8.dp)
-        )
-
-        LocationItem(
-            icon = Icons.Default.Public,
-            title = "Origin",
-            location = characterDescription.origin.name
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LocationItem(
-            icon = Icons.Default.LocationOn,
-            title = "Current",
-            location = characterDescription.location.name
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        if (episodeList.isNotEmpty()) {
-            // Episodes Section
-            Text(
-                text = "Episodes",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+            
+            // Gradient Overlay for text readability
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(bottom = 8.dp)
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                MaterialTheme.colorScheme.background
+                            ),
+                            startY = 300f
+                        )
+                    )
             )
-
-            Column(modifier = Modifier.padding(16.dp)) {
-                episodeList.forEach {
-                    EpisodeItem(it)
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+            
+            // Name and Status over Image
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(24.dp)
+            ) {
+                StatusBadgeDetail(characterDescription.status)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = characterDescription.name,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
-    }
-}
 
-@Composable
-fun InfoCard(label: String, value: String, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = label, fontSize = 12.sp, color = Color.Gray)
-            Text(text = value, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Stats Grid
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                InfoCardDetail(
+                    label = "GENDER",
+                    value = characterDescription.gender,
+                    modifier = Modifier.weight(1f)
+                )
+                InfoCardDetail(
+                    label = "SPECIES",
+                    value = characterDescription.species,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Location Section
+            LocationSection(
+                icon = Icons.Default.Public,
+                title = "ORIGIN",
+                location = characterDescription.origin.name
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            LocationSection(
+                icon = Icons.Default.LocationOn,
+                title = "LAST KNOWN LOCATION",
+                location = characterDescription.location.name
+            )
+
+            if (episodeList.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    text = "APPEARS IN",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 1.5.sp
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    episodeList.forEach {
+                        EpisodeItemDetail(it)
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
 
 @Composable
-fun LocationItem(icon: ImageVector, title: String, location: String) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+fun StatusBadgeDetail(status: String) {
+    val color = when (status.lowercase()) {
+        "alive" -> Color(0xFF4CAF50)
+        "dead" -> Color(0xFFF44336)
+        else -> Color.White
+    }
+    
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(color.copy(alpha = 0.2f), RoundedCornerShape(100.dp))
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .background(color, CircleShape)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = status.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Black,
+            color = color,
+            letterSpacing = 1.sp
+        )
+    }
+}
+
+@Composable
+fun InfoCardDetail(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+            .padding(16.dp)
+    ) {
+        Text(
+            text = label, 
+            style = MaterialTheme.typography.labelSmall, 
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Black,
+            letterSpacing = 1.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value, 
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+fun LocationSection(icon: ImageVector, title: String, location: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 icon,
                 contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier.size(24.dp)
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
             )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(text = title, fontSize = 12.sp, color = Color.Gray)
-                Text(text = location, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-            }
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(
+                text = title, 
+                style = MaterialTheme.typography.labelSmall, 
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 1.sp
+            )
+            Text(
+                text = location, 
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }
 
 @Composable
-fun EpisodeItem(episode: Episode) {
+fun EpisodeItemDetail(episode: Episode) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -275,17 +328,23 @@ fun EpisodeItem(episode: Episode) {
             Icon(
                 imageVector = Icons.Default.Videocam,
                 contentDescription = null,
-                tint = Color.Gray,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(text = episode.episode, fontSize = 12.sp, color = Color.Gray)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = episode.air_date, fontSize = 12.sp, color = Color.Gray)
-                }
-                Text(text = episode.name, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(
+                    text = episode.episode, 
+                    style = MaterialTheme.typography.labelSmall, 
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = episode.name, 
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

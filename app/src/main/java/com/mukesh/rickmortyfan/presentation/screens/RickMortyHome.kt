@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,15 +13,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,12 +33,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.window.core.layout.WindowSizeClass
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
@@ -49,36 +57,65 @@ class RickMortyHome : ComponentActivity() {
         setContent {
             RickMortyFanTheme {
                 val navController = rememberNavController()
-                Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                    TopAppBar(
-                        title = { Text(text = "Ricky Morty Fan") }
-                    )
-                }
-                ) { innerPadding ->
-                    var selectedItemIndex by remember { mutableIntStateOf(0) }
-                    val sizeClass = currentWindowAdaptiveInfo().windowSizeClass
-                    NavigationSuiteScaffold(
-                        modifier = Modifier.padding(innerPadding),
-                        navigationSuiteItems = {
+                var selectedItemIndex by remember { mutableIntStateOf(0) }
+                
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopAppBar(
+                            title = { 
+                                Text(
+                                    text = "Rick & Morty",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Black,
+                                    letterSpacing = (-1).sp
+                                ) 
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                titleContentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                    },
+                    bottomBar = {
+                        NavigationBar(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            tonalElevation = 0.dp
+                        ) {
                             Screen.entries.forEachIndexed { index, screen ->
-                                item(
-                                    selected = index == selectedItemIndex,
+                                val isSelected = index == selectedItemIndex
+                                NavigationBarItem(
+                                    selected = isSelected,
                                     onClick = {
                                         selectedItemIndex = index
                                         navItemClick(navController, screen)
                                     },
                                     icon = {
                                         Icon(
-                                            imageVector = screen.icon,
+                                            imageVector = if (isSelected) screen.icon else screen.unselectedIcon,
                                             contentDescription = screen.title
                                         )
                                     },
-                                    label = { Text(text = screen.title) }
+                                    label = { 
+                                        Text(
+                                            text = screen.title,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                        ) 
+                                    },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                 )
                             }
-                        },
-                        layoutType = navigationSuiteType(sizeClass)
-                    ) {
+                        }
+                    }
+                ) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding).background(MaterialTheme.colorScheme.background)) {
                         NavHost(
                             navController = navController,
                             startDestination = "Characters"
@@ -105,7 +142,11 @@ class RickMortyHome : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Location")
+            Text(
+                text = "Locations Feature Coming Soon",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+            )
         }
     }
 
@@ -134,20 +175,6 @@ class RickMortyHome : ComponentActivity() {
     }
 }
 
-@Composable
-private fun navigationSuiteType(sizeClass: WindowSizeClass): NavigationSuiteType {
-    return if (sizeClass.isWidthAtLeastBreakpoint(
-            widthDpBreakpoint = WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND
-        )
-    ) {
-        NavigationSuiteType.NavigationDrawer
-    } else {
-        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
-            currentWindowAdaptiveInfo()
-        )
-    }
-}
-
 private fun navItemClick(navController: NavController, screen: Screen) {
     navController.navigate(screen.title) {
         popUpTo(
@@ -160,8 +187,8 @@ private fun navItemClick(navController: NavController, screen: Screen) {
     }
 }
 
-enum class Screen(val title: String, val icon: ImageVector) {
-    HOME("Characters", Icons.Default.Home),
-    LOCATION("Locations", Icons.Default.LocationOn),
-    EPISODES("Episodes", Icons.Default.Videocam),
+enum class Screen(val title: String, val icon: ImageVector, val unselectedIcon: ImageVector) {
+    HOME("Characters", Icons.Default.Home, Icons.Outlined.Home),
+    LOCATION("Locations", Icons.Default.LocationOn, Icons.Outlined.LocationOn),
+    EPISODES("Episodes", Icons.Default.Videocam, Icons.Outlined.Videocam),
 }

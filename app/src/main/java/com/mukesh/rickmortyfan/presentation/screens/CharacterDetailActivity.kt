@@ -12,10 +12,13 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterdetail.CharacterDetailScreen
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
@@ -30,29 +33,42 @@ class CharacterDetailActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RickMortyFanTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                    TopAppBar(
-                        title = { Text(text = "Character Detail") },
-                        navigationIcon = {
-                            IconButton(onClick = { finish() }) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Go back"
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = {
-                                // Favourite implementation
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.FavoriteBorder,
-                                    contentDescription = "Mark as favorite"
-                                )
-                            }
-                        }
-                    )
-                }
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(), 
+                    topBar = {
+                        TopAppBar(
+                            title = { 
+                                Text(
+                                    text = "Character Detail",
+                                    fontWeight = FontWeight.Bold
+                                ) 
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = { finish() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Go back"
+                                    )
+                                }
+                            },
+                            actions = {
+                                IconButton(onClick = {
+                                    // Favourite implementation
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.FavoriteBorder,
+                                        contentDescription = "Mark as favorite"
+                                    )
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                    }
                 ) { innerPadding ->
                     CharacterDetailScreen(
                         characterId = charId,

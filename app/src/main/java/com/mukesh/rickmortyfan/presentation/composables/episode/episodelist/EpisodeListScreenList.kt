@@ -1,15 +1,18 @@
 package com.mukesh.rickmortyfan.presentation.composables.episode.episodelist
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,32 +41,41 @@ fun EpisodeListScreen(
 ) {
     val episodeListState by episodeListViewModel.episodeListState
 
-    when {
-        episodeListState.isLoading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        when {
+            episodeListState.isLoading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp
+                    )
+                }
             }
-        }
 
-        episodeListState.errorMessage != "" -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = episodeListState.errorMessage,
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center
-                )
+            episodeListState.errorMessage != "" -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = episodeListState.errorMessage,
+                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
-        }
 
-        episodeListState.list.isNotEmpty() -> {
-            LazyColumn(modifier = modifier.fillMaxSize()) {
-                items(episodeListState.list) { item ->
-                    EpisodeListRow(item, onClickListener)
+            episodeListState.list.isNotEmpty() -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    items(episodeListState.list) { item ->
+                        EpisodeListRow(item, onClickListener)
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
                 }
             }
         }
-
     }
 }
 
@@ -75,48 +87,37 @@ private fun EpisodeListRow(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .clickable { onClickListener(episode) },
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        // Set the light row background color here
+        elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White // or any light color, e.g., Color(0xFFF5F5F5)
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Episode Code (e.g., S01E10)
-                Text(
-                    text = episode.episode,
-                    style = MaterialTheme.typography.labelMedium,
-                    // Keeping the Rick Green, but you might want to adjust it slightly for contrast
-                    color = Color(0xFF97CE4C)
-                )
-            }
+            Text(
+                text = episode.episode,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 1.sp
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Episode Name
             Text(
                 text = episode.name,
-                fontSize = 18.sp,
-                style = MaterialTheme.typography.headlineSmall,
-                // Changed from White to a dark color for visibility
-                color = Color.Black, // or MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
 
-            // Air Date
+            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
-                text = "Aired: ${episode.air_date}",
+                text = "Released: ${episode.air_date}",
                 style = MaterialTheme.typography.bodyMedium,
-                // Gray might still work, but you can make it slightly darker if needed
-                color = Color.DarkGray // or MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
