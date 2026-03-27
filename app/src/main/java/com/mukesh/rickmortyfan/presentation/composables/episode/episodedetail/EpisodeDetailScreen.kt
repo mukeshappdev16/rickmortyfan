@@ -1,11 +1,13 @@
 package com.mukesh.rickmortyfan.presentation.composables.episode.episodedetail
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,16 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,8 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -96,36 +93,25 @@ fun EpisodeDetailScreen(
 
 @Composable
 fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        EpisodeDetailLandscape(episode, episodeCharList)
+    } else {
+        EpisodeDetailPortrait(episode, episodeCharList)
+    }
+}
+
+@Composable
+private fun EpisodeDetailPortrait(episode: Episode, episodeCharList: List<CharacterDescription>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         // Hero Header Section
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp)
-        ) {
-            Column {
-                Text(
-                    text = episode.episode,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = 2.sp
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Text(
-                    text = episode.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
+        EpisodeHeader(episode)
 
         Column(
             modifier = Modifier
@@ -133,14 +119,59 @@ fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>)
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
+            EpisodeInfoContent(episode, episodeCharList)
+            Spacer(modifier = Modifier.height(40.dp))
+        }
+    }
+}
+
+@Composable
+private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<CharacterDescription>) {
+    Row(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Left Side: Fixed Header and Info
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(24.dp)
+        ) {
+            Text(
+                text = episode.episode,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = episode.name,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
             
             InfoItem(
                 label = "RELEASE DATE",
                 value = episode.air_date
             )
+        }
 
+        // Right Side: Scrollable Cast list
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .weight(1.5f)
+                .fillMaxHeight()
+                .verticalScroll(scrollState)
+                .padding(24.dp)
+        ) {
             if (episodeCharList.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = "CAST",
                     style = MaterialTheme.typography.labelLarge,
@@ -155,9 +186,70 @@ fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>)
                         CastMemberItem(it)
                     }
                 }
+            } else {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "No cast information available",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
-
             Spacer(modifier = Modifier.height(40.dp))
+        }
+    }
+}
+
+@Composable
+private fun EpisodeHeader(episode: Episode) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(24.dp)
+    ) {
+        Column {
+            Text(
+                text = episode.episode,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = episode.name,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<CharacterDescription>) {
+    InfoItem(
+        label = "RELEASE DATE",
+        value = episode.air_date
+    )
+
+    if (episodeCharList.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(40.dp))
+        Text(
+            text = "CAST",
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Black,
+            color = MaterialTheme.colorScheme.primary,
+            letterSpacing = 1.5.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            episodeCharList.forEach {
+                CastMemberItem(it)
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mukesh.rickmortyfan.common.NetworkManager
 import com.mukesh.rickmortyfan.common.Resource
 import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetEpisodeListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeListViewModel @Inject constructor(
+    private val networkManager: NetworkManager,
     private val getEpisodeListUseCase: GetEpisodeListUseCase
 ) : ViewModel() {
 
@@ -28,6 +30,10 @@ class EpisodeListViewModel @Inject constructor(
     }
 
     fun getEpisodes() {
+        if (!networkManager.isNetworkAvailable()) {
+            _episodeListState.value = EpisodeListState(noInternet = true)
+            return
+        }
         getEpisodeListUseCase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {

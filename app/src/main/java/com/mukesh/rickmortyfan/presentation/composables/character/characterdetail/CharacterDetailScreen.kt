@@ -1,5 +1,6 @@
 package com.mukesh.rickmortyfan.presentation.composables.character.characterdetail
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,11 +35,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -106,6 +108,21 @@ private fun CharacterDetail(
     characterDescription: CharacterDescription,
     episodeList: List<Episode>
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        CharacterDetailLandscape(characterDescription, episodeList)
+    } else {
+        CharacterDetailPortrait(characterDescription, episodeList)
+    }
+}
+
+@Composable
+private fun CharacterDetailPortrait(
+    characterDescription: CharacterDescription,
+    episodeList: List<Episode>
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -164,62 +181,136 @@ private fun CharacterDetail(
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
-            
-            // Stats Grid
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                InfoCardDetail(
-                    label = "GENDER",
-                    value = characterDescription.gender,
-                    modifier = Modifier.weight(1f)
-                )
-                InfoCardDetail(
-                    label = "SPECIES",
-                    value = characterDescription.species,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Location Section
-            LocationSection(
-                icon = Icons.Default.Public,
-                title = "ORIGIN",
-                location = characterDescription.origin.name
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            LocationSection(
-                icon = Icons.Default.LocationOn,
-                title = "LAST KNOWN LOCATION",
-                location = characterDescription.location.name
-            )
-
-            if (episodeList.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(40.dp))
-                Text(
-                    text = "APPEARS IN",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Black,
-                    color = MaterialTheme.colorScheme.primary,
-                    letterSpacing = 1.5.sp
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    episodeList.forEach {
-                        EpisodeItemDetail(it)
-                    }
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(40.dp))
+            CharacterInfoContent(characterDescription, episodeList)
         }
     }
+}
+
+@Composable
+private fun CharacterDetailLandscape(
+    characterDescription: CharacterDescription,
+    episodeList: List<Episode>
+) {
+    Row(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Left Side: Sticky Image
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
+            AsyncImage(
+                model = characterDescription.image,
+                error = painterResource(R.drawable.account_circle_24),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.2f),
+                                MaterialTheme.colorScheme.background
+                            ),
+                            startX = 400f
+                        )
+                    )
+            )
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(24.dp)
+            ) {
+                StatusBadgeDetail(characterDescription.status)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = characterDescription.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        // Right Side: Scrollable Details
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .weight(1.2f)
+                .fillMaxHeight()
+                .verticalScroll(scrollState)
+                .padding(24.dp)
+        ) {
+            CharacterInfoContent(characterDescription, episodeList)
+        }
+    }
+}
+
+@Composable
+private fun CharacterInfoContent(
+    characterDescription: CharacterDescription,
+    episodeList: List<Episode>
+) {
+    // Stats Grid
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        InfoCardDetail(
+            label = "GENDER",
+            value = characterDescription.gender,
+            modifier = Modifier.weight(1f)
+        )
+        InfoCardDetail(
+            label = "SPECIES",
+            value = characterDescription.species,
+            modifier = Modifier.weight(1f)
+        )
+    }
+
+    Spacer(modifier = Modifier.height(24.dp))
+    HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+    Spacer(modifier = Modifier.height(24.dp))
+
+    // Location Section
+    LocationSection(
+        icon = Icons.Default.Public,
+        title = "ORIGIN",
+        location = characterDescription.origin.name
+    )
+    Spacer(modifier = Modifier.height(20.dp))
+    LocationSection(
+        icon = Icons.Default.LocationOn,
+        title = "LAST KNOWN LOCATION",
+        location = characterDescription.location.name
+    )
+
+    if (episodeList.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(40.dp))
+        Text(
+            text = "APPEARS IN",
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Black,
+            color = MaterialTheme.colorScheme.primary,
+            letterSpacing = 1.5.sp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            episodeList.forEach {
+                EpisodeItemDetail(it)
+            }
+        }
+    }
+    
+    Spacer(modifier = Modifier.height(40.dp))
 }
 
 @Composable

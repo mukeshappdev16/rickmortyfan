@@ -5,5 +5,6 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 data class EpisodeListState(
     val isLoading: Boolean = false,
     val errorMessage: String = "",
+    val noInternet: Boolean = false,
     val list: List<Episode> = emptyList()
 )

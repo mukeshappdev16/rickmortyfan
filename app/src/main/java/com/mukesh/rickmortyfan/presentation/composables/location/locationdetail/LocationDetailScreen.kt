@@ -1,11 +1,13 @@
 package com.mukesh.rickmortyfan.presentation.composables.location.locationdetail
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -99,36 +102,25 @@ fun LocationDetailScreen(
 
 @Composable
 fun LocationDetailContent(location: LocationDetail, residents: List<CharacterDescription>) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        LocationDetailLandscape(location, residents)
+    } else {
+        LocationDetailPortrait(location, residents)
+    }
+}
+
+@Composable
+private fun LocationDetailPortrait(location: LocationDetail, residents: List<CharacterDescription>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         // Hero Header Section
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp)
-        ) {
-            Column {
-                Text(
-                    text = location.type.uppercase(),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = 2.sp
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = location.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
+        LocationHeader(location)
 
         Column(
             modifier = Modifier
@@ -136,14 +128,59 @@ fun LocationDetailContent(location: LocationDetail, residents: List<CharacterDes
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
+            LocationInfoContent(location, residents)
+            Spacer(modifier = Modifier.height(40.dp))
+        }
+    }
+}
+
+@Composable
+private fun LocationDetailLandscape(location: LocationDetail, residents: List<CharacterDescription>) {
+    Row(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Left Side: Fixed Header and Info
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(24.dp)
+        ) {
+            Text(
+                text = location.type.uppercase(),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = location.name,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             InfoItem(
                 label = "DIMENSION",
                 value = location.dimension
             )
+        }
 
+        // Right Side: Scrollable Residents list
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .weight(1.5f)
+                .fillMaxHeight()
+                .verticalScroll(scrollState)
+                .padding(24.dp)
+        ) {
             if (residents.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(40.dp))
                 Text(
                     text = "RESIDENTS",
                     style = MaterialTheme.typography.labelLarge,
@@ -158,9 +195,70 @@ fun LocationDetailContent(location: LocationDetail, residents: List<CharacterDes
                         ResidentItem(it)
                     }
                 }
+            } else {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "No residents information available",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
-
             Spacer(modifier = Modifier.height(40.dp))
+        }
+    }
+}
+
+@Composable
+private fun LocationHeader(location: LocationDetail) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(24.dp)
+    ) {
+        Column {
+            Text(
+                text = location.type.uppercase(),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = location.name,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+private fun LocationInfoContent(location: LocationDetail, residents: List<CharacterDescription>) {
+    InfoItem(
+        label = "DIMENSION",
+        value = location.dimension
+    )
+
+    if (residents.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(40.dp))
+        Text(
+            text = "RESIDENTS",
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Black,
+            color = MaterialTheme.colorScheme.primary,
+            letterSpacing = 1.5.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            residents.forEach {
+                ResidentItem(it)
+            }
         }
     }
 }

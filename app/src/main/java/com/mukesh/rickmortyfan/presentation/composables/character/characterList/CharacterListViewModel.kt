@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mukesh.rickmortyfan.common.NetworkManager
 import com.mukesh.rickmortyfan.common.Resource
 import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,10 +16,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
+    private val networkManager: NetworkManager,
     private val getCharacterListUseCase: GetCharacterListUseCase
 ) : ViewModel() {
 
-    private val _characterListState: MutableState<CharacterListState> = 
+    private val _characterListState: MutableState<CharacterListState> =
         mutableStateOf(CharacterListState())
     val characterListState: State<CharacterListState> = _characterListState
 
@@ -28,6 +30,10 @@ class CharacterListViewModel @Inject constructor(
     }
 
     fun getCharacters() {
+        if (!networkManager.isNetworkAvailable()) {
+            _characterListState.value = CharacterListState(noInternet = true)
+            return
+        }
         getCharacterListUseCase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
