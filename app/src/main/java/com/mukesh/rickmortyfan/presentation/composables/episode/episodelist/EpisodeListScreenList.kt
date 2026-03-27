@@ -5,33 +5,30 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
+import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
+import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun EpisodeListScreen(
@@ -44,49 +41,20 @@ fun EpisodeListScreen(
     Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         when {
             episodeListState.noInternet -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Looks like there’s an issue with your internet connection. " +
-                                    "Please check it and try again.",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(32.dp),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Button(onClick = {
-                            episodeListViewModel.getEpisodes()
-                        }) {
-                            Text(text = "Try again")
-                        }
-                    }
+                ErrorMessageWithTryAgainButton(
+                    errorMessage = stringResource(R.string.error_no_internet),
+                    butonLabel = stringResource(R.string.action_try_again)
+                ) {
+                    episodeListViewModel.getEpisodes()
                 }
             }
 
             episodeListState.isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 3.dp
-                    )
-                }
+                LoadingIndicator()
             }
 
             episodeListState.errorMessage != "" -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = episodeListState.errorMessage,
-                        modifier = Modifier.fillMaxWidth().padding(32.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                ErrorMessageWithTryAgainButton(errorMessage = episodeListState.errorMessage)
             }
 
             episodeListState.list.isNotEmpty() -> {
@@ -140,7 +108,7 @@ private fun EpisodeListRow(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "Released: ${episode.air_date}",
+                text = stringResource(R.string.released_prefix, episode.air_date),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

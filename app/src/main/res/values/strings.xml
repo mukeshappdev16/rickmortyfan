@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">RickMortyFan</string>
+    <string name="title_rick_and_morty">Rick &amp; Morty</string>
+    <string name="screen_characters">Characters</string>
+    <string name="screen_locations">Locations</string>
+    <string name="screen_episodes">Episodes</string>
+    <string name="title_character_detail">Character Detail</string>
+    <string name="title_episode_detail">Episode Detail</string>
+    <string name="title_location_detail">Location Detail</string>
+    <string name="action_go_back">Go back</string>
+    <string name="action_mark_favorite">Mark as favorite</string>
+    <string name="label_gender">GENDER</string>
+    <string name="label_species">SPECIES</string>
+    <string name="label_origin">ORIGIN</string>
+    <string name="label_last_known_location">LAST KNOWN LOCATION</string>
+    <string name="label_appears_in">APPEARS IN</string>
+    <string name="label_release_date">RELEASE DATE</string>
+    <string name="label_cast">CAST</string>
+    <string name="label_dimension">DIMENSION</string>
+    <string name="label_residents">RESIDENTS</string>
+    <string name="error_no_internet">Looks like there’s an issue with your internet connection. Please check it and try again.</string>
+    <string name="action_try_again">Try again</string>
+    <string name="no_cast_available">No cast information available</string>
+    <string name="no_residents_available">No residents information available</string>
+    <string name="released_prefix">Released: %s</string>
 </resources>

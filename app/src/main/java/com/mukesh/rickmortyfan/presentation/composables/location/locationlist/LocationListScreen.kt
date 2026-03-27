@@ -19,10 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,11 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
+import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
+import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun LocationListScreen(
@@ -49,51 +50,20 @@ fun LocationListScreen(
         .background(MaterialTheme.colorScheme.background)) {
         when {
             state.noInternet -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Looks like there’s an issue with your internet connection. " +
-                                    "Please check it and try again.",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(32.dp),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Button(onClick = {
-                            viewModel.getLocations()
-                        }) {
-                            Text(text = "Try again")
-                        }
-                    }
+                ErrorMessageWithTryAgainButton(
+                    errorMessage = stringResource(R.string.error_no_internet),
+                    butonLabel = stringResource(R.string.action_try_again)
+                ) {
+                    viewModel.getLocations()
                 }
             }
 
             state.isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 3.dp
-                    )
-                }
+                LoadingIndicator()
             }
 
             state.errorMessage != "" -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = state.errorMessage,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                ErrorMessageWithTryAgainButton(errorMessage = state.errorMessage)
             }
 
             state.list.isNotEmpty() -> {

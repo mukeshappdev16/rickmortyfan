@@ -6,6 +6,7 @@ import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
 data class LocationDetailScreenState(
     val isLoading: Boolean = false,
     val errorMessage: String = "",
+    val noInternet: Boolean = false,
     val location: LocationDetail? = null,
     val residents: List<CharacterDescription> = emptyList()
 )

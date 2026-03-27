@@ -15,7 +15,7 @@ class GetEpisodeDetailUseCase @Inject constructor(private val episodesRepository
             emit(Resource.Success(episodesRepository.getEpisodeDetail(episodeId)))
         } catch (httpException: HttpException) {
             httpException.printStackTrace()
-            emit(Resource.Error("Network error. Please try again later"))
+            emit(Resource.Error("Something went wrong. Please try again later"))
         } catch (exc: Exception) {
             exc.printStackTrace()
             emit(Resource.Error("Something went wrong. Please try again later"))

@@ -6,6 +6,7 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 data class EpisodeDetailScreenState(
     val isLoading: Boolean = false,
     val errorMessage: String = "",
+    val noInternet: Boolean = false,
     val episode: Episode? = null,
     val episodeCharList: List<CharacterDescription> = emptyList()
 )

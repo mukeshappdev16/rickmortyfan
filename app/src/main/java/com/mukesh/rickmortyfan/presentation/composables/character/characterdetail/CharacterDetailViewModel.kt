@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mukesh.rickmortyfan.common.NetworkManager
 import com.mukesh.rickmortyfan.common.Resource
 import com.mukesh.rickmortyfan.common.Utils
 import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterDetailUseCase
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterDetailViewModel @Inject constructor(
+    private val networkManager: NetworkManager,
     private val getCharacterDetailUseCase: GetCharacterDetailUseCase,
     private val getMultipleEpisodesUseCase: GetMultipleEpisodesUseCase
 ) : ViewModel() {
@@ -25,6 +27,10 @@ class CharacterDetailViewModel @Inject constructor(
     val characterDetailScreenState: State<CharacterDetailScreenState> = _characterDetailScreenState
 
     fun getCharacterDetail(charId: String) {
+        if (!networkManager.isNetworkAvailable()) {
+            _characterDetailScreenState.value = CharacterDetailScreenState(noInternet = true)
+            return
+        }
         getCharacterDetailUseCase(charId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {

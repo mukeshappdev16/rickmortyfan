@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,8 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -40,6 +39,8 @@ import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
+import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
+import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun EpisodeDetailScreen(
@@ -53,33 +54,27 @@ fun EpisodeDetailScreen(
         episodeDetailViewModel.getEpisodeDetail(episodeId)
     }
 
-    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         when {
-            episodeDetailScreenState.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            episodeDetailScreenState.noInternet -> {
+                ErrorMessageWithTryAgainButton(
+                    errorMessage = stringResource(R.string.error_no_internet),
+                    butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 3.dp
-                    )
+                    episodeDetailViewModel.getEpisodeDetail(episodeId)
                 }
             }
 
+            episodeDetailScreenState.isLoading -> {
+                LoadingIndicator()
+            }
+
             episodeDetailScreenState.errorMessage != "" -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = episodeDetailScreenState.errorMessage,
-                        modifier = Modifier.fillMaxWidth().padding(32.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                ErrorMessageWithTryAgainButton(episodeDetailScreenState.errorMessage)
             }
 
             episodeDetailScreenState.episode != null -> {
@@ -105,10 +100,11 @@ fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>)
 
 @Composable
 private fun EpisodeDetailPortrait(episode: Episode, episodeCharList: List<CharacterDescription>) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
     ) {
         // Hero Header Section
         EpisodeHeader(episode)
@@ -145,9 +141,9 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
                 fontWeight = FontWeight.Black,
                 letterSpacing = 2.sp
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = episode.name,
                 style = MaterialTheme.typography.headlineLarge,
@@ -155,9 +151,9 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
             )
 
             Spacer(modifier = Modifier.height(32.dp))
-            
+
             InfoItem(
-                label = "RELEASE DATE",
+                label = stringResource(R.string.label_release_date),
                 value = episode.air_date
             )
         }
@@ -173,7 +169,7 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
         ) {
             if (episodeCharList.isNotEmpty()) {
                 Text(
-                    text = "CAST",
+                    text = stringResource(R.string.label_cast),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.primary,
@@ -189,7 +185,7 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
             } else {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = "No cast information available",
+                        text = stringResource(R.string.no_cast_available),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -216,9 +212,9 @@ private fun EpisodeHeader(episode: Episode) {
                 fontWeight = FontWeight.Black,
                 letterSpacing = 2.sp
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = episode.name,
                 style = MaterialTheme.typography.headlineLarge,
@@ -231,14 +227,14 @@ private fun EpisodeHeader(episode: Episode) {
 @Composable
 private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<CharacterDescription>) {
     InfoItem(
-        label = "RELEASE DATE",
+        label = stringResource(R.string.label_release_date),
         value = episode.air_date
     )
 
     if (episodeCharList.isNotEmpty()) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
-            text = "CAST",
+            text = stringResource(R.string.label_cast),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
@@ -258,15 +254,15 @@ private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<Character
 fun InfoItem(label: String, value: String) {
     Column {
         Text(
-            text = label, 
-            style = MaterialTheme.typography.labelSmall, 
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Black,
             letterSpacing = 1.sp
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = value, 
+            text = value,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground
         )

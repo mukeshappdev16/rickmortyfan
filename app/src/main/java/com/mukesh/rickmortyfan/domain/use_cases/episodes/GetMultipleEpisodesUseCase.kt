@@ -15,7 +15,7 @@ class GetMultipleEpisodesUseCase @Inject constructor(private val characterReposi
             emit(Resource.Success(characterRepository.getMultipleEpisodes(ids)))
         } catch (httpException: HttpException) {
             httpException.printStackTrace()
-            emit(Resource.Error("Network error. Please try again later"))
+            emit(Resource.Error("Something went wrong. Please try again later"))
         } catch (exc: Exception) {
             exc.printStackTrace()
             emit(Resource.Error("Something went wrong. Please try again later"))

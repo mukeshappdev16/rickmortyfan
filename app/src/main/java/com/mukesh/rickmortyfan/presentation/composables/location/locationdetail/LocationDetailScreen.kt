@@ -17,13 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -45,6 +39,8 @@ import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
 import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
+import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
+import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun LocationDetailScreen(
@@ -58,37 +54,27 @@ fun LocationDetailScreen(
         viewModel.getLocationDetail(locationId)
     }
 
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            state.noInternet -> {
+                ErrorMessageWithTryAgainButton(
+                    errorMessage = stringResource(R.string.error_no_internet),
+                    butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 3.dp
-                    )
+                    viewModel.getLocationDetail(locationId)
                 }
             }
 
+            state.isLoading -> {
+                LoadingIndicator()
+            }
+
             state.errorMessage != "" -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.errorMessage,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                ErrorMessageWithTryAgainButton(state.errorMessage)
             }
 
             state.location != null -> {
@@ -113,7 +99,10 @@ fun LocationDetailContent(location: LocationDetail, residents: List<CharacterDes
 }
 
 @Composable
-private fun LocationDetailPortrait(location: LocationDetail, residents: List<CharacterDescription>) {
+private fun LocationDetailPortrait(
+    location: LocationDetail,
+    residents: List<CharacterDescription>
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -135,7 +124,10 @@ private fun LocationDetailPortrait(location: LocationDetail, residents: List<Cha
 }
 
 @Composable
-private fun LocationDetailLandscape(location: LocationDetail, residents: List<CharacterDescription>) {
+private fun LocationDetailLandscape(
+    location: LocationDetail,
+    residents: List<CharacterDescription>
+) {
     Row(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -166,7 +158,7 @@ private fun LocationDetailLandscape(location: LocationDetail, residents: List<Ch
             Spacer(modifier = Modifier.height(32.dp))
 
             InfoItem(
-                label = "DIMENSION",
+                label = stringResource(R.string.label_dimension),
                 value = location.dimension
             )
         }
@@ -182,7 +174,7 @@ private fun LocationDetailLandscape(location: LocationDetail, residents: List<Ch
         ) {
             if (residents.isNotEmpty()) {
                 Text(
-                    text = "RESIDENTS",
+                    text = stringResource(R.string.label_residents),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.primary,
@@ -198,7 +190,7 @@ private fun LocationDetailLandscape(location: LocationDetail, residents: List<Ch
             } else {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = "No residents information available",
+                        text = stringResource(R.string.no_residents_available),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -240,14 +232,14 @@ private fun LocationHeader(location: LocationDetail) {
 @Composable
 private fun LocationInfoContent(location: LocationDetail, residents: List<CharacterDescription>) {
     InfoItem(
-        label = "DIMENSION",
+        label = stringResource(R.string.label_dimension),
         value = location.dimension
     )
 
     if (residents.isNotEmpty()) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
-            text = "RESIDENTS",
+            text = stringResource(R.string.label_residents),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,

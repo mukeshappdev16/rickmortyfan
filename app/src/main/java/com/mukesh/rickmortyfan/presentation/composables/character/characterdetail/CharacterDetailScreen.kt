@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,8 +40,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -50,6 +49,8 @@ import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
+import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
+import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun CharacterDetailScreen(
@@ -64,31 +65,21 @@ fun CharacterDetailScreen(
 
     Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         when {
-            characterDetailScreenState.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            characterDetailScreenState.noInternet -> {
+                ErrorMessageWithTryAgainButton(
+                    errorMessage = stringResource(R.string.error_no_internet),
+                    butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 3.dp
-                    )
+                    characterDetailViewModel.getCharacterDetail(characterId)
                 }
             }
 
+            characterDetailScreenState.isLoading -> {
+                LoadingIndicator()
+            }
+
             characterDetailScreenState.errorMessage != "" -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = characterDetailScreenState.errorMessage,
-                        modifier = Modifier.fillMaxWidth().padding(32.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                ErrorMessageWithTryAgainButton(errorMessage = characterDetailScreenState.errorMessage)
             }
 
             characterDetailScreenState.characterDescription != null -> {
@@ -264,12 +255,12 @@ private fun CharacterInfoContent(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         InfoCardDetail(
-            label = "GENDER",
+            label = stringResource(R.string.label_gender),
             value = characterDescription.gender,
             modifier = Modifier.weight(1f)
         )
         InfoCardDetail(
-            label = "SPECIES",
+            label = stringResource(R.string.label_species),
             value = characterDescription.species,
             modifier = Modifier.weight(1f)
         )
@@ -282,20 +273,20 @@ private fun CharacterInfoContent(
     // Location Section
     LocationSection(
         icon = Icons.Default.Public,
-        title = "ORIGIN",
+        title = stringResource(R.string.label_origin),
         location = characterDescription.origin.name
     )
     Spacer(modifier = Modifier.height(20.dp))
     LocationSection(
         icon = Icons.Default.LocationOn,
-        title = "LAST KNOWN LOCATION",
+        title = stringResource(R.string.label_last_known_location),
         location = characterDescription.location.name
     )
 
     if (episodeList.isNotEmpty()) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
-            text = "APPEARS IN",
+            text = stringResource(R.string.label_appears_in),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,

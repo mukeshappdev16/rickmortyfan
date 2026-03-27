@@ -16,9 +16,9 @@ class GetLocationDetailUseCase @Inject constructor(
             emit(Resource.Loading())
             emit(Resource.Success(repository.getLocationDetail(locationId)))
         } catch (e: HttpException) {
-            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            emit(Resource.Error(e.localizedMessage ?: "Something went wrong. Please try again later"))
         } catch (e: Exception) {
-            emit(Resource.Error("Couldn't reach server. Check your internet connection."))
+            emit(Resource.Error("Something went wrong. Please try again later"))
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mukesh.rickmortyfan.common.NetworkManager
 import com.mukesh.rickmortyfan.common.Resource
 import com.mukesh.rickmortyfan.common.Utils
 import com.mukesh.rickmortyfan.domain.use_cases.characters.GetMultipleCharacterUseCase
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationDetailViewModel @Inject constructor(
+    private val networkManager: NetworkManager,
     private val getLocationDetailUseCase: GetLocationDetailUseCase,
     private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase
 ) : ViewModel() {
@@ -25,6 +27,10 @@ class LocationDetailViewModel @Inject constructor(
     val state: State<LocationDetailScreenState> = _state
 
     fun getLocationDetail(locationId: String) {
+        if (!networkManager.isNetworkAvailable()) {
+            _state.value = LocationDetailScreenState(noInternet = true)
+            return
+        }
         getLocationDetailUseCase(locationId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {

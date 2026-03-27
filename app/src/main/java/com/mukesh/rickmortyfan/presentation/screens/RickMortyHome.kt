@@ -33,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
@@ -65,7 +67,7 @@ class RickMortyHome : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Text(
-                                    text = "Rick & Morty",
+                                    text = stringResource(R.string.title_rick_and_morty),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Black,
                                     letterSpacing = (-1).sp
@@ -84,21 +86,22 @@ class RickMortyHome : ComponentActivity() {
                         ) {
                             Screen.entries.forEachIndexed { index, screen ->
                                 val isSelected = index == selectedItemIndex
+                                val label = stringResource(screen.titleResId)
                                 NavigationBarItem(
                                     selected = isSelected,
                                     onClick = {
                                         selectedItemIndex = index
-                                        navItemClick(navController, screen)
+                                        navItemClick(navController, screen.route)
                                     },
                                     icon = {
                                         Icon(
                                             imageVector = if (isSelected) screen.icon else screen.unselectedIcon,
-                                            contentDescription = screen.title
+                                            contentDescription = label
                                         )
                                     },
                                     label = {
                                         Text(
-                                            text = screen.title,
+                                            text = label,
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                         )
@@ -124,15 +127,15 @@ class RickMortyHome : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = "Characters"
+                            startDestination = Screen.HOME.route
                         ) {
-                            composable("Characters") {
+                            composable(Screen.HOME.route) {
                                 DisplayCharactersListScreen()
                             }
-                            composable("Locations") {
+                            composable(Screen.LOCATION.route) {
                                 DisplayLocationsScreen()
                             }
-                            composable("Episodes") {
+                            composable(Screen.EPISODES.route) {
                                 DisplayEpisodesListScreen()
                             }
                         }
@@ -179,8 +182,8 @@ class RickMortyHome : ComponentActivity() {
     }
 }
 
-private fun navItemClick(navController: NavController, screen: Screen) {
-    navController.navigate(screen.title) {
+private fun navItemClick(navController: NavController, route: String) {
+    navController.navigate(route) {
         popUpTo(
             navController.graph.startDestinationRoute ?: ""
         ) {
@@ -191,8 +194,8 @@ private fun navItemClick(navController: NavController, screen: Screen) {
     }
 }
 
-enum class Screen(val title: String, val icon: ImageVector, val unselectedIcon: ImageVector) {
-    HOME("Characters", Icons.Default.Home, Icons.Outlined.Home),
-    LOCATION("Locations", Icons.Default.LocationOn, Icons.Outlined.LocationOn),
-    EPISODES("Episodes", Icons.Default.Videocam, Icons.Outlined.Videocam),
+enum class Screen(val route: String, val titleResId: Int, val icon: ImageVector, val unselectedIcon: ImageVector) {
+    HOME("Characters", R.string.screen_characters, Icons.Default.Home, Icons.Outlined.Home),
+    LOCATION("Locations", R.string.screen_locations, Icons.Default.LocationOn, Icons.Outlined.LocationOn),
+    EPISODES("Episodes", R.string.screen_episodes, Icons.Default.Videocam, Icons.Outlined.Videocam),
 }
