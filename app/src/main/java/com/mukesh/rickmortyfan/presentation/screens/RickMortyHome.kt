@@ -41,14 +41,18 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mukesh.rickmortyfan.R
+import com.mukesh.rickmortyfan.auth.presentation.AuthGraph
+import com.mukesh.rickmortyfan.auth.presentation.authNavGraph
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
 import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListScreen
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.Serializable
 
 @AndroidEntryPoint
 class RickMortyHome : ComponentActivity() {
@@ -60,62 +64,27 @@ class RickMortyHome : ComponentActivity() {
         setContent {
             RickMortyFanTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+
+                // Determine if we should show the bottom bar and top bar
+                val isAuthRoute = currentDestination?.route?.contains("LoginRoute") == true ||
+                        currentDestination?.route?.contains("SignUpRoute") == true ||
+                        currentDestination?.route?.contains("AuthGraph") == true
+
                 var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        TopAppBar(
-                            title = {
-                                Text(
-                                    text = stringResource(R.string.title_rick_and_morty),
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Black,
-                                    letterSpacing = (-1).sp
-                                )
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                titleContentColor = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
+                        if (!isAuthRoute) {
+                            RickMortyTopBar()
+                        }
                     },
                     bottomBar = {
-                        NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            tonalElevation = 0.dp
-                        ) {
-                            Screen.entries.forEachIndexed { index, screen ->
-                                val isSelected = index == selectedItemIndex
-                                val label = stringResource(screen.titleResId)
-                                NavigationBarItem(
-                                    selected = isSelected,
-                                    onClick = {
-                                        selectedItemIndex = index
-                                        navItemClick(navController, screen.route)
-                                    },
-                                    icon = {
-                                        Icon(
-                                            imageVector = if (isSelected) screen.icon else screen.unselectedIcon,
-                                            contentDescription = label
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            text = label,
-                                            style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                        )
-                                    },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                                        indicatorColor = MaterialTheme.colorScheme.primary.copy(
-                                            alpha = 0.1f
-                                        ),
-                                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                )
+                        if (!isAuthRoute) {
+                            BottomNavigationBar(selectedItemIndex) { index, screen ->
+                                selectedItemIndex = index
+                                navItemClick(navController, screen.route)
                             }
                         }
                     }
@@ -127,15 +96,23 @@ class RickMortyHome : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = Screen.HOME.route
+                            startDestination = AuthGraph
                         ) {
-                            composable(Screen.HOME.route) {
+                            authNavGraph(
+                                navController = navController,
+                                onLoginSuccess = {
+                                    navController.navigate(CharactersRoute) {
+                                        popUpTo(AuthGraph) { inclusive = true }
+                                    }
+                                }
+                            )
+                            composable<CharactersRoute> {
                                 DisplayCharactersListScreen()
                             }
-                            composable(Screen.LOCATION.route) {
+                            composable<LocationsRoute> {
                                 DisplayLocationsScreen()
                             }
-                            composable(Screen.EPISODES.route) {
+                            composable<EpisodesRoute> {
                                 DisplayEpisodesListScreen()
                             }
                         }
@@ -144,6 +121,67 @@ class RickMortyHome : ComponentActivity() {
             }
         }
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun RickMortyTopBar() {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(R.string.title_rick_and_morty),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = (-1).sp
+                )
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface
+            )
+        )
+    }
+
+    @Composable
+    private fun BottomNavigationBar(selectedItemIndex: Int, onItemSelected: (Int, Screen) -> Unit) {
+        NavigationBar(
+            containerColor = MaterialTheme.colorScheme.surface,
+            tonalElevation = 0.dp
+        ) {
+            Screen.entries.forEachIndexed { index, screen ->
+                val isSelected = index == selectedItemIndex
+                val label = stringResource(screen.titleResId)
+                NavigationBarItem(
+                    selected = isSelected,
+                    onClick = {
+                        onItemSelected(index, screen)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = if (isSelected) screen.icon else screen.unselectedIcon,
+                            contentDescription = label
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                        )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primary.copy(
+                            alpha = 0.1f
+                        ),
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+            }
+        }
+    }
+
 
     @Composable
     private fun DisplayLocationsScreen() {
@@ -182,11 +220,9 @@ class RickMortyHome : ComponentActivity() {
     }
 }
 
-private fun navItemClick(navController: NavController, route: String) {
+private fun navItemClick(navController: NavController, route: Any) {
     navController.navigate(route) {
-        popUpTo(
-            navController.graph.startDestinationRoute ?: ""
-        ) {
+        popUpTo(navController.graph.startDestinationId) {
             saveState = true
         }
         launchSingleTop = true
@@ -194,8 +230,33 @@ private fun navItemClick(navController: NavController, route: String) {
     }
 }
 
-enum class Screen(val route: String, val titleResId: Int, val icon: ImageVector, val unselectedIcon: ImageVector) {
-    HOME("Characters", R.string.screen_characters, Icons.Default.Home, Icons.Outlined.Home),
-    LOCATION("Locations", R.string.screen_locations, Icons.Default.LocationOn, Icons.Outlined.LocationOn),
-    EPISODES("Episodes", R.string.screen_episodes, Icons.Default.Videocam, Icons.Outlined.Videocam),
+
+@Serializable
+object CharactersRoute
+
+@Serializable
+object LocationsRoute
+
+@Serializable
+object EpisodesRoute
+
+enum class Screen(
+    val route: Any,
+    val titleResId: Int,
+    val icon: ImageVector,
+    val unselectedIcon: ImageVector
+) {
+    HOME(CharactersRoute, R.string.screen_characters, Icons.Default.Home, Icons.Outlined.Home),
+    LOCATION(
+        LocationsRoute,
+        R.string.screen_locations,
+        Icons.Default.LocationOn,
+        Icons.Outlined.LocationOn
+    ),
+    EPISODES(
+        EpisodesRoute,
+        R.string.screen_episodes,
+        Icons.Default.Videocam,
+        Icons.Outlined.Videocam
+    ),
 }
