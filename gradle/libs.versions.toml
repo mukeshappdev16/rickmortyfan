@@ -10,7 +10,7 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 kotlin = "2.3.20"
-composeBom = "2026.03.00"
+composeBom = "2026.03.01"
 ksp = "2.3.6"
 hiltAndroid = "2.59.2"
 kotlinxCoroutinesAndroid = "1.10.2"
@@ -19,6 +19,8 @@ retrofit = "3.0.0"
 adaptiveNavigationSuite = "1.4.0"
 material3-adaptive = "1.2.0"
 coreSplashscreen = "1.2.0"
+appcompat = "1.7.1"
+material = "1.13.0"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -51,9 +53,12 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 
 androidx-compose-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "adaptiveNavigationSuite" }
 androidx-compose-material3-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "material3-adaptive" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
