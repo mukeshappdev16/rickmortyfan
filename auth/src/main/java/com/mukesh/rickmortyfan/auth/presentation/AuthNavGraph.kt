@@ -25,7 +25,6 @@ fun NavGraphBuilder.authNavGraph(
         composable<LoginRoute> {
             LoginScreen(
                 onLoginClick = { email, password ->
-                    // Handle login logic
                     onLoginSuccess()
                 },
                 onForgotPasswordClick = {
