@@ -1,5 +1,6 @@
 package com.mukesh.rickmortyfan.auth.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,12 +29,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,17 +45,34 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukesh.rickmortyfan.auth.R
 
 @Composable
 fun LoginScreen(
-    onLoginClick: (String, String) -> Unit,
+    onLoginSuccess: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onSignUpClick: () -> Unit
+    onSignUpClick: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
+    
+    val state = viewModel.state.value
+    val context = LocalContext.current
+
+    LaunchedEffect(state.isSuccess) {
+        if (state.isSuccess) {
+            onLoginSuccess()
+        }
+    }
+
+    LaunchedEffect(state.error) {
+        state.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
 
     LoginScreenContent(
         email = email,
@@ -60,9 +81,10 @@ fun LoginScreen(
         onPasswordChange = { password = it },
         isPasswordVisible = isPasswordVisible,
         onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible },
-        onLoginClick = { onLoginClick(email, password) },
+        onLoginClick = { viewModel.login(email, password) },
         onForgotPasswordClick = onForgotPasswordClick,
-        onSignUpClick = onSignUpClick
+        onSignUpClick = onSignUpClick,
+        isLoading = state.isLoading
     )
 }
 
@@ -77,6 +99,7 @@ fun LoginScreenContent(
     onLoginClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onSignUpClick: () -> Unit,
+    isLoading: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -129,7 +152,8 @@ fun LoginScreenContent(
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.primary
             ),
-            singleLine = true
+            singleLine = true,
+            enabled = !isLoading
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -168,7 +192,8 @@ fun LoginScreenContent(
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.primary
             ),
-            singleLine = true
+            singleLine = true,
+            enabled = !isLoading
         )
 
         // Forgot Password Link
@@ -177,7 +202,7 @@ fun LoginScreenContent(
                 text = stringResource(R.string.action_forgot_password),
                 modifier = Modifier
                     .padding(top = 8.dp)
-                    .clickable { onForgotPasswordClick() },
+                    .clickable(enabled = !isLoading) { onForgotPasswordClick() },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
@@ -196,14 +221,22 @@ fun LoginScreenContent(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            enabled = !isLoading
         ) {
-            Text(
-                text = stringResource(R.string.action_login),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 1.sp
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.height(24.dp)
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.action_login),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 1.sp
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -221,7 +254,7 @@ fun LoginScreenContent(
             )
             Text(
                 text = stringResource(R.string.action_sign_up),
-                modifier = Modifier.clickable { onSignUpClick() },
+                modifier = Modifier.clickable(enabled = !isLoading) { onSignUpClick() },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.ExtraBold

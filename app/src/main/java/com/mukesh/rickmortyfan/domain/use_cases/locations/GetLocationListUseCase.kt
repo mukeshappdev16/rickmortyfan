@@ -1,6 +1,6 @@
 package com.mukesh.rickmortyfan.domain.use_cases.locations
 
-import com.mukesh.rickmortyfan.common.Resource
+import com.mukesh.common.Resource
 import com.mukesh.rickmortyfan.domain.modal.location.Locations
 import com.mukesh.rickmortyfan.domain.repository.LocationsRepository
 import kotlinx.coroutines.flow.Flow

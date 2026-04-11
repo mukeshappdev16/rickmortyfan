@@ -17,5 +17,5 @@
     <string name="action_create_account">CREATE ACCOUNT</string>
     <string name="text_already_have_account">Already have an account? </string>
     <string name="action_log_in">Log In</string>
-    <string name="password_rule_hint">Password must be exactly 5 characters</string>
+    <string name="password_rule_hint">Password must be more than 5 characters</string>
 </resources>

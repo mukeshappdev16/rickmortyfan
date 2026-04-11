@@ -1,8 +1,10 @@
-package com.mukesh.rickmortyfan.common
+package com.mukesh.common
 
+import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.annotation.RequiresPermission
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,6 +17,7 @@ class NetworkManager @Inject constructor(
      * Performs a one-time check to see if the device has an active internet connection.
      * Returns true if connected to Wi-Fi, Cellular, or Ethernet and has internet capability.
      */
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     fun isNetworkAvailable(): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

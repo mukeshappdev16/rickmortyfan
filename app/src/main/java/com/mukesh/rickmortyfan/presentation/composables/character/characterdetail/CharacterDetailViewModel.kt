@@ -5,9 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mukesh.rickmortyfan.common.NetworkManager
-import com.mukesh.rickmortyfan.common.Resource
-import com.mukesh.rickmortyfan.common.Utils
+import com.mukesh.common.NetworkManager
+import com.mukesh.common.Resource
+import com.mukesh.common.Utils
 import com.mukesh.rickmortyfan.domain.use_cases.characters.GetCharacterDetailUseCase
 import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetMultipleEpisodesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

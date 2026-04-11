@@ -1,6 +1,6 @@
 package com.mukesh.rickmortyfan.domain.use_cases.characters
 
-import com.mukesh.rickmortyfan.common.Resource
+import com.mukesh.common.Resource
 import com.mukesh.rickmortyfan.domain.modal.character.Characters
 import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
 import kotlinx.coroutines.flow.Flow

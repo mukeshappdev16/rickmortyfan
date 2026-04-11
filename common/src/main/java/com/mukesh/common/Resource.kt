@@ -1,4 +1,4 @@
-package com.mukesh.rickmortyfan.common
+package com.mukesh.common
 
 sealed class Resource<T>(val data: T? = null, val message: String? = null) {
     class Success<T>(data: T) : Resource<T>(data)
