@@ -23,4 +23,7 @@
     <string name="no_cast_available">No cast information available</string>
     <string name="no_residents_available">No residents information available</string>
     <string name="released_prefix">Released: %s</string>
+    <string name="logout">Logout</string>
+    <string name="settings">Settings</string>
+    <string name="profile_picture">Profile Picture</string>
 </resources>

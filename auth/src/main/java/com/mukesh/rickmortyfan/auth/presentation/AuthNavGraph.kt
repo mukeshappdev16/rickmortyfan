@@ -24,12 +24,8 @@ fun NavGraphBuilder.authNavGraph(
     ) {
         composable<LoginRoute> {
             LoginScreen(
-                onLoginClick = { email, password ->
-                    // Handle login logic
-                    onLoginSuccess()
-                },
+                onLoginSuccess = onLoginSuccess,
                 onForgotPasswordClick = {
-                    // Navigate to forgot password if available
                 },
                 onSignUpClick = {
                     navController.navigate(SignUpRoute)
@@ -38,10 +34,7 @@ fun NavGraphBuilder.authNavGraph(
         }
         composable<SignUpRoute> {
             SignUpScreen(
-                onSignUpClick = { email, password ->
-                    // Handle sign up logic
-                    onLoginSuccess()
-                },
+                onLoginSuccess = onLoginSuccess,
                 onLoginClick = {
                     navController.popBackStack()
                 }

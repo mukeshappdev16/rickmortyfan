@@ -1,6 +1,6 @@
 package com.mukesh.rickmortyfan.domain.use_cases.episodes
 
-import com.mukesh.rickmortyfan.common.Resource
+import com.mukesh.common.Resource
 import com.mukesh.rickmortyfan.domain.modal.episode.Episodes
 import com.mukesh.rickmortyfan.domain.repository.EpisodesRepository
 import kotlinx.coroutines.flow.Flow
