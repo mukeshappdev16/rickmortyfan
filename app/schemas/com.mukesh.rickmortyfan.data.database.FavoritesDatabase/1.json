@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cd04aefd8dc9d4e4e4a02c2c0fc7e5ff",
+    "identityHash": "d5bfa2adbeee83587455356fc5c67631",
     "entities": [
       {
         "tableName": "favorite_characters",
@@ -90,7 +90,7 @@
       },
       {
         "tableName": "favorite_locations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `dimension` TEXT NOT NULL, `url` TEXT NOT NULL, `created` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `dimension` TEXT NOT NULL, `url` TEXT NOT NULL, `created` TEXT NOT NULL, `residents` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -127,6 +127,12 @@
             "columnName": "created",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "residents",
+            "columnName": "residents",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -138,7 +144,7 @@
       },
       {
         "tableName": "favorite_episode",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `air_date` TEXT NOT NULL, `created` TEXT NOT NULL, `episode` TEXT NOT NULL, `name` TEXT NOT NULL, `url` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `air_date` TEXT NOT NULL, `created` TEXT NOT NULL, `episode` TEXT NOT NULL, `name` TEXT NOT NULL, `url` TEXT NOT NULL, `characters` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -147,7 +153,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "air_date",
+            "fieldPath": "airDate",
             "columnName": "air_date",
             "affinity": "TEXT",
             "notNull": true
@@ -175,6 +181,12 @@
             "columnName": "url",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "characters",
+            "columnName": "characters",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -187,7 +199,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cd04aefd8dc9d4e4e4a02c2c0fc7e5ff')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd5bfa2adbeee83587455356fc5c67631')"
     ]
   }
 }

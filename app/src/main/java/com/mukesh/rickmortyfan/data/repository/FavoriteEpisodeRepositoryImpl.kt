@@ -1,8 +1,8 @@
 package com.mukesh.rickmortyfan.data.repository
 
-import com.mukesh.rickmortyfan.data.database.FavoritesDao
-import com.mukesh.rickmortyfan.data.database.toEpisode
-import com.mukesh.rickmortyfan.data.database.toEpisodeEntity
+import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
+import com.mukesh.rickmortyfan.data.database.entity.toEpisode
+import com.mukesh.rickmortyfan.data.database.entity.toEpisodeEntity
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 import com.mukesh.rickmortyfan.domain.repository.FavoriteEpisodeRepository
 import kotlinx.coroutines.flow.Flow

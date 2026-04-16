@@ -145,7 +145,7 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
 
             InfoItem(
                 label = stringResource(R.string.label_release_date),
-                value = episode.air_date
+                value = episode.airDate
             )
         }
 
@@ -219,7 +219,7 @@ private fun EpisodeHeader(episode: Episode) {
 private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<CharacterDescription>) {
     InfoItem(
         label = stringResource(R.string.label_release_date),
-        value = episode.air_date
+        value = episode.airDate
     )
 
     if (episodeCharList.isNotEmpty()) {

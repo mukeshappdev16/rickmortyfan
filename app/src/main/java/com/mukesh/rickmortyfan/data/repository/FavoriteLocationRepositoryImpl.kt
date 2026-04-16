@@ -1,8 +1,8 @@
 package com.mukesh.rickmortyfan.data.repository
 
-import com.mukesh.rickmortyfan.data.database.FavoritesDao
-import com.mukesh.rickmortyfan.data.database.toLocationDetail
-import com.mukesh.rickmortyfan.data.database.toLocationEntity
+import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
+import com.mukesh.rickmortyfan.data.database.entity.toLocationDetail
+import com.mukesh.rickmortyfan.data.database.entity.toLocationEntity
 import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
 import com.mukesh.rickmortyfan.domain.repository.FavoriteLocationRepository
 import kotlinx.coroutines.flow.Flow

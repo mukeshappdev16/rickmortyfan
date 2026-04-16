@@ -1,9 +1,11 @@
 package com.mukesh.rickmortyfan.data.dto.episode
 
+import com.google.gson.annotations.SerializedName
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 
 data class EpisodeDto(
-    val air_date: String,
+    @SerializedName("air_date")
+    val airDate: String,
     val characters: List<String>,
     val created: String,
     val episode: String,
@@ -14,7 +16,7 @@ data class EpisodeDto(
 
 fun EpisodeDto.toEpisode(): Episode {
     return Episode(
-        air_date = this.air_date,
+        airDate = this.airDate,
         characters = this.characters,
         created = this.created,
         episode = this.episode,

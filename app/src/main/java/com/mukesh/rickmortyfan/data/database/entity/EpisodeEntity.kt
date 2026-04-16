@@ -1,5 +1,6 @@
-package com.mukesh.rickmortyfan.data.database
+package com.mukesh.rickmortyfan.data.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
@@ -7,17 +8,19 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 @Entity(tableName = "favorite_episode")
 data class EpisodeEntity(
     @PrimaryKey val id: Int,
-    val air_date: String,
+    @ColumnInfo("air_date")
+    val airDate: String,
     val created: String,
     val episode: String,
     val name: String,
-    val url: String
+    val url: String,
+    val characters: List<String>
 )
 
 fun EpisodeEntity.toEpisode(): Episode {
     return Episode(
-        air_date = air_date,
-        characters = emptyList(),
+        airDate = airDate,
+        characters = characters,
         created = created,
         episode = episode,
         id = id,
@@ -28,11 +31,12 @@ fun EpisodeEntity.toEpisode(): Episode {
 
 fun Episode.toEpisodeEntity(): EpisodeEntity {
     return EpisodeEntity(
-        air_date = air_date,
+        airDate = airDate,
         created = created,
         episode = episode,
         id = id,
         name = name,
-        url = url
+        url = url,
+        characters = characters
     )
 }

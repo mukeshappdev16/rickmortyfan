@@ -3,7 +3,7 @@ package com.mukesh.rickmortyfan.di
 import android.content.Context
 import androidx.room.Room
 import com.mukesh.rickmortyfan.common.Constants
-import com.mukesh.rickmortyfan.data.database.FavoritesDao
+import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
 import com.mukesh.rickmortyfan.data.database.FavoritesDatabase
 import com.mukesh.rickmortyfan.data.repository.CharactersRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.EpisodesRepositoryImpl

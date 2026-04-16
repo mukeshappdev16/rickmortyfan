@@ -1,4 +1,4 @@
-package com.mukesh.rickmortyfan.data.database
+package com.mukesh.rickmortyfan.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -12,7 +12,8 @@ data class LocationEntity(
     val type: String,
     val dimension: String,
     val url: String,
-    val created: String
+    val created: String,
+    val residents: List<String>
 )
 
 fun LocationEntity.toLocationDetail(): LocationDetail {
@@ -21,7 +22,7 @@ fun LocationEntity.toLocationDetail(): LocationDetail {
         name = name,
         type = type,
         dimension = dimension,
-        residents = emptyList(),
+        residents = residents,
         url = url,
         created = created
     )
@@ -34,6 +35,7 @@ fun LocationDetail.toLocationEntity(): LocationEntity {
         type = type,
         dimension = dimension,
         url = url,
-        created = created
+        created = created,
+        residents = residents
     )
 }

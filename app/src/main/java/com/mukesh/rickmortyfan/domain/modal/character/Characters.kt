@@ -1,5 +1,7 @@
 package com.mukesh.rickmortyfan.domain.modal.character
 
+import kotlinx.serialization.Serializable
+
 data class Characters(
     val info: Info,
     val charactersList: List<CharacterDescription>
@@ -27,12 +29,13 @@ data class CharacterDescription(
     val url: String
 )
 
+@Serializable
 data class Location(
     val name: String,
     val url: String
 )
 
-
+@Serializable
 data class Origin(
     val name: String,
     val url: String

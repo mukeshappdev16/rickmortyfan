@@ -1,8 +1,8 @@
 package com.mukesh.rickmortyfan.data.repository
 
-import com.mukesh.rickmortyfan.data.database.FavoritesDao
-import com.mukesh.rickmortyfan.data.database.toCharacterDescription
-import com.mukesh.rickmortyfan.data.database.toCharacterEntity
+import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
+import com.mukesh.rickmortyfan.data.database.entity.toCharacterDescription
+import com.mukesh.rickmortyfan.data.database.entity.toCharacterEntity
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
 import com.mukesh.rickmortyfan.domain.repository.FavoriteCharacterRepository
 import kotlinx.coroutines.flow.Flow

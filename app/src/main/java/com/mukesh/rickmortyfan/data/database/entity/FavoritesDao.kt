@@ -1,4 +1,4 @@
-package com.mukesh.rickmortyfan.data.database
+package com.mukesh.rickmortyfan.data.database.entity
 
 import androidx.room.Dao
 import androidx.room.Delete

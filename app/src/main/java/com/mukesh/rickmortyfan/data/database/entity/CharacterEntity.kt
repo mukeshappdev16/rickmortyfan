@@ -1,4 +1,4 @@
-package com.mukesh.rickmortyfan.data.database
+package com.mukesh.rickmortyfan.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -30,12 +30,12 @@ fun CharacterEntity.toCharacterDescription(): CharacterDescription {
         species = species,
         type = type,
         gender = gender,
-        origin = null,
+        origin = origin,
         image = image,
-        episode = emptyList(),
+        episode = episode,
         url = url,
         created = created,
-        location = null
+        location = location
     )
 }
 
@@ -49,7 +49,10 @@ fun CharacterDescription.toCharacterEntity(): CharacterEntity {
         gender = gender,
         image = image,
         url = url,
-        created = created
+        created = created,
+        episode = episode,
+        location = location,
+        origin = origin
     )
 }
 
