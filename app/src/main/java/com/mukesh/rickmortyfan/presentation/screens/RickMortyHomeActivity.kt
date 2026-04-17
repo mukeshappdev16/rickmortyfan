@@ -33,12 +33,17 @@ import com.mukesh.rickmortyfan.auth.presentation.AuthGraph
 import com.mukesh.rickmortyfan.auth.presentation.authNavGraph
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
+import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListViewModel
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
+import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListViewModel
 import com.mukesh.rickmortyfan.presentation.composables.favorite.FavoriteScreen
+import com.mukesh.rickmortyfan.presentation.composables.favorite.FavoriteViewModel
 import com.mukesh.rickmortyfan.presentation.composables.home.BottomNavigationBar
 import com.mukesh.rickmortyfan.presentation.composables.home.DrawerLayoutContent
 import com.mukesh.rickmortyfan.presentation.composables.home.RickMortyTopBar
 import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListScreen
+import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListViewModel
+import com.mukesh.rickmortyfan.presentation.composables.profile.ProfileScreen
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -126,6 +131,9 @@ class RickMortyHome : ComponentActivity() {
                                 composable<FavoriteRoute> {
                                     DisplayFavoriteListScreen()
                                 }
+                                composable<ProfileRoute> {
+                                    DisplayProfileScreen()
+                                }
                             }
                         }
                     }
@@ -136,43 +144,90 @@ class RickMortyHome : ComponentActivity() {
 
     @Composable
     private fun DisplayLocationsScreen() {
-        LocationListScreen { location ->
+        val viewModel: LocationListViewModel = hiltViewModel()
+        val state by viewModel.locationListState
+        LocationListScreen(state = state, onLocationClickListener = { location ->
             val intent = Intent(this, LocationDetailActivity::class.java).apply {
                 putExtra(
                     Constants.LOCATION_ID_KEY, location.id.toString()
                 )
             }
             startActivity(intent)
-        }
+        }, noInternetTryAgainClicked = {
+            viewModel.getLocations()
+        })
     }
 
     @Composable
     private fun DisplayEpisodesListScreen() {
-        EpisodeListScreen { episode ->
+        val episodeListViewModel: EpisodeListViewModel = hiltViewModel()
+        val episodeListState by episodeListViewModel.episodeListState
+        EpisodeListScreen(episodeListState = episodeListState, onClickListener = { episode ->
             val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
                 putExtra(
                     Constants.EPISODE_ID_KEY, episode.id.toString()
                 )
             }
             startActivity(intent)
-        }
+        }, noInternetTryAgainClicked = {
+            episodeListViewModel.getEpisodes()
+        })
     }
 
     @Composable
     private fun DisplayCharactersListScreen() {
-        CharacterListScreen { characterDescription ->
-            val intent = Intent(this, CharacterDetailActivity::class.java).apply {
-                putExtra(
-                    Constants.CHARACTER_ID_KEY, characterDescription.id.toString()
-                )
-            }
-            startActivity(intent)
-        }
+        val characterListViewModel: CharacterListViewModel = hiltViewModel()
+        val characterListState by characterListViewModel.characterListState
+        CharacterListScreen(
+            characterListState = characterListState,
+            onClickListener = { characterDescription ->
+                val intent = Intent(this, CharacterDetailActivity::class.java).apply {
+                    putExtra(
+                        Constants.CHARACTER_ID_KEY, characterDescription.id.toString()
+                    )
+                }
+                startActivity(intent)
+            },
+            onInternetTryAgainClicked = {
+                characterListViewModel.getCharacters()
+            })
     }
 
     @Composable
     private fun DisplayFavoriteListScreen() {
-        FavoriteScreen()
+        val favoriteViewModel: FavoriteViewModel = hiltViewModel()
+        val favoriteState by favoriteViewModel.favoriteState
+        FavoriteScreen(
+            favoriteState = favoriteState,
+            onClickListenerCharacter = {
+                val intent = Intent(this, CharacterDetailActivity::class.java).apply {
+                    putExtra(
+                        Constants.CHARACTER_ID_KEY, it.id.toString()
+                    )
+                }
+                startActivity(intent)
+            },
+            onClickListenerLocation = {
+                val intent = Intent(this, LocationDetailActivity::class.java).apply {
+                    putExtra(
+                        Constants.LOCATION_ID_KEY, it.id.toString()
+                    )
+                }
+                startActivity(intent)
+            },
+            onClickListenerEpisode = {
+                val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
+                    putExtra(
+                        Constants.EPISODE_ID_KEY, it.id.toString()
+                    )
+                }
+                startActivity(intent)
+            })
+    }
+
+    @Composable
+    private fun DisplayProfileScreen() {
+        ProfileScreen()
     }
 }
 

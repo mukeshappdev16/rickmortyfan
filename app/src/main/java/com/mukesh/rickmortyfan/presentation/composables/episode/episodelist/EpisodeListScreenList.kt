@@ -18,13 +18,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
@@ -32,20 +30,25 @@ import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun EpisodeListScreen(
+    episodeListState: EpisodeListState,
     modifier: Modifier = Modifier,
-    episodeListViewModel: EpisodeListViewModel = hiltViewModel(),
-    onClickListener: (Episode) -> Unit
+    onClickListener: (Episode) -> Unit = {},
+    noInternetTryAgainClicked: () -> Unit = {}
 ) {
-    val episodeListState by episodeListViewModel.episodeListState
 
-    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         when {
             episodeListState.noInternet -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
                     butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    episodeListViewModel.getEpisodes()
+                    noInternetTryAgainClicked()
                 }
             }
 
