@@ -71,7 +71,7 @@ fun CharacterListScreen(
             characterListState.list.isNotEmpty() -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(16.dp),
                 ) {
                     items(characterListState.list) { item ->
                         CharacterListRow(item, onClickListener)

@@ -19,4 +19,8 @@ import com.mukesh.rickmortyfan.data.database.entity.LocationEntity
 @TypeConverters(ListOfStringConverter::class, LocationConverter::class, OriginConverter::class)
 abstract class FavoritesDatabase : RoomDatabase() {
     abstract fun favoritesDao(): FavoritesDao
+
+    override fun clearAllTables() {
+        this.clearAllTables()
+    }
 }

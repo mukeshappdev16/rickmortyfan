@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
 import com.mukesh.rickmortyfan.data.database.FavoritesDatabase
+import com.mukesh.rickmortyfan.data.repository.AllFavoritesRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.CharactersRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.EpisodesRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.FavoriteCharacterRepositoryImpl
@@ -14,6 +15,7 @@ import com.mukesh.rickmortyfan.data.repository.LocationsRepositoryImpl
 import com.mukesh.rickmortyfan.data.retrofit.RickMortyCharacterApi
 import com.mukesh.rickmortyfan.data.retrofit.RickMortyEpisodesApi
 import com.mukesh.rickmortyfan.data.retrofit.RickMortyLocationApi
+import com.mukesh.rickmortyfan.domain.repository.AllFavoritesRepository
 import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
 import com.mukesh.rickmortyfan.domain.repository.EpisodesRepository
 import com.mukesh.rickmortyfan.domain.repository.FavoriteCharacterRepository
@@ -106,5 +108,12 @@ object RickMortyModule {
     @Singleton
     fun provideFavoriteEpisodeRepository(favoritesDao: FavoritesDao): FavoriteEpisodeRepository {
         return FavoriteEpisodeRepositoryImpl(favoritesDao)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideAllFavoritesRepository(favoritesDatabase: FavoritesDatabase): AllFavoritesRepository {
+        return AllFavoritesRepositoryImpl(favoritesDatabase)
     }
 }
