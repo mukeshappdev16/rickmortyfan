@@ -9,13 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Videocam
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -30,19 +23,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.auth.presentation.AuthGraph
 import com.mukesh.rickmortyfan.auth.presentation.authNavGraph
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.character.characterList.CharacterListScreen
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.EpisodeListScreen
+import com.mukesh.rickmortyfan.presentation.composables.favorite.FavoriteScreen
 import com.mukesh.rickmortyfan.presentation.composables.home.BottomNavigationBar
 import com.mukesh.rickmortyfan.presentation.composables.home.DrawerLayoutContent
 import com.mukesh.rickmortyfan.presentation.composables.home.RickMortyTopBar
@@ -50,7 +42,6 @@ import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.Lo
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 
 @AndroidEntryPoint
 class RickMortyHome : ComponentActivity() {
@@ -132,6 +123,9 @@ class RickMortyHome : ComponentActivity() {
                                 composable<EpisodesRoute> {
                                     DisplayEpisodesListScreen()
                                 }
+                                composable<FavoriteRoute> {
+                                    DisplayFavoriteListScreen()
+                                }
                             }
                         }
                     }
@@ -175,6 +169,11 @@ class RickMortyHome : ComponentActivity() {
             startActivity(intent)
         }
     }
+
+    @Composable
+    private fun DisplayFavoriteListScreen() {
+        FavoriteScreen()
+    }
 }
 
 private fun navItemClick(navController: NavController, route: Any) {
@@ -185,35 +184,4 @@ private fun navItemClick(navController: NavController, route: Any) {
         launchSingleTop = true
         restoreState = true
     }
-}
-
-
-@Serializable
-object CharactersRoute
-
-@Serializable
-object LocationsRoute
-
-@Serializable
-object EpisodesRoute
-
-enum class Screen(
-    val route: Any,
-    val titleResId: Int,
-    val icon: ImageVector,
-    val unselectedIcon: ImageVector
-) {
-    HOME(CharactersRoute, R.string.screen_characters, Icons.Default.Home, Icons.Outlined.Home),
-    LOCATION(
-        LocationsRoute,
-        R.string.screen_locations,
-        Icons.Default.LocationOn,
-        Icons.Outlined.LocationOn
-    ),
-    EPISODES(
-        EpisodesRoute,
-        R.string.screen_episodes,
-        Icons.Default.Videocam,
-        Icons.Outlined.Videocam
-    ),
 }

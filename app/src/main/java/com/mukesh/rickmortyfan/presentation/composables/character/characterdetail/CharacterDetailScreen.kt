@@ -30,8 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -44,7 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
@@ -54,23 +51,22 @@ import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun CharacterDetailScreen(
-    characterId: String,
     modifier: Modifier,
-    characterDetailViewModel: CharacterDetailViewModel = hiltViewModel()
+    characterDetailScreenState: CharacterDetailScreenState,
+    noInternetTryAgainClicked: () -> Unit,
 ) {
-    val characterDetailScreenState by characterDetailViewModel.characterDetailScreenState
-    LaunchedEffect(characterId) {
-        characterDetailViewModel.getCharacterDetail(characterId)
-    }
-
-    Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         when {
             characterDetailScreenState.noInternet -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
                     butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    characterDetailViewModel.getCharacterDetail(characterId)
+                    noInternetTryAgainClicked()
                 }
             }
 
@@ -133,7 +129,7 @@ private fun CharacterDetailPortrait(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-            
+
             // Gradient Overlay for text readability
             Box(
                 modifier = Modifier
@@ -149,7 +145,7 @@ private fun CharacterDetailPortrait(
                         )
                     )
             )
-            
+
             // Name and Status over Image
             Column(
                 modifier = Modifier
@@ -198,7 +194,7 @@ private fun CharacterDetailLandscape(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-            
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -274,13 +270,13 @@ private fun CharacterInfoContent(
     LocationSection(
         icon = Icons.Default.Public,
         title = stringResource(R.string.label_origin),
-        location = characterDescription.origin.name
+        location = characterDescription.origin?.name ?: ""
     )
     Spacer(modifier = Modifier.height(20.dp))
     LocationSection(
         icon = Icons.Default.LocationOn,
         title = stringResource(R.string.label_last_known_location),
-        location = characterDescription.location.name
+        location = characterDescription.location?.name ?: ""
     )
 
     if (episodeList.isNotEmpty()) {
@@ -300,7 +296,7 @@ private fun CharacterInfoContent(
             }
         }
     }
-    
+
     Spacer(modifier = Modifier.height(40.dp))
 }
 
@@ -311,7 +307,7 @@ fun StatusBadgeDetail(status: String) {
         "dead" -> Color(0xFFF44336)
         else -> Color.White
     }
-    
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -342,15 +338,15 @@ fun InfoCardDetail(label: String, value: String, modifier: Modifier = Modifier) 
             .padding(16.dp)
     ) {
         Text(
-            text = label, 
-            style = MaterialTheme.typography.labelSmall, 
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Black,
             letterSpacing = 1.sp
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = value, 
+            text = value,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -379,14 +375,14 @@ fun LocationSection(icon: ImageVector, title: String, location: String) {
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
-                text = title, 
-                style = MaterialTheme.typography.labelSmall, 
+                text = title,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
                 letterSpacing = 1.sp
             )
             Text(
-                text = location, 
+                text = location,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium
@@ -416,13 +412,13 @@ fun EpisodeItemDetail(episode: Episode) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = episode.episode, 
-                    style = MaterialTheme.typography.labelSmall, 
+                    text = episode.episode,
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = episode.name, 
+                    text = episode.name,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold

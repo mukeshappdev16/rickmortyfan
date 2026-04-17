@@ -108,7 +108,7 @@ private fun EpisodeListRow(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = stringResource(R.string.released_prefix, episode.air_date),
+                text = stringResource(R.string.released_prefix, episode.airDate),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

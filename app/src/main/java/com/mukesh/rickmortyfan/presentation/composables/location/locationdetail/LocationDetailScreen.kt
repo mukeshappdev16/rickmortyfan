@@ -44,16 +44,10 @@ import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 
 @Composable
 fun LocationDetailScreen(
-    locationId: String,
+    state: LocationDetailScreenState,
     modifier: Modifier,
-    viewModel: LocationDetailViewModel = hiltViewModel()
+    noInternetTryAgainClicked: () -> Unit,
 ) {
-    val state by viewModel.state
-
-    LaunchedEffect(locationId) {
-        viewModel.getLocationDetail(locationId)
-    }
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -65,7 +59,7 @@ fun LocationDetailScreen(
                     errorMessage = stringResource(R.string.error_no_internet),
                     butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    viewModel.getLocationDetail(locationId)
+                    noInternetTryAgainClicked()
                 }
             }
 
@@ -78,7 +72,7 @@ fun LocationDetailScreen(
             }
 
             state.location != null -> {
-                state.location?.let {
+                state.location.let {
                     LocationDetailContent(it, state.residents)
                 }
             }

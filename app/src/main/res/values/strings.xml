@@ -4,6 +4,7 @@
     <string name="screen_characters">Characters</string>
     <string name="screen_locations">Locations</string>
     <string name="screen_episodes">Episodes</string>
+    <string name="screen_favorite">Favorite</string>
     <string name="title_character_detail">Character Detail</string>
     <string name="title_episode_detail">Episode Detail</string>
     <string name="title_location_detail">Location Detail</string>

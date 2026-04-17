@@ -8,18 +8,27 @@ import androidx.lifecycle.viewModelScope
 import com.mukesh.common.NetworkManager
 import com.mukesh.common.Resource
 import com.mukesh.common.Utils
+import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 import com.mukesh.rickmortyfan.domain.use_cases.characters.GetMultipleCharacterUseCase
 import com.mukesh.rickmortyfan.domain.use_cases.episodes.GetEpisodeDetailUseCase
+import com.mukesh.rickmortyfan.domain.use_cases.favorite.episode.AddFavoriteEpisodeUseCase
+import com.mukesh.rickmortyfan.domain.use_cases.favorite.episode.IsFavoriteEpisodeUseCase
+import com.mukesh.rickmortyfan.domain.use_cases.favorite.episode.RemoveFavoriteEpisodeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EpisodeDetailViewModel @Inject constructor(
     private val networkManager: NetworkManager,
     private val getEpisodeDetailUseCase: GetEpisodeDetailUseCase,
-    private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase
+    private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase,
+    private val isFavoriteEpisodeUseCase: IsFavoriteEpisodeUseCase,
+    private val addFavoriteEpisodeUseCase: AddFavoriteEpisodeUseCase,
+    private val removeFavoriteEpisodeUseCase: RemoveFavoriteEpisodeUseCase
 ) : ViewModel() {
 
     private val _episodeDetailScreenState: MutableState<EpisodeDetailScreenState> =
@@ -43,6 +52,7 @@ class EpisodeDetailViewModel @Inject constructor(
                     result.data?.characters?.let { idsList ->
                         getAllCharactersForEpisode(Utils.getIdsFromUrlList(idsList))
                     }
+                    isFavoriteEpisode(episodeId)
                 }
 
                 is Resource.Error -> {
@@ -54,6 +64,34 @@ class EpisodeDetailViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun isFavoriteEpisode(episodeId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isFavorite = isFavoriteEpisodeUseCase(episodeId)
+            _episodeDetailScreenState.value =
+                _episodeDetailScreenState.value.copy(isFavorite = isFavorite)
+        }
+    }
+
+    fun addFavoriteEpisode(episode: Episode) {
+        viewModelScope.launch {
+            val isAdded = addFavoriteEpisodeUseCase(episode)
+            if (isAdded > 0) {
+                _episodeDetailScreenState.value =
+                    _episodeDetailScreenState.value.copy(isFavorite = true)
+            }
+        }
+    }
+
+    fun removeFavoriteEpisode(episode: Episode) {
+        viewModelScope.launch {
+            val isRemoved = removeFavoriteEpisodeUseCase(episode)
+            if (isRemoved == 1) {
+                _episodeDetailScreenState.value =
+                    _episodeDetailScreenState.value.copy(isFavorite = false)
+            }
+        }
     }
 
     private fun getAllCharactersForEpisode(charIdsList: List<String>) {

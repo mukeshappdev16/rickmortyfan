@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,10 +18,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mukesh.rickmortyfan.common.Constants
 import com.mukesh.rickmortyfan.presentation.composables.episode.episodedetail.EpisodeDetailScreen
+import com.mukesh.rickmortyfan.presentation.composables.episode.episodedetail.EpisodeDetailViewModel
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,15 +40,20 @@ class EpisodeDetailActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RickMortyFanTheme {
+                val episodeDetailViewModel: EpisodeDetailViewModel = hiltViewModel()
+                val episodeDetailScreenState by episodeDetailViewModel.episodeDetailScreenState
+                LaunchedEffect(episodeId) {
+                    episodeDetailViewModel.getEpisodeDetail(episodeId)
+                }
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(), 
+                    modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { 
+                            title = {
                                 Text(
                                     text = "Episode Detail",
                                     fontWeight = FontWeight.Bold
-                                ) 
+                                )
                             },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
@@ -54,11 +65,26 @@ class EpisodeDetailActivity : ComponentActivity() {
                             },
                             actions = {
                                 IconButton(onClick = {
-                                    // Favourite implementation
+                                    episodeDetailScreenState.episode?.let {
+                                        if (episodeDetailScreenState.isFavorite) {
+                                            episodeDetailViewModel.removeFavoriteEpisode(it)
+                                        } else {
+                                            episodeDetailViewModel.addFavoriteEpisode(it)
+                                        }
+                                    }
                                 }) {
                                     Icon(
-                                        imageVector = Icons.Default.FavoriteBorder,
-                                        contentDescription = "Mark as favorite"
+                                        imageVector = if (episodeDetailScreenState.isFavorite) {
+                                            Icons.Default.Favorite
+                                        } else {
+                                            Icons.Default.FavoriteBorder
+                                        },
+                                        contentDescription = "Mark as favorite",
+                                        tint = if (episodeDetailScreenState.isFavorite) {
+                                            Color.Red
+                                        } else {
+                                            Color.Black
+                                        }
                                     )
                                 }
                             },
@@ -72,9 +98,11 @@ class EpisodeDetailActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     EpisodeDetailScreen(
-                        episodeId = episodeId,
+                        episodeDetailScreenState = episodeDetailScreenState,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        episodeDetailViewModel.getEpisodeDetail(episodeId)
+                    }
                 }
             }
         }
