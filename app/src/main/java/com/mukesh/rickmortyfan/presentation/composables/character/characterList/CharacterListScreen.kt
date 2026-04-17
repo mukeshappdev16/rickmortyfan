@@ -47,7 +47,7 @@ fun CharacterListScreen(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
         when {
@@ -70,7 +70,7 @@ fun CharacterListScreen(
 
             characterListState.list.isNotEmpty() -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(characterListState.list) { item ->

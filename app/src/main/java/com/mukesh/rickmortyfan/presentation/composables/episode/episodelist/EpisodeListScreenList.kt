@@ -35,11 +35,9 @@ fun EpisodeListScreen(
     onClickListener: (Episode) -> Unit = {},
     noInternetTryAgainClicked: () -> Unit = {}
 ) {
-
-
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
         when {
@@ -62,7 +60,7 @@ fun EpisodeListScreen(
 
             episodeListState.list.isNotEmpty() -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(episodeListState.list) { item ->

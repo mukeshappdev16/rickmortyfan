@@ -44,10 +44,9 @@ fun LocationListScreen(
     onLocationClickListener: (LocationDetail) -> Unit,
     noInternetTryAgainClicked: () -> Unit = {},
 ) {
-
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
         when {
@@ -70,7 +69,7 @@ fun LocationListScreen(
 
             state.list.isNotEmpty() -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(state.list) { item ->
