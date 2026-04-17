@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -39,7 +37,6 @@ import com.mukesh.rickmortyfan.presentation.composables.episode.episodelist.Epis
 import com.mukesh.rickmortyfan.presentation.composables.favorite.FavoriteScreen
 import com.mukesh.rickmortyfan.presentation.composables.favorite.FavoriteViewModel
 import com.mukesh.rickmortyfan.presentation.composables.home.BottomNavigationBar
-import com.mukesh.rickmortyfan.presentation.composables.home.DrawerLayoutContent
 import com.mukesh.rickmortyfan.presentation.composables.home.RickMortyTopBar
 import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListScreen
 import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListViewModel
@@ -64,76 +61,66 @@ class RickMortyHome : ComponentActivity() {
 
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
-                ModalNavigationDrawer(
-                    drawerState = drawerState,
-                    drawerContent = {
-                        ModalDrawerSheet {
-                            DrawerLayoutContent(drawerState, user) {
-                                homeViewModel.logoutUser()
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        if (user != null) {
+                            RickMortyTopBar {
+                                scope.launch {
+                                    if (drawerState.isOpen) {
+                                        drawerState.close()
+                                    } else {
+                                        drawerState.open()
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    bottomBar = {
+                        if (user != null) {
+                            BottomNavigationBar(selectedItemIndex) { index, screen ->
+                                selectedItemIndex = index
+                                navItemClick(navController, screen.route)
                             }
                         }
                     }
-                ) {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        topBar = {
-                            if (user != null) {
-                                RickMortyTopBar {
-                                    scope.launch {
-                                        if (drawerState.isOpen) {
-                                            drawerState.close()
-                                        } else {
-                                            drawerState.open()
-                                        }
-                                    }
-                                }
+                ) { innerPadding ->
+                    Box(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .background(MaterialTheme.colorScheme.background)
+                    ) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = if (user != null) {
+                                Screen.HOME.route
+                            } else {
+                                AuthGraph
                             }
-                        },
-                        bottomBar = {
-                            if (user != null) {
-                                BottomNavigationBar(selectedItemIndex) { index, screen ->
-                                    selectedItemIndex = index
-                                    navItemClick(navController, screen.route)
-                                }
-                            }
-                        }
-                    ) { innerPadding ->
-                        Box(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .background(MaterialTheme.colorScheme.background)
                         ) {
-                            NavHost(
+                            authNavGraph(
                                 navController = navController,
-                                startDestination = if (user != null) {
-                                    Screen.HOME.route
-                                } else {
-                                    AuthGraph
-                                }
-                            ) {
-                                authNavGraph(
-                                    navController = navController,
-                                    onLoginSuccess = {
-                                        navController.navigate(CharactersRoute) {
-                                            popUpTo(AuthGraph) { inclusive = true }
-                                        }
+                                onLoginSuccess = {
+                                    navController.navigate(CharactersRoute) {
+                                        popUpTo(AuthGraph) { inclusive = true }
                                     }
-                                )
-                                composable<CharactersRoute> {
-                                    DisplayCharactersListScreen()
                                 }
-                                composable<LocationsRoute> {
-                                    DisplayLocationsScreen()
-                                }
-                                composable<EpisodesRoute> {
-                                    DisplayEpisodesListScreen()
-                                }
-                                composable<FavoriteRoute> {
-                                    DisplayFavoriteListScreen()
-                                }
-                                composable<ProfileRoute> {
-                                    DisplayProfileScreen()
-                                }
+                            )
+                            composable<CharactersRoute> {
+                                DisplayCharactersListScreen()
+                            }
+                            composable<LocationsRoute> {
+                                DisplayLocationsScreen()
+                            }
+                            composable<EpisodesRoute> {
+                                DisplayEpisodesListScreen()
+                            }
+                            composable<FavoriteRoute> {
+                                DisplayFavoriteListScreen()
+                            }
+                            composable<ProfileRoute> {
+                                DisplayProfileScreen()
                             }
                         }
                     }

@@ -7,16 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukesh.rickmortyfan.auth.domain.modal.RickMortyUser
 import com.mukesh.rickmortyfan.auth.domain.use_cases.GetLoggedInUserInfoUseCase
-import com.mukesh.rickmortyfan.auth.domain.use_cases.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RickMortyHomeViewModel @Inject constructor(
-    private val getLoggedInUserInfoUseCase: GetLoggedInUserInfoUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val getLoggedInUserInfoUseCase: GetLoggedInUserInfoUseCase
 ) : ViewModel() {
 
     private val _user: MutableState<RickMortyUser?> = mutableStateOf(null)
@@ -29,11 +26,4 @@ class RickMortyHomeViewModel @Inject constructor(
             }
         }
     }
-
-    fun logoutUser() {
-        viewModelScope.launch {
-            logoutUseCase.invoke()
-        }
-    }
-
 }
