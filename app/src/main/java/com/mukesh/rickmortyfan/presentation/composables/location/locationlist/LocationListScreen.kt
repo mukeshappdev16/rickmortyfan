@@ -40,21 +40,22 @@ import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
 @Composable
 fun LocationListScreen(
     modifier: Modifier = Modifier,
-    viewModel: LocationListViewModel = hiltViewModel(),
-    onClickListener: (LocationDetail) -> Unit
+    state: LocationListState,
+    onLocationClickListener: (LocationDetail) -> Unit,
+    noInternetTryAgainClicked: () -> Unit = {},
 ) {
-    val state by viewModel.locationListState
-
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         when {
             state.noInternet -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
                     butonLabel = stringResource(R.string.action_try_again)
                 ) {
-                    viewModel.getLocations()
+                    noInternetTryAgainClicked()
                 }
             }
 
@@ -68,11 +69,11 @@ fun LocationListScreen(
 
             state.list.isNotEmpty() -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp)
                 ) {
                     items(state.list) { item ->
-                        LocationListRow(item, onClickListener)
+                        LocationListRow(item, onLocationClickListener)
                         Spacer(modifier = Modifier.height(12.dp))
                     }
                 }

@@ -6,13 +6,15 @@ import com.mukesh.rickmortyfan.data.database.entity.toCharacterEntity
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
 import com.mukesh.rickmortyfan.domain.repository.FavoriteCharacterRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class FavoriteCharacterRepositoryImpl @Inject constructor(val favoritesDao: FavoritesDao) :
     FavoriteCharacterRepository {
-    override fun getFavoriteCharacters(): Flow<List<CharacterDescription>> = flow {
-        favoritesDao.getFavoriteCharacters().forEach { it.toCharacterDescription() }
+    override fun getFavoriteCharacters(): Flow<List<CharacterDescription>> {
+        return favoritesDao.getFavoriteCharacters().map { entities ->
+            entities.map { it.toCharacterDescription() }
+        }
     }
 
     override suspend fun addFavoriteCharacter(character: CharacterDescription): Long {

@@ -5,11 +5,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoritesDao {
     @Query("SELECT * FROM favorite_characters")
-    suspend fun getFavoriteCharacters(): List<CharacterEntity>
+    fun getFavoriteCharacters(): Flow<List<CharacterEntity>>
 
     @Insert(onConflict = REPLACE)
     suspend fun addFavoriteCharacter(character: CharacterEntity): Long
@@ -21,7 +22,7 @@ interface FavoritesDao {
     fun isFavoriteCharacterPresent(id: Int): Boolean
 
     @Query("SELECT * FROM favorite_locations")
-    suspend fun getFavoriteLocations(): List<LocationEntity>
+    fun getFavoriteLocations(): Flow<List<LocationEntity>>
 
     @Insert(onConflict = REPLACE)
     suspend fun addFavoriteLocation(location: LocationEntity): Long
@@ -33,7 +34,7 @@ interface FavoritesDao {
     fun isFavoriteLocationPresent(id: Int): Boolean
 
     @Query("SELECT * FROM favorite_episode")
-    suspend fun getFavoriteEpisodes(): List<EpisodeEntity>
+    fun getFavoriteEpisodes(): Flow<List<EpisodeEntity>>
 
     @Insert(onConflict = REPLACE)
     suspend fun addFavoriteEpisode(episode: EpisodeEntity): Long
