@@ -10,6 +10,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun FavoriteScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Hello there, this is empty")
+        Text("Hello there, this is empty.")
     }
 }
