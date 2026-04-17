@@ -9,15 +9,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,9 +38,9 @@ import com.mukesh.rickmortyfan.presentation.composables.home.RickMortyTopBar
 import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListScreen
 import com.mukesh.rickmortyfan.presentation.composables.location.locationlist.LocationListViewModel
 import com.mukesh.rickmortyfan.presentation.composables.profile.ProfileScreen
+import com.mukesh.rickmortyfan.presentation.composables.profile.ProfileViewModel
 import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RickMortyHome : ComponentActivity() {
@@ -59,22 +56,11 @@ class RickMortyHome : ComponentActivity() {
                 var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
                 val user by homeViewModel.user
 
-                val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-                val scope = rememberCoroutineScope()
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         if (user != null) {
-                            RickMortyTopBar {
-                                scope.launch {
-                                    if (drawerState.isOpen) {
-                                        drawerState.close()
-                                    } else {
-                                        drawerState.open()
-                                    }
-                                }
-                            }
+                            RickMortyTopBar()
                         }
                     },
                     bottomBar = {
@@ -214,7 +200,11 @@ class RickMortyHome : ComponentActivity() {
 
     @Composable
     private fun DisplayProfileScreen() {
-        ProfileScreen()
+        val viewModel: ProfileViewModel = hiltViewModel()
+        val state by viewModel.state
+        ProfileScreen(state = state, onLogoutSuccess = {
+            viewModel.logout()
+        })
     }
 }
 
