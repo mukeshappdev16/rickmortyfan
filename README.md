@@ -6,39 +6,44 @@ A modern, adaptive Android application for Rick and Morty enthusiasts, built wit
 
 - **Adaptive Layouts:** Supports various screen sizes using `NavigationSuiteScaffold` (Bottom Bar for mobile, Navigation Rail for landscape/tablets).
 - **Authentication:** Secure user login and signup flow.
-- **Characters:** Explore the vast multiverse of Rick and Morty characters.
-- **Locations:** Discover all the weird and wonderful places in the show.
-- **Episodes:** Browse through all seasons and episodes.
+- **Characters:** Explore the vast multiverse of Rick and Morty characters with custom infinite scroll.
+- **Locations:** Discover all the weird and wonderful places in the show with infinite scroll.
+- **Episodes:** Browse through all seasons and episodes with infinite scroll.
 - **Favorites:** Save your favorite characters, locations, and episodes for quick access.
-- **Profile:** Manage your user profile and settings.
+- **Profile:** Manage your user profile and settings with a polished Material 3 UI.
+
+## Architecture 🏗️
+
+The project is built following **Clean Architecture** principles and the **MVVM (Model-View-ViewModel)** pattern to ensure scalability, maintainability, and testability.
+
+### Layers:
+- **Domain Layer:** The heart of the application. Contains **Entities**, **Repository Interfaces**, and **Use Cases**. It is purely Kotlin/Java and has no dependencies on the Android framework.
+- **Data Layer:** Responsible for data retrieval and persistence. Implements the Domain's Repository interfaces using **Retrofit** for network calls and **Room** for local storage.
+- **Presentation Layer:** Handles the UI and user interaction. Built with **Jetpack Compose**, it follows the MVVM pattern where ViewModels interact with Use Cases and expose state via Kotlin **Flow** and **Compose State**.
+
+## Multi-Module Architecture 📁
+
+The project is modularized to improve build performance and enforce a clear separation of concerns:
+- **`:app`**: The main entry point. Contains the implementation of core features (Characters, Locations, Episodes, Favorites, Profile).
+- **`:auth`**: A feature module dedicated to authentication logic, including login and signup screens.
+- **`:common`**: A core module providing shared resources, utilities, and base classes used across the entire project.
 
 ## Tech Stack 🛠️
 
-- **UI:** Jetpack Compose with Material 3 Adaptive.
-- **Architecture:** Clean Architecture with MVVM.
-- **Dependency Injection:** Hilt.
-- **Networking:** Retrofit / Ktor.
+- **Language:** Kotlin
+- **UI:** Jetpack Compose with Material 3 Adaptive Navigation.
+- **Dependency Injection:** Hilt (Dagger).
+- **Networking:** Retrofit with Gson.
 - **Local Database:** Room.
 - **Image Loading:** Coil.
-- **Navigation:** Jetpack Compose Navigation with Type-Safe Routes (Kotlin Serialization).
-- **Asynchronous Work:** Kotlin Coroutines & Flow.
-
-## Project Structure 📁
-
-The project is modularized into three main modules:
-- `:app`: The main application module containing the UI and domain logic for core features.
-- `:auth`: A dedicated module for authentication logic and screens.
-- `:common`: Shared utilities, constants, and data models used across modules.
-
-## Getting Started 🚀
-
-1. Clone the repository.
-2. Open the project in Android Studio (Ladybug or newer recommended).
-3. Sync Gradle and run the `:app` module.
+- **Navigation:** Type-safe Compose Navigation using Kotlin Serialization.
+- **Concurrency:** Kotlin Coroutines & Flow.
 
 ## Screenshots 📸
 
-*(Add screenshots here)*
+| Character List (Dark Mode) |
+|:---:|
+| ![Character List](screenshots/character_list_dark.png) |
 
 ---
 Developed with ❤️ by Mukesh

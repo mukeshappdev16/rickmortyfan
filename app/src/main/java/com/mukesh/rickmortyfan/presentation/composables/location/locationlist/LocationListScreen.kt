@@ -28,17 +28,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
 import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
 import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
+import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 
 @Composable
 fun LocationListScreen(
@@ -175,5 +176,33 @@ fun LocationListRow(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LocationListScreenPreview() {
+    RickMortyFanTheme {
+        val sampleLocation = LocationDetail(
+            id = 1,
+            name = "Earth (C-137)",
+            type = "Planet",
+            dimension = "Dimension C-137",
+            residents = listOf(),
+            url = "",
+            created = ""
+        )
+        LocationListScreen(
+            state = LocationListState(
+                list = listOf(
+                    sampleLocation,
+                    sampleLocation.copy(id = 2, name = "Abadango", type = "Cluster"),
+                    sampleLocation.copy(id = 3, name = "Citadel of Ricks", type = "Space station"),
+                    sampleLocation.copy(id = 4, name = "Worldender's lair", type = "Planet"),
+                    sampleLocation.copy(id = 5, name = "Anatomy Park", type = "Microverse")
+                )
+            ),
+            onLocationClickListener = {}
+        )
     }
 }
