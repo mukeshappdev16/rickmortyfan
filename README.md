@@ -39,6 +39,28 @@ The project is modularized to improve build performance and enforce a clear sepa
 - **Navigation:** Type-safe Compose Navigation using Kotlin Serialization.
 - **Concurrency:** Kotlin Coroutines & Flow.
 
+## Testing 🧪
+
+The project includes a robust testing suite covering all architectural layers:
+
+- **Unit Tests:**
+    - **Tools:** [MockK](https://mockk.io/) for mocking, [Turbine](https://github.com/cashapp/turbine) for testing Flows, and Kotlin Coroutines Test.
+    - **Coverage:** ViewModels, Use Cases, and Repositories are thoroughly tested to ensure business logic reliability.
+- **Instrumented Tests:**
+    - **Tools:** [Compose UI Test](https://developer.android.com/develop/ui/compose/testing) library.
+    - **Coverage:** Verified UI components and user interaction flows on actual devices/emulators.
+- **Database Tests:**
+    - **Coverage:** Room DAO operations are verified using in-memory databases.
+
+## CI/CD Workflow 🚀
+
+The project is configured with **GitHub Actions** for automated quality assurance.
+
+- **Build Automation:** Every push and pull request triggers a full project build.
+- **Static Analysis:** Automated **Lint** checks ensure adherence to coding standards.
+- **Automated Testing:** All unit tests are executed automatically in the CI environment to prevent regressions.
+- **Configuration:** See `.github/workflows/android.yml` for the detailed workflow setup.
+
 ## Code Quality ⚙️
 
 To maintain high code quality, run these commands locally before committing your changes:
