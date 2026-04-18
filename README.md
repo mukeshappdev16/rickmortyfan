@@ -39,6 +39,18 @@ The project is modularized to improve build performance and enforce a clear sepa
 - **Navigation:** Type-safe Compose Navigation using Kotlin Serialization.
 - **Concurrency:** Kotlin Coroutines & Flow.
 
+## Code Quality ⚙️
+
+To maintain high code quality, run these commands locally before committing your changes:
+
+| Task | Command |
+| :--- | :--- |
+| **Full Lint Check** | `./gradlew lint` |
+| **Unit Tests** | `./gradlew test` |
+| **Static Analysis (app)** | `./gradlew :app:lintDebug` |
+
+> **Note:** After running lint, you can find detailed HTML reports in: `[module]/build/reports/lint-results-debug.html`
+
 ## Screenshots 📸
 
 <div align="center">
