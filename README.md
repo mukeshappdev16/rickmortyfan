@@ -41,9 +41,19 @@ The project is modularized to improve build performance and enforce a clear sepa
 
 ## Screenshots 📸
 
-| Character List (Dark Mode) |
-|:---:|
-| ![Character List](screenshots/character_list_dark.png) |
+<div align="center">
+  <img src="screenshots/Screenshot_20260418_142709.png" width="30%" />
+  <img src="screenshots/Screenshot_20260418_142742.png" width="30%" />
+  <img src="screenshots/Screenshot_20260418_142817.png" width="30%" />
+  <br />
+  <img src="screenshots/Screenshot_20260418_142824.png" width="30%" />
+  <img src="screenshots/Screenshot_20260418_142829.png" width="30%" />
+  <img src="screenshots/Screenshot_20260418_142858.png" width="30%" />
+  <br />
+  <img src="screenshots/Screenshot_20260418_142904.png" width="30%" />
+  <img src="screenshots/Screenshot_20260418_142916.png" width="30%" />
+  <img src="screenshots/Screenshot_20260418_142936.png" width="30%" />
+</div>
 
 ---
 Developed with ❤️ by Mukesh
