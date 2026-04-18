@@ -176,16 +176,23 @@ class RickMortyHome : ComponentActivity() {
     private fun DisplayLocationsScreen() {
         val viewModel: LocationListViewModel = hiltViewModel()
         val state by viewModel.locationListState
-        LocationListScreen(state = state, onLocationClickListener = { location ->
-            val intent = Intent(this, LocationDetailActivity::class.java).apply {
-                putExtra(
-                    Constants.LOCATION_ID_KEY, location.id.toString()
-                )
+        LocationListScreen(
+            state = state,
+            onLocationClickListener = { location ->
+                val intent = Intent(this, LocationDetailActivity::class.java).apply {
+                    putExtra(
+                        Constants.LOCATION_ID_KEY, location.id.toString()
+                    )
+                }
+                startActivity(intent)
+            },
+            noInternetTryAgainClicked = {
+                viewModel.getLocations()
+            },
+            loadMoreLocations = {
+                viewModel.getLocations()
             }
-            startActivity(intent)
-        }, noInternetTryAgainClicked = {
-            viewModel.getLocations()
-        })
+        )
     }
 
     @Composable

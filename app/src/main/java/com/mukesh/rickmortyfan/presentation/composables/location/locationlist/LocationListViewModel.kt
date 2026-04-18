@@ -28,25 +28,45 @@ class LocationListViewModel @Inject constructor(
     }
 
     fun getLocations() {
+        if (_locationListState.value.endReached || _locationListState.value.isPaginating) return
+
         if (!networkManager.isNetworkAvailable()) {
-            _locationListState.value = LocationListState(noInternet = true)
+            if (_locationListState.value.list.isEmpty()) {
+                _locationListState.value = _locationListState.value.copy(noInternet = true)
+            }
             return
         }
-        getLocationListUseCase().onEach { result ->
+
+        val isFirstPage = _locationListState.value.page == 1
+
+        getLocationListUseCase(_locationListState.value.page).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
-                    _locationListState.value = LocationListState(isLoading = true)
+                    if (isFirstPage) {
+                        _locationListState.value = _locationListState.value.copy(isLoading = true)
+                    } else {
+                        _locationListState.value = _locationListState.value.copy(isPaginating = true)
+                    }
                 }
 
                 is Resource.Success -> {
-                    _locationListState.value = LocationListState(
-                        list = result.data?.locations ?: emptyList()
+                    val newList = result.data?.locations ?: emptyList()
+                    _locationListState.value = _locationListState.value.copy(
+                        isLoading = false,
+                        isPaginating = false,
+                        list = _locationListState.value.list + newList,
+                        page = _locationListState.value.page + 1,
+                        endReached = newList.isEmpty() || result.data?.info?.next == null,
+                        noInternet = false,
+                        errorMessage = ""
                     )
                 }
 
                 is Resource.Error -> {
-                    _locationListState.value = LocationListState(
-                        errorMessage = result.message ?: "An unexpected error occurred"
+                    _locationListState.value = _locationListState.value.copy(
+                        isLoading = false,
+                        isPaginating = false,
+                        errorMessage = if (isFirstPage) result.message ?: "An unexpected error occurred" else ""
                     )
                 }
             }

@@ -11,8 +11,8 @@ import javax.inject.Inject
 class LocationsRepositoryImpl @Inject constructor(
     private val locationApi: RickMortyLocationApi
 ) : LocationsRepository {
-    override suspend fun getAllLocations(): Locations {
-        return locationApi.getAllLocations().toLocations()
+    override suspend fun getAllLocations(page: Int): Locations {
+        return locationApi.getAllLocations(page).toLocations()
     }
 
     override suspend fun getLocationDetail(locationId: String): LocationDetail {
