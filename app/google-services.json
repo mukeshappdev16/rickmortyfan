@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113758152905",
+    "project_id": "rickmortyfan-mukeshappdev",
+    "storage_bucket": "rickmortyfan-mukeshappdev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113758152905:android:b66a70ada72829fc5d4518",
+        "android_client_info": {
+          "package_name": "com.mukesh.rickmortyfan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASwPrAqLuBY_4ZAgIHeQxrMQxoY09RAOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
