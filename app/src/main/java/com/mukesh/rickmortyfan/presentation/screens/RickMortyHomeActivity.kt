@@ -19,7 +19,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,7 +30,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowHeightSizeClass
 import com.mukesh.rickmortyfan.auth.presentation.AuthGraph
@@ -222,7 +220,11 @@ class RickMortyHome : ComponentActivity() {
             },
             onInternetTryAgainClicked = {
                 characterListViewModel.getCharacters()
-            })
+            },
+            loadMoreCharacters = {
+                characterListViewModel.getCharacters()
+            }
+        )
     }
 
     @Composable

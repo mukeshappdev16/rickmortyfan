@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class CharactersRepositoryImpl @Inject constructor(val rickMortyCharacterApi: RickMortyCharacterApi) :
     CharactersRepository {
-    override suspend fun getAllCharacters(): Characters {
-        return rickMortyCharacterApi.getAllCharacters().toCharacters()
+    override suspend fun getAllCharacters(page: Int): Characters {
+        return rickMortyCharacterApi.getAllCharacters(page).toCharacters()
     }
 
     override suspend fun getCharacterDetail(charId: String): CharacterDescription {

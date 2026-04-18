@@ -7,21 +7,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,14 +49,32 @@ fun CharacterListScreen(
     characterListState: CharacterListState,
     onClickListener: (CharacterDescription) -> Unit,
     onInternetTryAgainClicked: () -> Unit = {},
+    loadMoreCharacters: () -> Unit = {},
 ) {
+    val listState = rememberLazyListState()
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val totalItemsCount = listState.layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            // Load more when we are 5 items away from the end
+            lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore.value) {
+        if (shouldLoadMore.value && !characterListState.isPaginating && !characterListState.endReached) {
+            loadMoreCharacters()
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
         when {
-            characterListState.noInternet -> {
+            characterListState.noInternet && characterListState.list.isEmpty() -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
                     butonLabel = stringResource(R.string.action_try_again)
@@ -60,22 +83,41 @@ fun CharacterListScreen(
                 }
             }
 
-            characterListState.isLoading -> {
+            characterListState.isLoading && characterListState.list.isEmpty() -> {
                 LoadingIndicator()
             }
 
-            characterListState.errorMessage != "" -> {
-                ErrorMessageWithTryAgainButton(errorMessage = characterListState.errorMessage)
+            characterListState.errorMessage != "" && characterListState.list.isEmpty() -> {
+                ErrorMessageWithTryAgainButton(errorMessage = characterListState.errorMessage) {
+                    onInternetTryAgainClicked()
+                }
             }
 
-            characterListState.list.isNotEmpty() -> {
+            else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp),
+                    state = listState
                 ) {
-                    items(characterListState.list) { item ->
+                    itemsIndexed(characterListState.list) { index, item ->
                         CharacterListRow(item, onClickListener)
                         Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    if (characterListState.isPaginating) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
             }
