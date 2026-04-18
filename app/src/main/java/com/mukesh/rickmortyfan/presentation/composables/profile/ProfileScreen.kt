@@ -1,8 +1,7 @@
 package com.mukesh.rickmortyfan.presentation.composables.profile
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,16 +11,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,9 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.mukesh.rickmortyfan.R
 
 @Composable
 fun ProfileScreen(
@@ -56,45 +61,56 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
-            // Profile Image Section
+            // 1. Profile Header
             BoxWithProfileImage(imageUrl = state.user?.profileImageUrl)
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // User Info Card
-            Card(
+            // 2. Profile Menu Section
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                )
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    InfoRow(
-                        icon = Icons.Default.Person,
-                        label = "Name",
-                        value = state.user?.name ?: "Guest User"
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    ProfileMenuItem(
+                        icon = Icons.Default.Badge,
+                        title = stringResource(R.string.name),
+                        subtitle = state.user?.name ?: "N/A"
                     )
-                    InfoRow(
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                    )
+                    ProfileMenuItem(
                         icon = Icons.Default.Email,
-                        label = "Email",
-                        value = state.user?.email ?: "Not available"
+                        title = stringResource(R.string.email),
+                        subtitle = state.user?.email ?: "N/A"
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                    )
+                    ProfileMenuItem(
+                        icon = Icons.Default.Info,
+                        title = stringResource(R.string.about_app),
+                        subtitle = stringResource(R.string.rick_morty_fan_v1_0)
                     )
                 }
             }
 
+            Spacer(modifier = Modifier.height(40.dp))
             Spacer(modifier = Modifier.weight(1f))
 
-            // Logout Button
+            // 3. Logout Button at the bottom
             Button(
                 onClick = { onLogoutSuccess() },
                 modifier = Modifier
@@ -104,8 +120,7 @@ fun ProfileScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.onErrorContainer
-                ),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+                )
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -114,13 +129,13 @@ fun ProfileScreen(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Logout",
+                    text = stringResource(R.string.log_out),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
-            
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -130,7 +145,7 @@ private fun BoxWithProfileImage(imageUrl: String?) {
     Surface(
         modifier = Modifier
             .size(140.dp)
-            .border(4.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape)
+            .border(3.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape)
             .padding(4.dp),
         shape = CircleShape,
         color = MaterialTheme.colorScheme.surfaceVariant
@@ -151,49 +166,59 @@ private fun BoxWithProfileImage(imageUrl: String?) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(24.dp),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             )
         }
     }
 }
 
 @Composable
-private fun InfoRow(
+private fun ProfileMenuItem(
     icon: ImageVector,
-    label: String,
-    value: String
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Surface(
             modifier = Modifier.size(40.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(10.dp),
             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(10.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
-        
+
         Spacer(modifier = Modifier.width(16.dp))
-        
-        Column {
+
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = label,
+                text = title,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = value,
+                text = subtitle,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Medium
             )
         }
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+        )
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,18 +22,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.episode.Episode
 import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
 import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
+import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 
 @Composable
 fun EpisodeListScreen(
@@ -159,5 +159,33 @@ private fun EpisodeListRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EpisodeListScreenPreview() {
+    RickMortyFanTheme {
+        val sampleEpisode = Episode(
+            id = 1,
+            name = "Pilot",
+            airDate = "December 2, 2013",
+            episode = "S01E01",
+            characters = listOf(),
+            url = "",
+            created = ""
+        )
+        EpisodeListScreen(
+            episodeListState = EpisodeListState(
+                list = listOf(
+                    sampleEpisode,
+                    sampleEpisode.copy(id = 2, name = "Lawnmower Dog", episode = "S01E02"),
+                    sampleEpisode.copy(id = 3, name = "Anatomy Park", episode = "S01E03"),
+                    sampleEpisode.copy(id = 4, name = "M. Night Shaym-Aliens!", episode = "S01E04"),
+                    sampleEpisode.copy(id = 5, name = "Meeseeks and Destroy", episode = "S01E05")
+                )
+            ),
+            onClickListener = {}
+        )
     }
 }

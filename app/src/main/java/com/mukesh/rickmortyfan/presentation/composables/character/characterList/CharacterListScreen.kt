@@ -35,13 +35,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
+import com.mukesh.rickmortyfan.domain.modal.character.Location
+import com.mukesh.rickmortyfan.domain.modal.character.Origin
 import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
 import com.mukesh.rickmortyfan.presentation.composables.common.LoadingIndicator
+import com.mukesh.rickmortyfan.ui.theme.RickMortyFanTheme
 
 @Composable
 fun CharacterListScreen(
@@ -208,6 +212,39 @@ fun StatusBadge(status: String) {
             fontWeight = FontWeight.Black,
             color = color,
             letterSpacing = 0.5.sp
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CharacterListScreenPreview() {
+    RickMortyFanTheme {
+        val sampleCharacter = CharacterDescription(
+            id = 1,
+            name = "Rick Sanchez",
+            status = "Alive",
+            species = "Human",
+            type = "",
+            gender = "Male",
+            origin = Origin(name = "Earth", url = ""),
+            location = Location(name = "Earth", url = ""),
+            image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+            episode = listOf(),
+            url = "",
+            created = ""
+        )
+        CharacterListScreen(
+            characterListState = CharacterListState(
+                list = listOf(
+                    sampleCharacter,
+                    sampleCharacter.copy(id = 2, name = "Morty Smith", status = "Alive"),
+                    sampleCharacter.copy(id = 3, name = "Summer Smith", status = "Alive"),
+                    sampleCharacter.copy(id = 4, name = "Beth Smith", status = "Alive"),
+                    sampleCharacter.copy(id = 5, name = "Jerry Smith", status = "Alive")
+                )
+            ),
+            onClickListener = {}
         )
     }
 }

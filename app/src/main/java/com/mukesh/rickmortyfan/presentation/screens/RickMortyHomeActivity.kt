@@ -199,16 +199,23 @@ class RickMortyHome : ComponentActivity() {
     private fun DisplayEpisodesListScreen() {
         val episodeListViewModel: EpisodeListViewModel = hiltViewModel()
         val episodeListState by episodeListViewModel.episodeListState
-        EpisodeListScreen(episodeListState = episodeListState, onClickListener = { episode ->
-            val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
-                putExtra(
-                    Constants.EPISODE_ID_KEY, episode.id.toString()
-                )
+        EpisodeListScreen(
+            episodeListState = episodeListState,
+            onClickListener = { episode ->
+                val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
+                    putExtra(
+                        Constants.EPISODE_ID_KEY, episode.id.toString()
+                    )
+                }
+                startActivity(intent)
+            },
+            noInternetTryAgainClicked = {
+                episodeListViewModel.getEpisodes()
+            },
+            loadMoreEpisodes = {
+                episodeListViewModel.getEpisodes()
             }
-            startActivity(intent)
-        }, noInternetTryAgainClicked = {
-            episodeListViewModel.getEpisodes()
-        })
+        )
     }
 
     @Composable
