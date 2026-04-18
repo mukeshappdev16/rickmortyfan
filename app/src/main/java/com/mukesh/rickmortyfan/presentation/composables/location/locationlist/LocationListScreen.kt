@@ -7,31 +7,34 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.location.LocationDetail
 import com.mukesh.rickmortyfan.presentation.composables.common.ErrorMessageWithTryAgainButton
@@ -43,14 +46,31 @@ fun LocationListScreen(
     state: LocationListState,
     onLocationClickListener: (LocationDetail) -> Unit,
     noInternetTryAgainClicked: () -> Unit = {},
+    loadMoreLocations: () -> Unit = {},
 ) {
+    val listState = rememberLazyListState()
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val totalItemsCount = listState.layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore.value) {
+        if (shouldLoadMore.value && !state.isPaginating && !state.endReached) {
+            loadMoreLocations()
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ) {
         when {
-            state.noInternet -> {
+            state.noInternet && state.list.isEmpty() -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
                     butonLabel = stringResource(R.string.action_try_again)
@@ -59,22 +79,41 @@ fun LocationListScreen(
                 }
             }
 
-            state.isLoading -> {
+            state.isLoading && state.list.isEmpty() -> {
                 LoadingIndicator()
             }
 
-            state.errorMessage != "" -> {
-                ErrorMessageWithTryAgainButton(errorMessage = state.errorMessage)
+            state.errorMessage != "" && state.list.isEmpty() -> {
+                ErrorMessageWithTryAgainButton(errorMessage = state.errorMessage) {
+                    noInternetTryAgainClicked()
+                }
             }
 
-            state.list.isNotEmpty() -> {
+            else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(16.dp),
+                    state = listState
                 ) {
-                    items(state.list) { item ->
+                    itemsIndexed(state.list) { index, item ->
                         LocationListRow(item, onLocationClickListener)
                         Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    if (state.isPaginating) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
             }

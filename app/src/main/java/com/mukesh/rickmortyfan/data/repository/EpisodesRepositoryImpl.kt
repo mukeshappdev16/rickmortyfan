@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class EpisodesRepositoryImpl @Inject constructor(val episodesApi: RickMortyEpisodesApi) :
     EpisodesRepository {
-    override suspend fun getAllEpisodes(): Episodes {
-        return episodesApi.getAllEpisodes().toEpisodes()
+    override suspend fun getAllEpisodes(page: Int): Episodes {
+        return episodesApi.getAllEpisodes(page).toEpisodes()
     }
 
     override suspend fun getEpisodeDetail(episodeId: String): Episode {

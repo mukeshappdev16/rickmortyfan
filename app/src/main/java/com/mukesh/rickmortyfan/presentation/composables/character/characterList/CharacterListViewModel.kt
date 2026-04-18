@@ -1,6 +1,5 @@
 package com.mukesh.rickmortyfan.presentation.composables.character.characterList
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -26,31 +25,49 @@ class CharacterListViewModel @Inject constructor(
 
     init {
         getCharacters()
-        Log.i("CharacterListViewModel", "CharacterListViewModel init called")
     }
 
     fun getCharacters() {
+        if (_characterListState.value.endReached || _characterListState.value.isPaginating) return
+
         if (!networkManager.isNetworkAvailable()) {
-            _characterListState.value = CharacterListState(noInternet = true)
+            if (_characterListState.value.list.isEmpty()) {
+                _characterListState.value = _characterListState.value.copy(noInternet = true)
+            }
             return
         }
-        getCharacterListUseCase().onEach { result ->
+
+        val isFirstPage = _characterListState.value.page == 1
+
+        getCharacterListUseCase(_characterListState.value.page).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
-                    _characterListState.value = CharacterListState(isLoading = true)
+                    if (isFirstPage) {
+                        _characterListState.value = _characterListState.value.copy(isLoading = true)
+                    } else {
+                        _characterListState.value = _characterListState.value.copy(isPaginating = true)
+                    }
                 }
 
                 is Resource.Success -> {
-                    _characterListState.value =
-                        CharacterListState(list = result.data?.charactersList ?: emptyList())
+                    val newList = result.data?.charactersList ?: emptyList()
+                    _characterListState.value = _characterListState.value.copy(
+                        isLoading = false,
+                        isPaginating = false,
+                        list = _characterListState.value.list + newList,
+                        page = _characterListState.value.page + 1,
+                        endReached = newList.isEmpty() || result.data?.info?.next == null,
+                        noInternet = false,
+                        errorMessage = ""
+                    )
                 }
 
                 is Resource.Error -> {
-                    _characterListState.value =
-                        CharacterListState(
-                            errorMessage = result.message
-                                ?: "Something went wrong. Please try again later"
-                        )
+                    _characterListState.value = _characterListState.value.copy(
+                        isLoading = false,
+                        isPaginating = false,
+                        errorMessage = if (isFirstPage) result.message ?: "An error occurred" else ""
+                    )
                 }
             }
         }.launchIn(viewModelScope)

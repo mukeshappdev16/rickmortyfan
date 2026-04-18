@@ -9,10 +9,10 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class GetEpisodeListUseCase @Inject constructor(private val episodesRepository: EpisodesRepository) {
-    operator fun invoke(): Flow<Resource<Episodes>> = flow {
+    operator fun invoke(page: Int): Flow<Resource<Episodes>> = flow {
         try {
             emit(Resource.Loading())
-            emit(Resource.Success(episodesRepository.getAllEpisodes()))
+            emit(Resource.Success(episodesRepository.getAllEpisodes(page)))
         } catch (httpException: HttpException) {
             httpException.printStackTrace()
             emit(Resource.Error("Something went wrong. Please try again later"))
