@@ -91,6 +91,10 @@ To maintain high code quality, run these commands locally before committing your
 
 All data is provided by [The Rick and Morty API](https://rickandmortyapi.com/).
 
+## License 📄
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
 ## Screenshots 📸
 
 <div align="center">
