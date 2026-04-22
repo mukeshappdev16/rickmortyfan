@@ -73,6 +73,10 @@ To maintain high code quality, run these commands locally before committing your
 
 > **Note:** After running lint, you can find detailed HTML reports in: `[module]/build/reports/lint-results-debug.html`
 
+## API Credit 🔌
+
+All data is provided by [The Rick and Morty API](https://rickandmortyapi.com/).
+
 ## Screenshots 📸
 
 <div align="center">
