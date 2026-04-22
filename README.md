@@ -5,12 +5,13 @@ A modern, adaptive Android application for Rick and Morty enthusiasts, built wit
 ## Features ✨
 
 - **Adaptive Layouts:** Supports various screen sizes using `NavigationSuiteScaffold` (Bottom Bar for mobile, Navigation Rail for landscape/tablets).
-- **Authentication:** Secure user login and signup flow.
+- **Authentication:** Secure user login and signup flow powered by **Firebase Auth**.
 - **Characters:** Explore the vast multiverse of Rick and Morty characters with custom infinite scroll.
 - **Locations:** Discover all the weird and wonderful places in the show with infinite scroll.
 - **Episodes:** Browse through all seasons and episodes with infinite scroll.
 - **Favorites:** Save your favorite characters, locations, and episodes for quick access.
 - **Profile:** Manage your user profile and settings with a polished Material 3 UI.
+- **Performance:** Optimized for speed and smoothness using **Baseline Profiles**.
 
 ## Architecture 🏗️
 
@@ -27,6 +28,7 @@ The project is modularized to improve build performance and enforce a clear sepa
 - **`:app`**: The main entry point. Contains the implementation of core features (Characters, Locations, Episodes, Favorites, Profile).
 - **`:auth`**: A feature module dedicated to authentication logic, including login and signup screens.
 - **`:common`**: A core module providing shared resources, utilities, and base classes used across the entire project.
+- **`:benchmark`**: A dedicated module for performance testing using **Macrobenchmark** and **Baseline Profile** generation.
 
 ## Tech Stack 🛠️
 
@@ -38,6 +40,18 @@ The project is modularized to improve build performance and enforce a clear sepa
 - **Image Loading:** Coil.
 - **Navigation:** Type-safe Compose Navigation using Kotlin Serialization.
 - **Concurrency:** Kotlin Coroutines & Flow.
+- **Firebase:**
+    - **Authentication:** User identity management.
+    - **Analytics:** Understanding user engagement.
+    - **Crashlytics:** Real-time crash reporting.
+
+## Performance Measurement ⚡
+
+The app uses **Jetpack Macrobenchmark** to measure critical user journeys (CUJs) like app startup and list scrolling. We also utilize **Baseline Profiles** to significantly improve app startup time and reduce jank.
+
+To run benchmarks:
+1. Ensure you have a rooted device or emulator with API 24+.
+2. Run the command: `./gradlew :benchmark:connectedCheck`
 
 ## Testing 🧪
 
