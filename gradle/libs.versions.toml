@@ -31,6 +31,8 @@ room = "2.8.4"
 material3WindowSizeClass = "1.4.0"
 mockk = "1.14.9"
 turbine = "1.2.1"
+uiautomator = "2.3.0"
+benchmarkMacroJunit4 = "1.4.1"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -78,6 +80,8 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-compose-material3-window-size-class1 = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3WindowSizeClass" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -89,3 +93,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
+android-test = { id = "com.android.test", version.ref = "agp" }

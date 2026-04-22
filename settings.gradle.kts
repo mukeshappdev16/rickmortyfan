@@ -26,3 +26,4 @@ rootProject.name = "RickMortyFan"
 include(":app")
 include(":auth")
 include(":common")
+include(":benchmark")

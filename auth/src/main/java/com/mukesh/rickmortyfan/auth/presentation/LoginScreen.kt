@@ -38,7 +38,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -107,7 +110,8 @@ fun LoginScreenContent(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp),
+            .padding(24.dp)
+            .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -137,7 +141,7 @@ fun LoginScreenContent(
             onValueChange = onEmailChange,
             label = { Text(stringResource(R.string.label_email)) },
             placeholder = { Text(stringResource(R.string.placeholder_email)) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("email_field"),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
@@ -165,7 +169,7 @@ fun LoginScreenContent(
             onValueChange = onPasswordChange,
             label = { Text(stringResource(R.string.label_password)) },
             placeholder = { Text(stringResource(R.string.placeholder_password)) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("password_field"),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Lock,
@@ -217,7 +221,7 @@ fun LoginScreenContent(
             onClick = onLoginClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp).testTag("login_button"),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
