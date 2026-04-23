@@ -13,7 +13,7 @@ data class LocationEntity(
     val dimension: String,
     val url: String,
     val created: String,
-    val residents: List<String>
+    val residents: List<String>,
 )
 
 fun LocationEntity.toLocationDetail(): LocationDetail {
@@ -24,7 +24,7 @@ fun LocationEntity.toLocationDetail(): LocationDetail {
         dimension = dimension,
         residents = residents,
         url = url,
-        created = created
+        created = created,
     )
 }
 
@@ -36,6 +36,6 @@ fun LocationDetail.toLocationEntity(): LocationEntity {
         dimension = dimension,
         url = url,
         created = created,
-        residents = residents
+        residents = residents,
     )
 }

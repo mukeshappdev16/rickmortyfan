@@ -9,23 +9,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class FavoriteLocationRepositoryImpl @Inject constructor(val favoritesDao: FavoritesDao) :
+class FavoriteLocationRepositoryImpl
+    @Inject
+    constructor(val favoritesDao: FavoritesDao) :
     FavoriteLocationRepository {
-    override fun getFavoriteLocations(): Flow<List<LocationDetail>> {
-        return favoritesDao.getFavoriteLocations().map { entities ->
-            entities.map { it.toLocationDetail() }
+        override fun getFavoriteLocations(): Flow<List<LocationDetail>> {
+            return favoritesDao.getFavoriteLocations().map { entities ->
+                entities.map { it.toLocationDetail() }
+            }
+        }
+
+        override suspend fun addFavoriteLocation(locationDetail: LocationDetail): Long {
+            return favoritesDao.addFavoriteLocation(locationDetail.toLocationEntity())
+        }
+
+        override suspend fun removeFavoriteLocation(locationDetail: LocationDetail): Int {
+            return favoritesDao.removeFavoriteLocation(locationDetail.toLocationEntity())
+        }
+
+        override suspend fun isFavoriteLocationPresent(id: Int): Boolean {
+            return favoritesDao.isFavoriteLocationPresent(id)
         }
     }
-
-    override suspend fun addFavoriteLocation(locationDetail: LocationDetail): Long {
-        return favoritesDao.addFavoriteLocation(locationDetail.toLocationEntity())
-    }
-
-    override suspend fun removeFavoriteLocation(locationDetail: LocationDetail): Int {
-        return favoritesDao.removeFavoriteLocation(locationDetail.toLocationEntity())
-    }
-
-    override suspend fun isFavoriteLocationPresent(id: Int): Boolean {
-        return favoritesDao.isFavoriteLocationPresent(id)
-    }
-}

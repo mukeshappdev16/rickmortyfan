@@ -65,15 +65,16 @@ class RickMortyHome : ComponentActivity() {
                 val adaptiveInfo = currentWindowAdaptiveInfo()
 
                 NavigationSuiteScaffold(
-                    layoutType = if (user == null) {
-                        NavigationSuiteType.None
-                    } else if (adaptiveInfo.windowSizeClass.windowHeightSizeClass ==
-                        WindowHeightSizeClass.COMPACT
-                    ) {
-                        NavigationSuiteType.NavigationRail
-                    } else {
-                        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
-                    },
+                    layoutType =
+                        if (user == null) {
+                            NavigationSuiteType.None
+                        } else if (adaptiveInfo.windowSizeClass.windowHeightSizeClass ==
+                            WindowHeightSizeClass.COMPACT
+                        ) {
+                            NavigationSuiteType.NavigationRail
+                        } else {
+                            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+                        },
                     navigationSuiteItems = {
                         if (user != null) {
                             Screen.entries.forEachIndexed { index, screen ->
@@ -86,39 +87,43 @@ class RickMortyHome : ComponentActivity() {
                                     },
                                     icon = {
                                         Icon(
-                                            imageVector = if (isSelected) {
-                                                screen.icon
-                                            } else {
-                                                screen.unselectedIcon
-                                            },
+                                            imageVector =
+                                                if (isSelected) {
+                                                    screen.icon
+                                                } else {
+                                                    screen.unselectedIcon
+                                                },
                                             contentDescription = null,
-                                            tint = if (isSelected) {
-                                                MaterialTheme.colorScheme.primary
-                                            } else {
-                                                MaterialTheme.colorScheme.onSurfaceVariant
-                                            }
+                                            tint =
+                                                if (isSelected) {
+                                                    MaterialTheme.colorScheme.primary
+                                                } else {
+                                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                                },
                                         )
                                     },
                                     label = {
                                         Text(
                                             text = getString(screen.titleResId),
                                             style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = if (isSelected) {
-                                                FontWeight.Bold
-                                            } else {
-                                                FontWeight.Medium
-                                            },
-                                            color = if (isSelected) {
-                                                MaterialTheme.colorScheme.primary
-                                            } else {
-                                                MaterialTheme.colorScheme.onSurfaceVariant
-                                            }
+                                            fontWeight =
+                                                if (isSelected) {
+                                                    FontWeight.Bold
+                                                } else {
+                                                    FontWeight.Medium
+                                                },
+                                            color =
+                                                if (isSelected) {
+                                                    MaterialTheme.colorScheme.primary
+                                                } else {
+                                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                                },
                                         )
-                                    }
+                                    },
                                 )
                             }
                         }
-                    }
+                    },
                 ) {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
@@ -126,20 +131,22 @@ class RickMortyHome : ComponentActivity() {
                             if (user != null) {
                                 RickMortyTopBar()
                             }
-                        }
+                        },
                     ) { innerPadding ->
                         Box(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .background(MaterialTheme.colorScheme.background)
+                            modifier =
+                                Modifier
+                                    .padding(innerPadding)
+                                    .background(MaterialTheme.colorScheme.background),
                         ) {
                             NavHost(
                                 navController = navController,
-                                startDestination = if (user != null) {
-                                    Screen.HOME.route
-                                } else {
-                                    AuthGraph
-                                }
+                                startDestination =
+                                    if (user != null) {
+                                        Screen.HOME.route
+                                    } else {
+                                        AuthGraph
+                                    },
                             ) {
                                 authNavGraph(
                                     navController = navController,
@@ -147,7 +154,7 @@ class RickMortyHome : ComponentActivity() {
                                         navController.navigate(CharactersRoute) {
                                             popUpTo(AuthGraph) { inclusive = true }
                                         }
-                                    }
+                                    },
                                 )
                                 composable<CharactersRoute> {
                                     DisplayCharactersListScreen()
@@ -179,11 +186,13 @@ class RickMortyHome : ComponentActivity() {
         LocationListScreen(
             state = state,
             onLocationClickListener = { location ->
-                val intent = Intent(this, LocationDetailActivity::class.java).apply {
-                    putExtra(
-                        Constants.LOCATION_ID_KEY, location.id.toString()
-                    )
-                }
+                val intent =
+                    Intent(this, LocationDetailActivity::class.java).apply {
+                        putExtra(
+                            Constants.LOCATION_ID_KEY,
+                            location.id.toString(),
+                        )
+                    }
                 startActivity(intent)
             },
             noInternetTryAgainClicked = {
@@ -191,7 +200,7 @@ class RickMortyHome : ComponentActivity() {
             },
             loadMoreLocations = {
                 viewModel.getLocations()
-            }
+            },
         )
     }
 
@@ -202,11 +211,13 @@ class RickMortyHome : ComponentActivity() {
         EpisodeListScreen(
             episodeListState = episodeListState,
             onClickListener = { episode ->
-                val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
-                    putExtra(
-                        Constants.EPISODE_ID_KEY, episode.id.toString()
-                    )
-                }
+                val intent =
+                    Intent(this, EpisodeDetailActivity::class.java).apply {
+                        putExtra(
+                            Constants.EPISODE_ID_KEY,
+                            episode.id.toString(),
+                        )
+                    }
                 startActivity(intent)
             },
             noInternetTryAgainClicked = {
@@ -214,7 +225,7 @@ class RickMortyHome : ComponentActivity() {
             },
             loadMoreEpisodes = {
                 episodeListViewModel.getEpisodes()
-            }
+            },
         )
     }
 
@@ -225,11 +236,13 @@ class RickMortyHome : ComponentActivity() {
         CharacterListScreen(
             characterListState = characterListState,
             onClickListener = { characterDescription ->
-                val intent = Intent(this, CharacterDetailActivity::class.java).apply {
-                    putExtra(
-                        Constants.CHARACTER_ID_KEY, characterDescription.id.toString()
-                    )
-                }
+                val intent =
+                    Intent(this, CharacterDetailActivity::class.java).apply {
+                        putExtra(
+                            Constants.CHARACTER_ID_KEY,
+                            characterDescription.id.toString(),
+                        )
+                    }
                 startActivity(intent)
             },
             onInternetTryAgainClicked = {
@@ -237,7 +250,7 @@ class RickMortyHome : ComponentActivity() {
             },
             loadMoreCharacters = {
                 characterListViewModel.getCharacters()
-            }
+            },
         )
     }
 
@@ -248,29 +261,36 @@ class RickMortyHome : ComponentActivity() {
         FavoriteScreen(
             favoriteState = favoriteState,
             onClickListenerCharacter = {
-                val intent = Intent(this, CharacterDetailActivity::class.java).apply {
-                    putExtra(
-                        Constants.CHARACTER_ID_KEY, it.id.toString()
-                    )
-                }
+                val intent =
+                    Intent(this, CharacterDetailActivity::class.java).apply {
+                        putExtra(
+                            Constants.CHARACTER_ID_KEY,
+                            it.id.toString(),
+                        )
+                    }
                 startActivity(intent)
             },
             onClickListenerLocation = {
-                val intent = Intent(this, LocationDetailActivity::class.java).apply {
-                    putExtra(
-                        Constants.LOCATION_ID_KEY, it.id.toString()
-                    )
-                }
+                val intent =
+                    Intent(this, LocationDetailActivity::class.java).apply {
+                        putExtra(
+                            Constants.LOCATION_ID_KEY,
+                            it.id.toString(),
+                        )
+                    }
                 startActivity(intent)
             },
             onClickListenerEpisode = {
-                val intent = Intent(this, EpisodeDetailActivity::class.java).apply {
-                    putExtra(
-                        Constants.EPISODE_ID_KEY, it.id.toString()
-                    )
-                }
+                val intent =
+                    Intent(this, EpisodeDetailActivity::class.java).apply {
+                        putExtra(
+                            Constants.EPISODE_ID_KEY,
+                            it.id.toString(),
+                        )
+                    }
                 startActivity(intent)
-            })
+            },
+        )
     }
 
     @Composable
@@ -283,7 +303,10 @@ class RickMortyHome : ComponentActivity() {
     }
 }
 
-private fun navItemClick(navController: NavController, route: Any) {
+private fun navItemClick(
+    navController: NavController,
+    route: Any,
+) {
     navController.navigate(route) {
         popUpTo(navController.graph.startDestinationId) {
             saveState = true

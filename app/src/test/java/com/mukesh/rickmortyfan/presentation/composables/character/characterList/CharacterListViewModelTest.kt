@@ -24,7 +24,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CharacterListViewModelTest {
-
     private lateinit var viewModel: CharacterListViewModel
     private val networkManager: NetworkManager = mockk()
     private val getCharacterListUseCase: GetCharacterListUseCase = mockk()
@@ -41,55 +40,59 @@ class CharacterListViewModelTest {
     }
 
     @Test
-    fun `getCharacters should update state with success when network is available`() = runTest {
-        // Given
-        val characters = Characters(
-            info = Info(count = 1, pages = 1, next = "null", prev = null),
-            charactersList = listOf(mockk<CharacterDescription>())
-        )
-        every { networkManager.isNetworkAvailable() } returns true
-        every { getCharacterListUseCase(1) } returns flowOf(Resource.Success(characters))
+    fun `getCharacters should update state with success when network is available`() =
+        runTest {
+            // Given
+            val characters =
+                Characters(
+                    info = Info(count = 1, pages = 1, next = "null", prev = null),
+                    charactersList = listOf(mockk<CharacterDescription>()),
+                )
+            every { networkManager.isNetworkAvailable() } returns true
+            every { getCharacterListUseCase(1) } returns flowOf(Resource.Success(characters))
 
-        // When
-        viewModel = CharacterListViewModel(networkManager, getCharacterListUseCase)
-        advanceUntilIdle()
+            // When
+            viewModel = CharacterListViewModel(networkManager, getCharacterListUseCase)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.characterListState.value
-        assertEquals(characters.charactersList, state.list)
-        assertEquals(false, state.isLoading)
-        assertEquals(false, state.noInternet)
-    }
-
-    @Test
-    fun `getCharacters should update state with noInternet when network is unavailable`() = runTest {
-        // Given
-        every { networkManager.isNetworkAvailable() } returns false
-
-        // When
-        viewModel = CharacterListViewModel(networkManager, getCharacterListUseCase)
-        advanceUntilIdle()
-
-        // Then
-        val state = viewModel.characterListState.value
-        assertTrue(state.noInternet)
-        assertEquals(false, state.isLoading)
-    }
+            // Then
+            val state = viewModel.characterListState.value
+            assertEquals(characters.charactersList, state.list)
+            assertEquals(false, state.isLoading)
+            assertEquals(false, state.noInternet)
+        }
 
     @Test
-    fun `getCharacters should update state with error when use case returns error`() = runTest {
-        // Given
-        val errorMessage = "An error occurred"
-        every { networkManager.isNetworkAvailable() } returns true
-        every { getCharacterListUseCase(1) } returns flowOf(Resource.Error(errorMessage))
+    fun `getCharacters should update state with noInternet when network is unavailable`() =
+        runTest {
+            // Given
+            every { networkManager.isNetworkAvailable() } returns false
 
-        // When
-        viewModel = CharacterListViewModel(networkManager, getCharacterListUseCase)
-        advanceUntilIdle()
+            // When
+            viewModel = CharacterListViewModel(networkManager, getCharacterListUseCase)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.characterListState.value
-        assertEquals(errorMessage, state.errorMessage)
-        assertEquals(false, state.isLoading)
-    }
+            // Then
+            val state = viewModel.characterListState.value
+            assertTrue(state.noInternet)
+            assertEquals(false, state.isLoading)
+        }
+
+    @Test
+    fun `getCharacters should update state with error when use case returns error`() =
+        runTest {
+            // Given
+            val errorMessage = "An error occurred"
+            every { networkManager.isNetworkAvailable() } returns true
+            every { getCharacterListUseCase(1) } returns flowOf(Resource.Error(errorMessage))
+
+            // When
+            viewModel = CharacterListViewModel(networkManager, getCharacterListUseCase)
+            advanceUntilIdle()
+
+            // Then
+            val state = viewModel.characterListState.value
+            assertEquals(errorMessage, state.errorMessage)
+            assertEquals(false, state.isLoading)
+        }
 }

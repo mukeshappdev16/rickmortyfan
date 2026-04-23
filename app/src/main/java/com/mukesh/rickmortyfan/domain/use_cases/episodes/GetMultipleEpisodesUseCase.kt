@@ -8,17 +8,20 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class GetMultipleEpisodesUseCase @Inject constructor(private val characterRepository: EpisodesRepository) {
-    operator fun invoke(ids: List<String>): Flow<Resource<List<Episode>>> = flow {
-        try {
-            emit(Resource.Loading())
-            emit(Resource.Success(characterRepository.getMultipleEpisodes(ids)))
-        } catch (httpException: HttpException) {
-            httpException.printStackTrace()
-            emit(Resource.Error("Something went wrong. Please try again later"))
-        } catch (exc: Exception) {
-            exc.printStackTrace()
-            emit(Resource.Error("Something went wrong. Please try again later"))
-        }
+class GetMultipleEpisodesUseCase
+    @Inject
+    constructor(private val characterRepository: EpisodesRepository) {
+        operator fun invoke(ids: List<String>): Flow<Resource<List<Episode>>> =
+            flow {
+                try {
+                    emit(Resource.Loading())
+                    emit(Resource.Success(characterRepository.getMultipleEpisodes(ids)))
+                } catch (httpException: HttpException) {
+                    httpException.printStackTrace()
+                    emit(Resource.Error("Something went wrong. Please try again later"))
+                } catch (exc: Exception) {
+                    exc.printStackTrace()
+                    emit(Resource.Error("Something went wrong. Please try again later"))
+                }
+            }
     }
-}

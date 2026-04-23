@@ -46,15 +46,16 @@ fun EpisodeDetailScreen(
     noInternetTryAgainClicked: () -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         when {
             episodeDetailScreenState.noInternet -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
-                    butonLabel = stringResource(R.string.action_try_again)
+                    butonLabel = stringResource(R.string.action_try_again),
                 ) {
                     noInternetTryAgainClicked()
                 }
@@ -78,7 +79,10 @@ fun EpisodeDetailScreen(
 }
 
 @Composable
-fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>) {
+fun EpisodeDetail(
+    episode: Episode,
+    episodeCharList: List<CharacterDescription>,
+) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -90,20 +94,25 @@ fun EpisodeDetail(episode: Episode, episodeCharList: List<CharacterDescription>)
 }
 
 @Composable
-private fun EpisodeDetailPortrait(episode: Episode, episodeCharList: List<CharacterDescription>) {
+private fun EpisodeDetailPortrait(
+    episode: Episode,
+    episodeCharList: List<CharacterDescription>,
+) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
     ) {
         // Hero Header Section
         EpisodeHeader(episode)
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             EpisodeInfoContent(episode, episodeCharList)
@@ -113,24 +122,28 @@ private fun EpisodeDetailPortrait(episode: Episode, episodeCharList: List<Charac
 }
 
 @Composable
-private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<CharacterDescription>) {
+private fun EpisodeDetailLandscape(
+    episode: Episode,
+    episodeCharList: List<CharacterDescription>,
+) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         // Left Side: Fixed Header and Info
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(24.dp),
         ) {
             Text(
                 text = episode.episode,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
-                letterSpacing = 2.sp
+                letterSpacing = 2.sp,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -138,25 +151,26 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
             Text(
                 text = episode.name,
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             InfoItem(
                 label = stringResource(R.string.label_release_date),
-                value = episode.airDate
+                value = episode.airDate,
             )
         }
 
         // Right Side: Scrollable Cast list
         val scrollState = rememberScrollState()
         Column(
-            modifier = Modifier
-                .weight(1.5f)
-                .fillMaxHeight()
-                .verticalScroll(scrollState)
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .weight(1.5f)
+                    .fillMaxHeight()
+                    .verticalScroll(scrollState)
+                    .padding(24.dp),
         ) {
             if (episodeCharList.isNotEmpty()) {
                 Text(
@@ -164,7 +178,7 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.primary,
-                    letterSpacing = 1.5.sp
+                    letterSpacing = 1.5.sp,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -178,7 +192,7 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
                     Text(
                         text = stringResource(R.string.no_cast_available),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -190,10 +204,11 @@ private fun EpisodeDetailLandscape(episode: Episode, episodeCharList: List<Chara
 @Composable
 private fun EpisodeHeader(episode: Episode) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(24.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(24.dp),
     ) {
         Column {
             Text(
@@ -201,7 +216,7 @@ private fun EpisodeHeader(episode: Episode) {
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
-                letterSpacing = 2.sp
+                letterSpacing = 2.sp,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -209,17 +224,20 @@ private fun EpisodeHeader(episode: Episode) {
             Text(
                 text = episode.name,
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
 }
 
 @Composable
-private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<CharacterDescription>) {
+private fun EpisodeInfoContent(
+    episode: Episode,
+    episodeCharList: List<CharacterDescription>,
+) {
     InfoItem(
         label = stringResource(R.string.label_release_date),
-        value = episode.airDate
+        value = episode.airDate,
     )
 
     if (episodeCharList.isNotEmpty()) {
@@ -229,7 +247,7 @@ private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<Character
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 1.5.sp
+            letterSpacing = 1.5.sp,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -242,20 +260,23 @@ private fun EpisodeInfoContent(episode: Episode, episodeCharList: List<Character
 }
 
 @Composable
-fun InfoItem(label: String, value: String) {
+fun InfoItem(
+    label: String,
+    value: String,
+) {
     Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Black,
-            letterSpacing = 1.sp
+            letterSpacing = 1.sp,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }
@@ -266,20 +287,21 @@ fun CastMemberItem(characterDescription: CharacterDescription) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(0.dp)
+        elevation = CardDefaults.cardElevation(0.dp),
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImage(
                 model = characterDescription.image,
                 error = painterResource(R.drawable.account_circle_24),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                modifier =
+                    Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp)),
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -289,12 +311,12 @@ fun CastMemberItem(characterDescription: CharacterDescription) {
                     text = characterDescription.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = characterDescription.species,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

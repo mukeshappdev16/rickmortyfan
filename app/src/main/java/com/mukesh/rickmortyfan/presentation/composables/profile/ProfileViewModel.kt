@@ -12,36 +12,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val getLoggedInUserInfoUseCase: GetLoggedInUserInfoUseCase,
-    private val logoutUseCase: LogoutUseCase,
-    private val clearAllFavoritesUseCase: ClearAllFavoritesUseCase
-) : ViewModel() {
+class ProfileViewModel
+    @Inject
+    constructor(
+        private val getLoggedInUserInfoUseCase: GetLoggedInUserInfoUseCase,
+        private val logoutUseCase: LogoutUseCase,
+        private val clearAllFavoritesUseCase: ClearAllFavoritesUseCase,
+    ) : ViewModel() {
+        private val _state = mutableStateOf(ProfileState())
+        val state: State<ProfileState> = _state
 
-    private val _state = mutableStateOf(ProfileState())
-    val state: State<ProfileState> = _state
+        init {
+            getProfileInfo()
+        }
 
-    init {
-        getProfileInfo()
-    }
+        private fun getProfileInfo() {
+            viewModelScope.launch {
+                getLoggedInUserInfoUseCase().onEach { user ->
+                    _state.value = _state.value.copy(user = user)
+                }.launchIn(viewModelScope)
+            }
+        }
 
-    private fun getProfileInfo() {
-        viewModelScope.launch {
-            getLoggedInUserInfoUseCase().onEach { user ->
-                _state.value = _state.value.copy(user = user)
-            }.launchIn(viewModelScope)
+        fun logout() {
+            viewModelScope.launch(Dispatchers.IO) {
+                logoutUseCase()
+                clearAllFavoritesUseCase()
+                _state.value = _state.value.copy(isLoggedOut = true)
+            }
         }
     }
-
-    fun logout() {
-        viewModelScope.launch(Dispatchers.IO) {
-            logoutUseCase()
-            clearAllFavoritesUseCase()
-            _state.value = _state.value.copy(isLoggedOut = true)
-        }
-    }
-}

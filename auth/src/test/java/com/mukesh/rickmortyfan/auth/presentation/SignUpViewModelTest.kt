@@ -21,17 +21,17 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SignUpViewModelTest {
-
     private lateinit var viewModel: SignUpViewModel
     private val signUpUseCase: SignUpUseCase = mockk()
     private val testDispatcher = StandardTestDispatcher()
 
-    private val sampleUser = RickMortyUser(
-        name = "New User",
-        email = "signup@example.com",
-        profileImageUrl = null,
-        id = "456"
-    )
+    private val sampleUser =
+        RickMortyUser(
+            name = "New User",
+            email = "signup@example.com",
+            profileImageUrl = null,
+            id = "456",
+        )
 
     @Before
     fun setUp() {
@@ -45,49 +45,52 @@ class SignUpViewModelTest {
     }
 
     @Test
-    fun `signUp should emit success state when use case returns success`() = runTest {
-        // Given
-        val email = "signup@example.com"
-        val password = "password123"
-        every { signUpUseCase(email, password) } returns flowOf(Resource.Success(sampleUser))
+    fun `signUp should emit success state when use case returns success`() =
+        runTest {
+            // Given
+            val email = "signup@example.com"
+            val password = "password123"
+            every { signUpUseCase(email, password) } returns flowOf(Resource.Success(sampleUser))
 
-        // When
-        viewModel.signUp(email, password)
-        advanceUntilIdle()
+            // When
+            viewModel.signUp(email, password)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.state.value
-        assertTrue(state.isSuccess)
-        assertEquals(false, state.isLoading)
-        assertEquals(null, state.error)
-    }
-
-    @Test
-    fun `signUp should emit error state when email is empty`() = runTest {
-        // When
-        viewModel.signUp("", "password123")
-
-        // Then
-        val state = viewModel.state.value
-        assertEquals("Email cannot be empty", state.error)
-        assertEquals(false, state.isLoading)
-    }
+            // Then
+            val state = viewModel.state.value
+            assertTrue(state.isSuccess)
+            assertEquals(false, state.isLoading)
+            assertEquals(null, state.error)
+        }
 
     @Test
-    fun `signUp should emit error state when use case returns error`() = runTest {
-        // Given
-        val email = "signup@example.com"
-        val password = "password123"
-        val errorMessage = "Email already in use"
-        every { signUpUseCase(email, password) } returns flowOf(Resource.Error(errorMessage))
+    fun `signUp should emit error state when email is empty`() =
+        runTest {
+            // When
+            viewModel.signUp("", "password123")
 
-        // When
-        viewModel.signUp(email, password)
-        advanceUntilIdle()
+            // Then
+            val state = viewModel.state.value
+            assertEquals("Email cannot be empty", state.error)
+            assertEquals(false, state.isLoading)
+        }
 
-        // Then
-        val state = viewModel.state.value
-        assertEquals(errorMessage, state.error)
-        assertEquals(false, state.isLoading)
-    }
+    @Test
+    fun `signUp should emit error state when use case returns error`() =
+        runTest {
+            // Given
+            val email = "signup@example.com"
+            val password = "password123"
+            val errorMessage = "Email already in use"
+            every { signUpUseCase(email, password) } returns flowOf(Resource.Error(errorMessage))
+
+            // When
+            viewModel.signUp(email, password)
+            advanceUntilIdle()
+
+            // Then
+            val state = viewModel.state.value
+            assertEquals(errorMessage, state.error)
+            assertEquals(false, state.isLoading)
+        }
 }

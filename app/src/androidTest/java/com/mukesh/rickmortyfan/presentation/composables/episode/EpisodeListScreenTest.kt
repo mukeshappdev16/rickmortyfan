@@ -11,30 +11,31 @@ import org.junit.Rule
 import org.junit.Test
 
 class EpisodeListScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val sampleEpisode = Episode(
-        id = 1,
-        name = "Pilot",
-        airDate = "December 2, 2013",
-        episode = "S01E01",
-        characters = emptyList(),
-        url = "",
-        created = ""
-    )
+    private val sampleEpisode =
+        Episode(
+            id = 1,
+            name = "Pilot",
+            airDate = "December 2, 2013",
+            episode = "S01E01",
+            characters = emptyList(),
+            url = "",
+            created = "",
+        )
 
     @Test
     fun episodeList_displaysItems() {
-        val state = EpisodeListState(
-            list = listOf(sampleEpisode)
-        )
+        val state =
+            EpisodeListState(
+                list = listOf(sampleEpisode),
+            )
 
         composeTestRule.setContent {
             EpisodeListScreen(
                 episodeListState = state,
-                onClickListener = {}
+                onClickListener = {},
             )
         }
 
@@ -45,14 +46,15 @@ class EpisodeListScreenTest {
     @Test
     fun episodeList_clickTriggersCallback() {
         var clickedEpisode: Episode? = null
-        val state = EpisodeListState(
-            list = listOf(sampleEpisode)
-        )
+        val state =
+            EpisodeListState(
+                list = listOf(sampleEpisode),
+            )
 
         composeTestRule.setContent {
             EpisodeListScreen(
                 episodeListState = state,
-                onClickListener = { clickedEpisode = it }
+                onClickListener = { clickedEpisode = it },
             )
         }
 

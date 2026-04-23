@@ -1,19 +1,10 @@
 package com.mukesh.rickmortyfan.domain.use_cases.characters
 
-import app.cash.turbine.test
-import com.mukesh.common.Resource
-import com.mukesh.rickmortyfan.domain.modal.character.Characters
 import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
-import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Test
 
 class GetCharacterListUseCaseTest {
-
     private lateinit var getCharacterListUseCase: GetCharacterListUseCase
     private val repository: CharactersRepository = mockk()
 

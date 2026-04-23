@@ -1,0 +1,13 @@
+[*.{kt,kts}]
+# Jetpack Compose allows uppercase for Composable functions
+ktlint_standard_function-naming = disabled
+# The user seems to prefer use_cases as package name
+ktlint_standard_package-name = disabled
+# Wildcard imports are sometimes used in tests or generated code
+ktlint_standard_no-wildcard-imports = disabled
+# File name should match class name
+ktlint_standard_filename = disabled
+# Backing property naming
+ktlint_standard_backing-property-naming = disabled
+# Max line length
+max_line_length = 150

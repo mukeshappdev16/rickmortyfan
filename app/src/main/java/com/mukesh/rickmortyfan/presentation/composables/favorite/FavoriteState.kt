@@ -9,5 +9,5 @@ data class FavoriteState(
     val errorMessage: String = "",
     val characterList: List<CharacterDescription> = emptyList(),
     val locationList: List<LocationDetail> = emptyList(),
-    val episodeList: List<Episode> = emptyList()
+    val episodeList: List<Episode> = emptyList(),
 )

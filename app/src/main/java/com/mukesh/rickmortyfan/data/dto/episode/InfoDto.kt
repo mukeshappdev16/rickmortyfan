@@ -6,7 +6,7 @@ data class InfoDto(
     val count: Int,
     val next: String,
     val pages: Int,
-    val prev: String?
+    val prev: String?,
 )
 
 fun InfoDto.toInfo(): Info {
@@ -14,6 +14,6 @@ fun InfoDto.toInfo(): Info {
         count = this.count,
         next = this.next,
         pages = this.pages,
-        prev = this.prev
+        prev = this.prev,
     )
 }

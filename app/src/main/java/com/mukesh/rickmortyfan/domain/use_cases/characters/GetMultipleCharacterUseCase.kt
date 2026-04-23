@@ -8,17 +8,20 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class GetMultipleCharacterUseCase @Inject constructor(private val characterRepository: CharactersRepository) {
-    operator fun invoke(list: List<String>): Flow<Resource<List<CharacterDescription>>> = flow {
-        try {
-            emit(Resource.Loading())
-            emit(Resource.Success(characterRepository.getMultipleCharacters(list)))
-        } catch (httpException: HttpException) {
-            httpException.printStackTrace()
-            emit(Resource.Error("Network error. Please try again later"))
-        } catch (exc: Exception) {
-            exc.printStackTrace()
-            emit(Resource.Error("Something went wrong. Please try again later"))
-        }
+class GetMultipleCharacterUseCase
+    @Inject
+    constructor(private val characterRepository: CharactersRepository) {
+        operator fun invoke(list: List<String>): Flow<Resource<List<CharacterDescription>>> =
+            flow {
+                try {
+                    emit(Resource.Loading())
+                    emit(Resource.Success(characterRepository.getMultipleCharacters(list)))
+                } catch (httpException: HttpException) {
+                    httpException.printStackTrace()
+                    emit(Resource.Error("Network error. Please try again later"))
+                } catch (exc: Exception) {
+                    exc.printStackTrace()
+                    emit(Resource.Error("Something went wrong. Please try again later"))
+                }
+            }
     }
-}

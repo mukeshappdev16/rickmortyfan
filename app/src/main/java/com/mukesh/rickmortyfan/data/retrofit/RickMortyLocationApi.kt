@@ -7,12 +7,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RickMortyLocationApi {
-
     @GET("location")
     suspend fun getAllLocations(
-        @Query("page") page: Int
+        @Query("page") page: Int,
     ): LocationListResponse
 
     @GET("location/{locationId}")
-    suspend fun getLocationDetail(@Path("locationId") locationId: String): LocationDto
+    suspend fun getLocationDetail(
+        @Path("locationId") locationId: String,
+    ): LocationDto
 }

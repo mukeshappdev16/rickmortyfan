@@ -22,97 +22,100 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharacterDetailViewModel @Inject constructor(
-    private val networkManager: NetworkManager,
-    private val getCharacterDetailUseCase: GetCharacterDetailUseCase,
-    private val getMultipleEpisodesUseCase: GetMultipleEpisodesUseCase,
-    private val addFavoriteCharactersUseCase: AddFavoriteCharactersUseCase,
-    private val removeFavoriteCharactersUseCase: RemoveFavoriteCharactersUseCase,
-    private val isFavoriteCharactersUseCase: IsFavoriteCharactersUseCase
-) : ViewModel() {
-    private val _characterDetailScreenState: MutableState<CharacterDetailScreenState> =
-        mutableStateOf(CharacterDetailScreenState())
-    val characterDetailScreenState: State<CharacterDetailScreenState> = _characterDetailScreenState
+class CharacterDetailViewModel
+    @Inject
+    constructor(
+        private val networkManager: NetworkManager,
+        private val getCharacterDetailUseCase: GetCharacterDetailUseCase,
+        private val getMultipleEpisodesUseCase: GetMultipleEpisodesUseCase,
+        private val addFavoriteCharactersUseCase: AddFavoriteCharactersUseCase,
+        private val removeFavoriteCharactersUseCase: RemoveFavoriteCharactersUseCase,
+        private val isFavoriteCharactersUseCase: IsFavoriteCharactersUseCase,
+    ) : ViewModel() {
+        private val _characterDetailScreenState: MutableState<CharacterDetailScreenState> =
+            mutableStateOf(CharacterDetailScreenState())
+        val characterDetailScreenState: State<CharacterDetailScreenState> = _characterDetailScreenState
 
-    fun getCharacterDetail(charId: String) {
-        if (!networkManager.isNetworkAvailable()) {
-            _characterDetailScreenState.value = CharacterDetailScreenState(noInternet = true)
-            return
-        }
-        getCharacterDetailUseCase(charId).onEach { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    _characterDetailScreenState.value = CharacterDetailScreenState(isLoading = true)
-                }
-
-                is Resource.Success -> {
-                    _characterDetailScreenState.value =
-                        CharacterDetailScreenState(characterDescription = result.data)
-                    result.data?.episode?.let { idsList ->
-                        getAllEpisodesForCharacter(Utils.getIdsFromUrlList(idsList))
-                    }
-                    isFavoriteCharacter(result.data?.id.toString())
-                }
-
-                is Resource.Error -> {
-                    _characterDetailScreenState.value =
-                        CharacterDetailScreenState(
-                            errorMessage = result.message
-                                ?: "Something went wrong. Please try again later"
-                        )
-                }
+        fun getCharacterDetail(charId: String) {
+            if (!networkManager.isNetworkAvailable()) {
+                _characterDetailScreenState.value = CharacterDetailScreenState(noInternet = true)
+                return
             }
-        }.launchIn(viewModelScope)
-    }
+            getCharacterDetailUseCase(charId).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _characterDetailScreenState.value = CharacterDetailScreenState(isLoading = true)
+                    }
 
-    private fun getAllEpisodesForCharacter(episodeUrlList: List<String>) {
-        getMultipleEpisodesUseCase(episodeUrlList).onEach { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    // Do Nothing or display error message for episode section
-                }
-
-                is Resource.Error -> {
-                    // Do Nothing or display error message for episode section
-                }
-
-                is Resource.Success -> {
-                    result.data?.let {
+                    is Resource.Success -> {
                         _characterDetailScreenState.value =
-                            _characterDetailScreenState.value.copy(
-                                episodes = it
+                            CharacterDetailScreenState(characterDescription = result.data)
+                        result.data?.episode?.let { idsList ->
+                            getAllEpisodesForCharacter(Utils.getIdsFromUrlList(idsList))
+                        }
+                        isFavoriteCharacter(result.data?.id.toString())
+                    }
+
+                    is Resource.Error -> {
+                        _characterDetailScreenState.value =
+                            CharacterDetailScreenState(
+                                errorMessage =
+                                    result.message
+                                        ?: "Something went wrong. Please try again later",
                             )
                     }
                 }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    private fun isFavoriteCharacter(charId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isFavorite = isFavoriteCharactersUseCase(charId)
-            _characterDetailScreenState.value =
-                _characterDetailScreenState.value.copy(isFavorite = isFavorite)
+            }.launchIn(viewModelScope)
         }
-    }
 
-    fun addFavoriteCharacter(characterDescription: CharacterDescription) {
-        viewModelScope.launch {
-            val isAdded = addFavoriteCharactersUseCase(characterDescription)
-            if (isAdded > 0) {
+        private fun getAllEpisodesForCharacter(episodeUrlList: List<String>) {
+            getMultipleEpisodesUseCase(episodeUrlList).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        // Do Nothing or display error message for episode section
+                    }
+
+                    is Resource.Error -> {
+                        // Do Nothing or display error message for episode section
+                    }
+
+                    is Resource.Success -> {
+                        result.data?.let {
+                            _characterDetailScreenState.value =
+                                _characterDetailScreenState.value.copy(
+                                    episodes = it,
+                                )
+                        }
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+
+        private fun isFavoriteCharacter(charId: String) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val isFavorite = isFavoriteCharactersUseCase(charId)
                 _characterDetailScreenState.value =
-                    _characterDetailScreenState.value.copy(isFavorite = true)
+                    _characterDetailScreenState.value.copy(isFavorite = isFavorite)
             }
         }
-    }
 
-    fun removeFavoriteCharacter(characterDescription: CharacterDescription) {
-        viewModelScope.launch {
-            val isRemoved = removeFavoriteCharactersUseCase(characterDescription)
-            if (isRemoved == 1) {
-                _characterDetailScreenState.value =
-                    _characterDetailScreenState.value.copy(isFavorite = false)
+        fun addFavoriteCharacter(characterDescription: CharacterDescription) {
+            viewModelScope.launch {
+                val isAdded = addFavoriteCharactersUseCase(characterDescription)
+                if (isAdded > 0) {
+                    _characterDetailScreenState.value =
+                        _characterDetailScreenState.value.copy(isFavorite = true)
+                }
+            }
+        }
+
+        fun removeFavoriteCharacter(characterDescription: CharacterDescription) {
+            viewModelScope.launch {
+                val isRemoved = removeFavoriteCharactersUseCase(characterDescription)
+                if (isRemoved == 1) {
+                    _characterDetailScreenState.value =
+                        _characterDetailScreenState.value.copy(isFavorite = false)
+                }
             }
         }
     }
-}

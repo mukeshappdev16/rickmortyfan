@@ -8,19 +8,20 @@ import com.mukesh.rickmortyfan.domain.modal.character.Characters
 import com.mukesh.rickmortyfan.domain.repository.CharactersRepository
 import javax.inject.Inject
 
-class CharactersRepositoryImpl @Inject constructor(val rickMortyCharacterApi: RickMortyCharacterApi) :
+class CharactersRepositoryImpl
+    @Inject
+    constructor(val rickMortyCharacterApi: RickMortyCharacterApi) :
     CharactersRepository {
-    override suspend fun getAllCharacters(page: Int): Characters {
-        return rickMortyCharacterApi.getAllCharacters(page).toCharacters()
-    }
+        override suspend fun getAllCharacters(page: Int): Characters {
+            return rickMortyCharacterApi.getAllCharacters(page).toCharacters()
+        }
 
-    override suspend fun getCharacterDetail(charId: String): CharacterDescription {
-        return rickMortyCharacterApi.getCharacterDetail(charId).toCharacterDescription()
-    }
+        override suspend fun getCharacterDetail(charId: String): CharacterDescription {
+            return rickMortyCharacterApi.getCharacterDetail(charId).toCharacterDescription()
+        }
 
-    override suspend fun getMultipleCharacters(list: List<String>): List<CharacterDescription> {
-
-        return rickMortyCharacterApi.getMultipleCharacters(list.joinToString())
-            .map { it.toCharacterDescription() }
+        override suspend fun getMultipleCharacters(list: List<String>): List<CharacterDescription> {
+            return rickMortyCharacterApi.getMultipleCharacters(list.joinToString())
+                .map { it.toCharacterDescription() }
+        }
     }
-}

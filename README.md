@@ -77,15 +77,17 @@ The project is configured with **GitHub Actions** for automated quality assuranc
 
 ## Code Quality ⚙️
 
-To maintain high code quality, run these commands locally before committing your changes:
+To maintain high code quality and consistent formatting, run these commands locally before committing your changes:
 
 | Task | Command |
 | :--- | :--- |
+| **Format Code** | `./gradlew spotlessApply` |
+| **Check Formatting** | `./gradlew spotlessCheck` |
 | **Full Lint Check** | `./gradlew lint` |
 | **Unit Tests** | `./gradlew test` |
 | **Static Analysis (app)** | `./gradlew :app:lintDebug` |
 
-> **Note:** After running lint, you can find detailed HTML reports in: `[module]/build/reports/lint-results-debug.html`
+> **Note:** `spotlessApply` uses **ktlint** to automatically format your Kotlin code and Gradle scripts. After running lint, you can find detailed HTML reports in: `[module]/build/reports/lint-results-debug.html`
 
 ## API Credit 🔌
 

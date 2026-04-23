@@ -20,13 +20,13 @@ fun RickMortyTopBar() {
                 text = stringResource(R.string.title_rick_and_morty),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Black,
-                letterSpacing = (-1).sp
+                letterSpacing = (-1).sp,
             )
-
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }

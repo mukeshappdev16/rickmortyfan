@@ -22,7 +22,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.mukesh.rickmortyfan.R
 import com.mukesh.rickmortyfan.domain.modal.character.CharacterDescription
@@ -49,15 +47,16 @@ fun LocationDetailScreen(
     noInternetTryAgainClicked: () -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         when {
             state.noInternet -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
-                    butonLabel = stringResource(R.string.action_try_again)
+                    butonLabel = stringResource(R.string.action_try_again),
                 ) {
                     noInternetTryAgainClicked()
                 }
@@ -81,7 +80,10 @@ fun LocationDetailScreen(
 }
 
 @Composable
-fun LocationDetailContent(location: LocationDetail, residents: List<CharacterDescription>) {
+fun LocationDetailContent(
+    location: LocationDetail,
+    residents: List<CharacterDescription>,
+) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -95,20 +97,22 @@ fun LocationDetailContent(location: LocationDetail, residents: List<CharacterDes
 @Composable
 private fun LocationDetailPortrait(
     location: LocationDetail,
-    residents: List<CharacterDescription>
+    residents: List<CharacterDescription>,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
     ) {
         // Hero Header Section
         LocationHeader(location)
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             LocationInfoContent(location, residents)
@@ -120,25 +124,26 @@ private fun LocationDetailPortrait(
 @Composable
 private fun LocationDetailLandscape(
     location: LocationDetail,
-    residents: List<CharacterDescription>
+    residents: List<CharacterDescription>,
 ) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         // Left Side: Fixed Header and Info
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(24.dp),
         ) {
             Text(
                 text = location.type.uppercase(),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
-                letterSpacing = 2.sp
+                letterSpacing = 2.sp,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -146,25 +151,26 @@ private fun LocationDetailLandscape(
             Text(
                 text = location.name,
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             InfoItem(
                 label = stringResource(R.string.label_dimension),
-                value = location.dimension
+                value = location.dimension,
             )
         }
 
         // Right Side: Scrollable Residents list
         val scrollState = rememberScrollState()
         Column(
-            modifier = Modifier
-                .weight(1.5f)
-                .fillMaxHeight()
-                .verticalScroll(scrollState)
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .weight(1.5f)
+                    .fillMaxHeight()
+                    .verticalScroll(scrollState)
+                    .padding(24.dp),
         ) {
             if (residents.isNotEmpty()) {
                 Text(
@@ -172,7 +178,7 @@ private fun LocationDetailLandscape(
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.primary,
-                    letterSpacing = 1.5.sp
+                    letterSpacing = 1.5.sp,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -186,7 +192,7 @@ private fun LocationDetailLandscape(
                     Text(
                         text = stringResource(R.string.no_residents_available),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -198,10 +204,11 @@ private fun LocationDetailLandscape(
 @Composable
 private fun LocationHeader(location: LocationDetail) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(24.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(24.dp),
     ) {
         Column {
             Text(
@@ -209,7 +216,7 @@ private fun LocationHeader(location: LocationDetail) {
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
-                letterSpacing = 2.sp
+                letterSpacing = 2.sp,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -217,17 +224,20 @@ private fun LocationHeader(location: LocationDetail) {
             Text(
                 text = location.name,
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
 }
 
 @Composable
-private fun LocationInfoContent(location: LocationDetail, residents: List<CharacterDescription>) {
+private fun LocationInfoContent(
+    location: LocationDetail,
+    residents: List<CharacterDescription>,
+) {
     InfoItem(
         label = stringResource(R.string.label_dimension),
-        value = location.dimension
+        value = location.dimension,
     )
 
     if (residents.isNotEmpty()) {
@@ -237,7 +247,7 @@ private fun LocationInfoContent(location: LocationDetail, residents: List<Charac
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 1.5.sp
+            letterSpacing = 1.5.sp,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -250,20 +260,23 @@ private fun LocationInfoContent(location: LocationDetail, residents: List<Charac
 }
 
 @Composable
-fun InfoItem(label: String, value: String) {
+fun InfoItem(
+    label: String,
+    value: String,
+) {
     Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Black,
-            letterSpacing = 1.sp
+            letterSpacing = 1.sp,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }
@@ -274,20 +287,21 @@ fun ResidentItem(character: CharacterDescription) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(0.dp)
+        elevation = CardDefaults.cardElevation(0.dp),
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImage(
                 model = character.image,
                 error = painterResource(R.drawable.account_circle_24),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                modifier =
+                    Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(8.dp)),
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -297,12 +311,12 @@ fun ResidentItem(character: CharacterDescription) {
                     text = character.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = character.species,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

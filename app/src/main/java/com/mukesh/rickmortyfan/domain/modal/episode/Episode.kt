@@ -7,5 +7,5 @@ data class Episode(
     val episode: String,
     val id: Int,
     val name: String,
-    val url: String
+    val url: String,
 )

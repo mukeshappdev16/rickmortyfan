@@ -30,7 +30,7 @@ fun FavoriteScreen(
     favoriteState: FavoriteState,
     onClickListenerCharacter: (CharacterDescription) -> Unit,
     onClickListenerLocation: (LocationDetail) -> Unit,
-    onClickListenerEpisode: (Episode) -> Unit
+    onClickListenerEpisode: (Episode) -> Unit,
 ) {
     if (favoriteState.characterList.isEmpty() &&
         favoriteState.locationList.isEmpty() &&
@@ -48,11 +48,11 @@ fun FavoriteScreen(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 1.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
                 CharacterListScreen(
                     characterListState = CharacterListState(list = favoriteState.characterList),
-                    onClickListener = onClickListenerCharacter
+                    onClickListener = onClickListenerCharacter,
                 )
             }
             if (favoriteState.locationList.isNotEmpty()) {
@@ -62,11 +62,11 @@ fun FavoriteScreen(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 1.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
                 LocationListScreen(
                     state = LocationListState(list = favoriteState.locationList),
-                    onLocationClickListener = onClickListenerLocation
+                    onLocationClickListener = onClickListenerLocation,
                 )
             }
             if (favoriteState.episodeList.isNotEmpty()) {
@@ -76,11 +76,11 @@ fun FavoriteScreen(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 1.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
                 EpisodeListScreen(
                     episodeListState = EpisodeListState(list = favoriteState.episodeList),
-                    onClickListener = onClickListenerEpisode
+                    onClickListener = onClickListenerEpisode,
                 )
             }
         }

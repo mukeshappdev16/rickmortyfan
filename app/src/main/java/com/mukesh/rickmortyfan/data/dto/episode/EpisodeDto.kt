@@ -11,7 +11,7 @@ data class EpisodeDto(
     val episode: String,
     val id: Int,
     val name: String,
-    val url: String
+    val url: String,
 )
 
 fun EpisodeDto.toEpisode(): Episode {
@@ -22,6 +22,6 @@ fun EpisodeDto.toEpisode(): Episode {
         episode = this.episode,
         id = this.id,
         name = this.name,
-        url = this.url
+        url = this.url,
     )
 }

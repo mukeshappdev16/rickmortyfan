@@ -11,30 +11,31 @@ import org.junit.Rule
 import org.junit.Test
 
 class LocationListScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val sampleLocation = LocationDetail(
-        id = 1,
-        name = "Earth (C-137)",
-        type = "Planet",
-        dimension = "Dimension C-137",
-        residents = emptyList(),
-        url = "",
-        created = ""
-    )
+    private val sampleLocation =
+        LocationDetail(
+            id = 1,
+            name = "Earth (C-137)",
+            type = "Planet",
+            dimension = "Dimension C-137",
+            residents = emptyList(),
+            url = "",
+            created = "",
+        )
 
     @Test
     fun locationList_displaysItems() {
-        val state = LocationListState(
-            list = listOf(sampleLocation)
-        )
+        val state =
+            LocationListState(
+                list = listOf(sampleLocation),
+            )
 
         composeTestRule.setContent {
             LocationListScreen(
                 state = state,
-                onLocationClickListener = {}
+                onLocationClickListener = {},
             )
         }
 
@@ -45,14 +46,15 @@ class LocationListScreenTest {
     @Test
     fun locationList_clickTriggersCallback() {
         var clickedLocation: LocationDetail? = null
-        val state = LocationListState(
-            list = listOf(sampleLocation)
-        )
+        val state =
+            LocationListState(
+                list = listOf(sampleLocation),
+            )
 
         composeTestRule.setContent {
             LocationListScreen(
                 state = state,
-                onLocationClickListener = { clickedLocation = it }
+                onLocationClickListener = { clickedLocation = it },
             )
         }
 

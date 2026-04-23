@@ -13,35 +13,36 @@ import org.junit.Rule
 import org.junit.Test
 
 class CharacterListScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val sampleCharacter = CharacterDescription(
-        id = 1,
-        name = "Rick Sanchez",
-        status = "Alive",
-        species = "Human",
-        type = "",
-        gender = "Male",
-        origin = Origin("Earth", ""),
-        location = Location("Earth", ""),
-        image = "",
-        episode = emptyList(),
-        url = "",
-        created = ""
-    )
+    private val sampleCharacter =
+        CharacterDescription(
+            id = 1,
+            name = "Rick Sanchez",
+            status = "Alive",
+            species = "Human",
+            type = "",
+            gender = "Male",
+            origin = Origin("Earth", ""),
+            location = Location("Earth", ""),
+            image = "",
+            episode = emptyList(),
+            url = "",
+            created = "",
+        )
 
     @Test
     fun characterList_displaysItems() {
-        val state = CharacterListState(
-            list = listOf(sampleCharacter)
-        )
+        val state =
+            CharacterListState(
+                list = listOf(sampleCharacter),
+            )
 
         composeTestRule.setContent {
             CharacterListScreen(
                 characterListState = state,
-                onClickListener = {}
+                onClickListener = {},
             )
         }
 
@@ -53,14 +54,15 @@ class CharacterListScreenTest {
     @Test
     fun characterList_clickTriggersCallback() {
         var clickedCharacter: CharacterDescription? = null
-        val state = CharacterListState(
-            list = listOf(sampleCharacter)
-        )
+        val state =
+            CharacterListState(
+                list = listOf(sampleCharacter),
+            )
 
         composeTestRule.setContent {
             CharacterListScreen(
                 characterListState = state,
-                onClickListener = { clickedCharacter = it }
+                onClickListener = { clickedCharacter = it },
             )
         }
 
@@ -75,7 +77,7 @@ class CharacterListScreenTest {
         composeTestRule.setContent {
             CharacterListScreen(
                 characterListState = state,
-                onClickListener = {}
+                onClickListener = {},
             )
         }
 

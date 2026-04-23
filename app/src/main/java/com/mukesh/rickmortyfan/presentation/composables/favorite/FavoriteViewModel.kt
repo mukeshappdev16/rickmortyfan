@@ -13,29 +13,31 @@ import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoriteViewModel @Inject constructor(
-    getFavoriteEpisodeUseCase: GetFavoriteEpisodeUseCase,
-    getFavoriteLocationUseCase: GetFavoriteLocationUseCase,
-    getFavoriteCharactersUseCase: GetFavoriteCharactersUseCase
-) : ViewModel() {
+class FavoriteViewModel
+    @Inject
+    constructor(
+        getFavoriteEpisodeUseCase: GetFavoriteEpisodeUseCase,
+        getFavoriteLocationUseCase: GetFavoriteLocationUseCase,
+        getFavoriteCharactersUseCase: GetFavoriteCharactersUseCase,
+    ) : ViewModel() {
+        private val _favoriteState = mutableStateOf(FavoriteState())
+        val favoriteState: State<FavoriteState> = _favoriteState
 
-    private val _favoriteState = mutableStateOf(FavoriteState())
-    val favoriteState: State<FavoriteState> = _favoriteState
-
-    init {
-        // Combine all three flows into one state update
-        combine(
-            getFavoriteCharactersUseCase(),
-            getFavoriteLocationUseCase(),
-            getFavoriteEpisodeUseCase()
-        ) { characters, locations, episodes ->
-            // Update the state while keeping the data synchronized
-            _favoriteState.value = _favoriteState.value.copy(
-                characterList = characters,
-                locationList = locations,
-                episodeList = episodes,
-                isLoading = false // Assuming you have a loading flag
-            )
-        }.launchIn(viewModelScope)
+        init {
+            // Combine all three flows into one state update
+            combine(
+                getFavoriteCharactersUseCase(),
+                getFavoriteLocationUseCase(),
+                getFavoriteEpisodeUseCase(),
+            ) { characters, locations, episodes ->
+                // Update the state while keeping the data synchronized
+                _favoriteState.value =
+                    _favoriteState.value.copy(
+                        characterList = characters,
+                        locationList = locations,
+                        episodeList = episodes,
+                        isLoading = false, // Assuming you have a loading flag
+                    )
+            }.launchIn(viewModelScope)
+        }
     }
-}

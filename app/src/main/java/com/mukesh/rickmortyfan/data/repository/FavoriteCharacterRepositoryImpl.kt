@@ -9,23 +9,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class FavoriteCharacterRepositoryImpl @Inject constructor(val favoritesDao: FavoritesDao) :
+class FavoriteCharacterRepositoryImpl
+    @Inject
+    constructor(val favoritesDao: FavoritesDao) :
     FavoriteCharacterRepository {
-    override fun getFavoriteCharacters(): Flow<List<CharacterDescription>> {
-        return favoritesDao.getFavoriteCharacters().map { entities ->
-            entities.map { it.toCharacterDescription() }
+        override fun getFavoriteCharacters(): Flow<List<CharacterDescription>> {
+            return favoritesDao.getFavoriteCharacters().map { entities ->
+                entities.map { it.toCharacterDescription() }
+            }
+        }
+
+        override suspend fun addFavoriteCharacter(character: CharacterDescription): Long {
+            return favoritesDao.addFavoriteCharacter(character.toCharacterEntity())
+        }
+
+        override suspend fun removeFavoriteCharacter(character: CharacterDescription): Int {
+            return favoritesDao.removeFavoriteCharacter(character.toCharacterEntity())
+        }
+
+        override suspend fun isFavoriteCharacterPresent(id: Int): Boolean {
+            return favoritesDao.isFavoriteCharacterPresent(id)
         }
     }
-
-    override suspend fun addFavoriteCharacter(character: CharacterDescription): Long {
-        return favoritesDao.addFavoriteCharacter(character.toCharacterEntity())
-    }
-
-    override suspend fun removeFavoriteCharacter(character: CharacterDescription): Int {
-        return favoritesDao.removeFavoriteCharacter(character.toCharacterEntity())
-    }
-
-    override suspend fun isFavoriteCharacterPresent(id: Int): Boolean {
-        return favoritesDao.isFavoriteCharacterPresent(id)
-    }
-}

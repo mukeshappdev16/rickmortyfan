@@ -33,6 +33,7 @@ mockk = "1.14.9"
 turbine = "1.2.1"
 uiautomator = "2.3.0"
 benchmarkMacroJunit4 = "1.4.1"
+spotless = "8.4.0"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -82,6 +83,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+spotless-gradle = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -94,3 +96,4 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 android-test = { id = "com.android.test", version.ref = "agp" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

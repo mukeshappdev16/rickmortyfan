@@ -57,12 +57,12 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onSignUpClick: () -> Unit,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    
+
     val state = viewModel.state.value
     val context = LocalContext.current
 
@@ -88,7 +88,7 @@ fun LoginScreen(
         onLoginClick = { viewModel.login(email, password) },
         onForgotPasswordClick = onForgotPasswordClick,
         onSignUpClick = onSignUpClick,
-        isLoading = state.isLoading
+        isLoading = state.isLoading,
     )
 }
 
@@ -104,16 +104,17 @@ fun LoginScreenContent(
     onForgotPasswordClick: () -> Unit,
     onSignUpClick: () -> Unit,
     isLoading: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-            .semantics { testTagsAsResourceId = true },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp)
+                .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         // Title: Rick & Morty
         Text(
@@ -121,16 +122,16 @@ fun LoginScreenContent(
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
-            letterSpacing = (-2).sp
+            letterSpacing = (-2).sp,
         )
-        
+
         // Subtitle: FAN CLUB
         Text(
             text = stringResource(R.string.login_subtitle),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            letterSpacing = 4.sp
+            letterSpacing = 4.sp,
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -146,19 +147,20 @@ fun LoginScreenContent(
                 Icon(
                     imageVector = Icons.Default.Email,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
             singleLine = true,
-            enabled = !isLoading
+            enabled = !isLoading,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -174,43 +176,46 @@ fun LoginScreenContent(
                 Icon(
                     imageVector = Icons.Default.Lock,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
             trailingIcon = {
                 IconButton(onClick = onTogglePasswordVisibility) {
                     Icon(
                         imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = stringResource(
-                            if (isPasswordVisible) R.string.desc_hide_password else R.string.desc_show_password
-                        ),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        contentDescription =
+                            stringResource(
+                                if (isPasswordVisible) R.string.desc_hide_password else R.string.desc_show_password,
+                            ),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             },
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
             singleLine = true,
-            enabled = !isLoading
+            enabled = !isLoading,
         )
 
         // Forgot Password Link
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
             Text(
                 text = stringResource(R.string.action_forgot_password),
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .clickable(enabled = !isLoading) { onForgotPasswordClick() },
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .clickable(enabled = !isLoading) { onForgotPasswordClick() },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
 
@@ -219,27 +224,29 @@ fun LoginScreenContent(
         // Login Action Button
         Button(
             onClick = onLoginClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp).testTag("login_button"),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp).testTag("login_button"),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            enabled = !isLoading
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+            enabled = !isLoading,
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.height(24.dp)
+                    modifier = Modifier.height(24.dp),
                 )
             } else {
                 Text(
                     text = stringResource(R.string.action_login),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 1.sp
+                    letterSpacing = 1.sp,
                 )
             }
         }
@@ -250,12 +257,12 @@ fun LoginScreenContent(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = stringResource(R.string.text_no_account),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
@@ -263,7 +270,7 @@ fun LoginScreenContent(
                 modifier = Modifier.clickable(enabled = !isLoading) { onSignUpClick() },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.ExtraBold,
             )
         }
     }
@@ -282,7 +289,7 @@ fun LoginScreenEmptyPreview() {
             onTogglePasswordVisibility = {},
             onLoginClick = {},
             onForgotPasswordClick = {},
-            onSignUpClick = {}
+            onSignUpClick = {},
         )
     }
 }
@@ -300,7 +307,7 @@ fun LoginScreenFilledPreview() {
             onTogglePasswordVisibility = {},
             onLoginClick = {},
             onForgotPasswordClick = {},
-            onSignUpClick = {}
+            onSignUpClick = {},
         )
     }
 }

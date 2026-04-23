@@ -8,14 +8,16 @@ import com.mukesh.rickmortyfan.domain.modal.location.Locations
 import com.mukesh.rickmortyfan.domain.repository.LocationsRepository
 import javax.inject.Inject
 
-class LocationsRepositoryImpl @Inject constructor(
-    private val locationApi: RickMortyLocationApi
-) : LocationsRepository {
-    override suspend fun getAllLocations(page: Int): Locations {
-        return locationApi.getAllLocations(page).toLocations()
-    }
+class LocationsRepositoryImpl
+    @Inject
+    constructor(
+        private val locationApi: RickMortyLocationApi,
+    ) : LocationsRepository {
+        override suspend fun getAllLocations(page: Int): Locations {
+            return locationApi.getAllLocations(page).toLocations()
+        }
 
-    override suspend fun getLocationDetail(locationId: String): LocationDetail {
-        return locationApi.getLocationDetail(locationId).toLocationDetail()
+        override suspend fun getLocationDetail(locationId: String): LocationDetail {
+            return locationApi.getLocationDetail(locationId).toLocationDetail()
+        }
     }
-}

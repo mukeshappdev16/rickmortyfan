@@ -8,19 +8,21 @@ import com.mukesh.rickmortyfan.domain.modal.episode.Episodes
 import com.mukesh.rickmortyfan.domain.repository.EpisodesRepository
 import javax.inject.Inject
 
-class EpisodesRepositoryImpl @Inject constructor(val episodesApi: RickMortyEpisodesApi) :
+class EpisodesRepositoryImpl
+    @Inject
+    constructor(val episodesApi: RickMortyEpisodesApi) :
     EpisodesRepository {
-    override suspend fun getAllEpisodes(page: Int): Episodes {
-        return episodesApi.getAllEpisodes(page).toEpisodes()
-    }
+        override suspend fun getAllEpisodes(page: Int): Episodes {
+            return episodesApi.getAllEpisodes(page).toEpisodes()
+        }
 
-    override suspend fun getEpisodeDetail(episodeId: String): Episode {
-        return episodesApi.getEpisodeDetail(episodeId).toEpisode()
-    }
+        override suspend fun getEpisodeDetail(episodeId: String): Episode {
+            return episodesApi.getEpisodeDetail(episodeId).toEpisode()
+        }
 
-    override suspend fun getMultipleEpisodes(ids: List<String>): List<Episode> {
-        return episodesApi.getMultipleEpisodes(ids.joinToString()).map {
-            it.toEpisode()
+        override suspend fun getMultipleEpisodes(ids: List<String>): List<Episode> {
+            return episodesApi.getMultipleEpisodes(ids.joinToString()).map {
+                it.toEpisode()
+            }
         }
     }
-}

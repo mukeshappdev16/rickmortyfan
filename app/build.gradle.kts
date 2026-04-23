@@ -28,7 +28,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         create("benchmark") {
@@ -95,11 +95,11 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
-    //Compose navigation
+    // Compose navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
-    //material3
+    // material3
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.compose.material.icons.extended)
@@ -107,7 +107,7 @@ dependencies {
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
 
-    //firebase
+    // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
@@ -118,5 +118,4 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.gson)
-
 }

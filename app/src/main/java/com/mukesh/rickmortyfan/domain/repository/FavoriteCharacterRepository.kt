@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoriteCharacterRepository {
     fun getFavoriteCharacters(): Flow<List<CharacterDescription>>
+
     suspend fun addFavoriteCharacter(character: CharacterDescription): Long
+
     suspend fun removeFavoriteCharacter(character: CharacterDescription): Int
 
     suspend fun isFavoriteCharacterPresent(id: Int): Boolean

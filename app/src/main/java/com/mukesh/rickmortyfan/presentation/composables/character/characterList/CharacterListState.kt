@@ -9,5 +9,5 @@ data class CharacterListState(
     val errorMessage: String = "",
     val list: List<CharacterDescription> = emptyList(),
     val page: Int = 1,
-    val endReached: Boolean = false
+    val endReached: Boolean = false,
 )

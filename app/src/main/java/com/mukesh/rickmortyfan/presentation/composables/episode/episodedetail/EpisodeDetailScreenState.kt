@@ -9,5 +9,5 @@ data class EpisodeDetailScreenState(
     val errorMessage: String = "",
     val noInternet: Boolean = false,
     val episode: Episode? = null,
-    val episodeCharList: List<CharacterDescription> = emptyList()
+    val episodeCharList: List<CharacterDescription> = emptyList(),
 )

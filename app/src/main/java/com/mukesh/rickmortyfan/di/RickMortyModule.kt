@@ -3,8 +3,8 @@ package com.mukesh.rickmortyfan.di
 import android.content.Context
 import androidx.room.Room
 import com.mukesh.rickmortyfan.common.Constants
-import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
 import com.mukesh.rickmortyfan.data.database.FavoritesDatabase
+import com.mukesh.rickmortyfan.data.database.entity.FavoritesDao
 import com.mukesh.rickmortyfan.data.repository.AllFavoritesRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.CharactersRepositoryImpl
 import com.mukesh.rickmortyfan.data.repository.EpisodesRepositoryImpl
@@ -34,7 +34,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RickMortyModule {
-
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
@@ -80,11 +79,13 @@ object RickMortyModule {
 
     @Provides
     @Singleton
-    fun provideFavoritesDatabase(@ApplicationContext context: Context): FavoritesDatabase {
+    fun provideFavoritesDatabase(
+        @ApplicationContext context: Context,
+    ): FavoritesDatabase {
         return Room.databaseBuilder(
             context = context,
             FavoritesDatabase::class.java,
-            "favorites_db"
+            "favorites_db",
         ).build()
     }
 
@@ -109,7 +110,6 @@ object RickMortyModule {
     fun provideFavoriteEpisodeRepository(favoritesDao: FavoritesDao): FavoriteEpisodeRepository {
         return FavoriteEpisodeRepositoryImpl(favoritesDao)
     }
-
 
     @Provides
     @Singleton

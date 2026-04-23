@@ -14,7 +14,7 @@ import com.mukesh.rickmortyfan.data.database.entity.LocationEntity
 @Database(
     entities = [CharacterEntity::class, LocationEntity::class, EpisodeEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = true,
 )
 @TypeConverters(ListOfStringConverter::class, LocationConverter::class, OriginConverter::class)
 abstract class FavoritesDatabase : RoomDatabase() {

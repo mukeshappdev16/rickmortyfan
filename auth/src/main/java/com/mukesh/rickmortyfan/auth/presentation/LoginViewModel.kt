@@ -12,36 +12,40 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase
-) : ViewModel() {
+class LoginViewModel
+    @Inject
+    constructor(
+        private val loginUseCase: LoginUseCase,
+    ) : ViewModel() {
+        private val _state = mutableStateOf(LoginState())
+        val state: State<LoginState> = _state
 
-    private val _state = mutableStateOf(LoginState())
-    val state: State<LoginState> = _state
-
-    fun login(email: String, password: String) {
-        if (email.isEmpty() || email.isBlank()) {
-            _state.value = LoginState(error = "Email cannot be empty")
-            return
-        }
-        if (password.isEmpty() || password.isBlank()) {
-            _state.value = LoginState(error = "Password cannot be empty")
-            return
-        }
-        loginUseCase(email, password).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    _state.value = LoginState(isSuccess = true)
-                }
-
-                is Resource.Error -> {
-                    _state.value = LoginState(error = result.message ?: "An unknown error occurred")
-                }
-
-                is Resource.Loading -> {
-                    _state.value = LoginState(isLoading = true)
-                }
+        fun login(
+            email: String,
+            password: String,
+        ) {
+            if (email.isEmpty() || email.isBlank()) {
+                _state.value = LoginState(error = "Email cannot be empty")
+                return
             }
-        }.launchIn(viewModelScope)
+            if (password.isEmpty() || password.isBlank()) {
+                _state.value = LoginState(error = "Password cannot be empty")
+                return
+            }
+            loginUseCase(email, password).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.value = LoginState(isSuccess = true)
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = LoginState(error = result.message ?: "An unknown error occurred")
+                    }
+
+                    is Resource.Loading -> {
+                        _state.value = LoginState(isLoading = true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
     }
-}

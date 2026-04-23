@@ -52,7 +52,7 @@ import com.mukesh.rickmortyfan.auth.R
 fun SignUpScreen(
     onLoginSuccess: () -> Unit,
     onLoginClick: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -86,7 +86,7 @@ fun SignUpScreen(
         onSignUpClick = { viewModel.signUp(email, password) },
         onLoginClick = onLoginClick,
         passwordLimit = passwordLimit,
-        isLoading = state.isLoading
+        isLoading = state.isLoading,
     )
 }
 
@@ -102,15 +102,16 @@ fun SignUpScreenContent(
     onLoginClick: () -> Unit,
     passwordLimit: Int,
     isLoading: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         // Title: Join the Club
         Text(
@@ -118,7 +119,7 @@ fun SignUpScreenContent(
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
-            letterSpacing = (-2).sp
+            letterSpacing = (-2).sp,
         )
 
         // Subtitle: Create your account
@@ -127,7 +128,7 @@ fun SignUpScreenContent(
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            letterSpacing = 4.sp
+            letterSpacing = 4.sp,
         )
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -143,19 +144,20 @@ fun SignUpScreenContent(
                 Icon(
                     imageVector = Icons.Default.Email,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
             singleLine = true,
-            enabled = !isLoading
+            enabled = !isLoading,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -171,17 +173,18 @@ fun SignUpScreenContent(
                 Icon(
                     imageVector = Icons.Default.Lock,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             },
             trailingIcon = {
                 IconButton(onClick = onTogglePasswordVisibility) {
                     Icon(
                         imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = stringResource(
-                            if (isPasswordVisible) R.string.desc_hide_password else R.string.desc_show_password
-                        ),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        contentDescription =
+                            stringResource(
+                                if (isPasswordVisible) R.string.desc_hide_password else R.string.desc_show_password,
+                            ),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             },
@@ -189,20 +192,26 @@ fun SignUpScreenContent(
                 Text(
                     text = stringResource(R.string.password_rule_hint),
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (password.length == passwordLimit) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    color =
+                        if (password.length == passwordLimit) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                 )
             },
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             shape = RoundedCornerShape(12.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
             singleLine = true,
-            enabled = !isLoading
+            enabled = !isLoading,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -211,28 +220,30 @@ fun SignUpScreenContent(
         Button(
             onClick = onSignUpClick,
             enabled = email.isNotEmpty() && password.length > passwordLimit && !isLoading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
-            )
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                ),
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.height(24.dp)
+                    modifier = Modifier.height(24.dp),
                 )
             } else {
                 Text(
                     text = stringResource(R.string.action_create_account),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 1.sp
+                    letterSpacing = 1.sp,
                 )
             }
         }
@@ -243,12 +254,12 @@ fun SignUpScreenContent(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = stringResource(R.string.text_already_have_account),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
@@ -256,7 +267,7 @@ fun SignUpScreenContent(
                 modifier = Modifier.clickable(enabled = !isLoading) { onLoginClick() },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.ExtraBold,
             )
         }
     }
@@ -275,7 +286,7 @@ fun SignUpScreenEmptyPreview() {
             onTogglePasswordVisibility = {},
             onSignUpClick = {},
             onLoginClick = {},
-            passwordLimit = 5
+            passwordLimit = 5,
         )
     }
 }
@@ -293,7 +304,7 @@ fun SignUpScreenFilledPreview() {
             onTogglePasswordVisibility = {},
             onSignUpClick = {},
             onLoginClick = {},
-            passwordLimit = 5
+            passwordLimit = 5,
         )
     }
 }

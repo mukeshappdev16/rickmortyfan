@@ -5,7 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoriteEpisodeRepository {
     fun getFavoriteEpisodes(): Flow<List<Episode>>
+
     suspend fun addFavoriteEpisode(episode: Episode): Long
+
     suspend fun removeFavoriteEpisode(episode: Episode): Int
+
     suspend fun isFavoriteEpisodePresent(id: Int): Boolean
 }

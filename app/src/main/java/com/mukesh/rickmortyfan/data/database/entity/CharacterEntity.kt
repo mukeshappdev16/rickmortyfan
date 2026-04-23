@@ -19,7 +19,7 @@ data class CharacterEntity(
     val url: String,
     val episode: List<String>,
     val origin: Origin,
-    val location: Location
+    val location: Location,
 )
 
 fun CharacterEntity.toCharacterDescription(): CharacterDescription {
@@ -35,7 +35,7 @@ fun CharacterEntity.toCharacterDescription(): CharacterDescription {
         episode = episode,
         url = url,
         created = created,
-        location = location
+        location = location,
     )
 }
 
@@ -52,7 +52,6 @@ fun CharacterDescription.toCharacterEntity(): CharacterEntity {
         created = created,
         episode = episode,
         location = location,
-        origin = origin
+        origin = origin,
     )
 }
-

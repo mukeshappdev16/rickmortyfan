@@ -1,5 +1,3 @@
-import com.android.tools.r8.internal.li
-
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -10,6 +8,37 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
-    alias (libs.plugins.androidx.room) apply false
+    alias(libs.plugins.androidx.room) apply false
     alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.spotless)
+}
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        targetExclude("**/build/**/*.kt")
+        ktlint("1.2.1")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        ktlint("1.2.1")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    format("misc") {
+        target("**/*.gradle", "**/*.md", "**/.gitignore")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    format("xml") {
+        target("**/*.xml")
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
 }

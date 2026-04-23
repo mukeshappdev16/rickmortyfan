@@ -12,18 +12,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RickMortyHomeViewModel @Inject constructor(
-    private val getLoggedInUserInfoUseCase: GetLoggedInUserInfoUseCase
-) : ViewModel() {
+class RickMortyHomeViewModel
+    @Inject
+    constructor(
+        private val getLoggedInUserInfoUseCase: GetLoggedInUserInfoUseCase,
+    ) : ViewModel() {
+        private val _user: MutableState<RickMortyUser?> = mutableStateOf(null)
+        val user: State<RickMortyUser?> = _user
 
-    private val _user: MutableState<RickMortyUser?> = mutableStateOf(null)
-    val user: State<RickMortyUser?> = _user
-
-    init {
-        viewModelScope.launch {
-            getLoggedInUserInfoUseCase().collect {
-                _user.value = it
+        init {
+            viewModelScope.launch {
+                getLoggedInUserInfoUseCase().collect {
+                    _user.value = it
+                }
             }
         }
     }
-}

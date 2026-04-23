@@ -56,14 +56,15 @@ fun ProfileScreen(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(48.dp))
 
@@ -76,33 +77,33 @@ fun ProfileScreen(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
             ) {
                 Column(modifier = Modifier.padding(vertical = 8.dp)) {
                     ProfileMenuItem(
                         icon = Icons.Default.Badge,
                         title = stringResource(R.string.name),
-                        subtitle = state.user?.name ?: "N/A"
+                        subtitle = state.user?.name ?: "N/A",
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         thickness = 0.5.dp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
                     )
                     ProfileMenuItem(
                         icon = Icons.Default.Email,
                         title = stringResource(R.string.email),
-                        subtitle = state.user?.email ?: "N/A"
+                        subtitle = state.user?.email ?: "N/A",
                     )
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         thickness = 0.5.dp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
                     )
                     ProfileMenuItem(
                         icon = Icons.Default.Info,
                         title = stringResource(R.string.about_app),
-                        subtitle = stringResource(R.string.rick_morty_fan_v1_0)
+                        subtitle = stringResource(R.string.rick_morty_fan_v1_0),
                     )
                 }
             }
@@ -113,25 +114,27 @@ fun ProfileScreen(
             // 3. Logout Button at the bottom
             Button(
                 onClick = { onLogoutSuccess() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                )
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    ),
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = stringResource(R.string.log_out),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
 
@@ -143,30 +146,33 @@ fun ProfileScreen(
 @Composable
 private fun BoxWithProfileImage(imageUrl: String?) {
     Surface(
-        modifier = Modifier
-            .size(140.dp)
-            .border(3.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape)
-            .padding(4.dp),
+        modifier =
+            Modifier
+                .size(140.dp)
+                .border(3.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape)
+                .padding(4.dp),
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.surfaceVariant
+        color = MaterialTheme.colorScheme.surfaceVariant,
     ) {
         if (imageUrl != null) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = "Profile Image",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                contentScale = ContentScale.Crop,
             )
         } else {
             Icon(
                 imageVector = Icons.Default.Person,
                 contentDescription = "Default Profile",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(24.dp),
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
             )
         }
     }
@@ -177,25 +183,26 @@ private fun ProfileMenuItem(
     icon: ImageVector,
     title: String,
     subtitle: String,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Surface(
             modifier = Modifier.size(40.dp),
             shape = RoundedCornerShape(10.dp),
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.padding(10.dp),
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
             )
         }
 
@@ -205,20 +212,20 @@ private fun ProfileMenuItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
 
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
         )
     }
 }

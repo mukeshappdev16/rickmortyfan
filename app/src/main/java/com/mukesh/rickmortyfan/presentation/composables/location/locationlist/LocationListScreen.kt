@@ -51,13 +51,14 @@ fun LocationListScreen(
 ) {
     val listState = rememberLazyListState()
 
-    val shouldLoadMore = remember {
-        derivedStateOf {
-            val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+    val shouldLoadMore =
+        remember {
+            derivedStateOf {
+                val totalItemsCount = listState.layoutInfo.totalItemsCount
+                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+            }
         }
-    }
 
     LaunchedEffect(shouldLoadMore.value) {
         if (shouldLoadMore.value && !state.isPaginating && !state.endReached) {
@@ -66,15 +67,16 @@ fun LocationListScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         when {
             state.noInternet && state.list.isEmpty() -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
-                    butonLabel = stringResource(R.string.action_try_again)
+                    butonLabel = stringResource(R.string.action_try_again),
                 ) {
                     noInternetTryAgainClicked()
                 }
@@ -94,7 +96,7 @@ fun LocationListScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp),
-                    state = listState
+                    state = listState,
                 ) {
                     itemsIndexed(state.list) { index, item ->
                         LocationListRow(item, onLocationClickListener)
@@ -104,14 +106,15 @@ fun LocationListScreen(
                     if (state.isPaginating) {
                         item {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(32.dp),
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = MaterialTheme.colorScheme.primary,
                                 )
                             }
                         }
@@ -125,35 +128,39 @@ fun LocationListScreen(
 @Composable
 fun LocationListRow(
     location: LocationDetail,
-    onClickListener: (LocationDetail) -> Unit
+    onClickListener: (LocationDetail) -> Unit,
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClickListener(location) },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClickListener(location) },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(0.dp)
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        elevation = CardDefaults.cardElevation(0.dp),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(48.dp)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.Default.Public,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
             }
 
@@ -164,7 +171,7 @@ fun LocationListRow(
                     text = location.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -172,7 +179,7 @@ fun LocationListRow(
                 Text(
                     text = "${location.type} • ${location.dimension}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -183,26 +190,29 @@ fun LocationListRow(
 @Composable
 fun LocationListScreenPreview() {
     RickMortyFanTheme {
-        val sampleLocation = LocationDetail(
-            id = 1,
-            name = "Earth (C-137)",
-            type = "Planet",
-            dimension = "Dimension C-137",
-            residents = listOf(),
-            url = "",
-            created = ""
-        )
+        val sampleLocation =
+            LocationDetail(
+                id = 1,
+                name = "Earth (C-137)",
+                type = "Planet",
+                dimension = "Dimension C-137",
+                residents = listOf(),
+                url = "",
+                created = "",
+            )
         LocationListScreen(
-            state = LocationListState(
-                list = listOf(
-                    sampleLocation,
-                    sampleLocation.copy(id = 2, name = "Abadango", type = "Cluster"),
-                    sampleLocation.copy(id = 3, name = "Citadel of Ricks", type = "Space station"),
-                    sampleLocation.copy(id = 4, name = "Worldender's lair", type = "Planet"),
-                    sampleLocation.copy(id = 5, name = "Anatomy Park", type = "Microverse")
-                )
-            ),
-            onLocationClickListener = {}
+            state =
+                LocationListState(
+                    list =
+                        listOf(
+                            sampleLocation,
+                            sampleLocation.copy(id = 2, name = "Abadango", type = "Cluster"),
+                            sampleLocation.copy(id = 3, name = "Citadel of Ricks", type = "Space station"),
+                            sampleLocation.copy(id = 4, name = "Worldender's lair", type = "Planet"),
+                            sampleLocation.copy(id = 5, name = "Anatomy Park", type = "Microverse"),
+                        ),
+                ),
+            onLocationClickListener = {},
         )
     }
 }

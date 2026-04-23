@@ -44,5 +44,4 @@ interface FavoritesDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM favorite_episode WHERE id = :id)")
     fun isFavoriteEpisodePresent(id: Int): Boolean
-
 }

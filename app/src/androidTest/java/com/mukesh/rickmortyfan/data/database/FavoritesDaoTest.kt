@@ -21,16 +21,16 @@ import org.junit.runner.RunWith
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class FavoritesDaoTest {
-
     private lateinit var database: FavoritesDatabase
     private lateinit var dao: FavoritesDao
 
     @Before
     fun setup() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            FavoritesDatabase::class.java
-        ).allowMainThreadQueries().build()
+        database =
+            Room.inMemoryDatabaseBuilder(
+                ApplicationProvider.getApplicationContext(),
+                FavoritesDatabase::class.java,
+            ).allowMainThreadQueries().build()
         dao = database.favoritesDao()
     }
 
@@ -40,70 +40,76 @@ class FavoritesDaoTest {
     }
 
     @Test
-    fun addAndGetFavoriteCharacter() = runTest {
-        val character = CharacterEntity(
-            id = 1,
-            name = "Rick",
-            status = "Alive",
-            species = "Human",
-            type = "",
-            gender = "Male",
-            origin = Origin("Earth", ""),
-            location = Location("Earth", ""),
-            image = "",
-            episode = emptyList(),
-            url = "",
-            created = ""
-        )
-        dao.addFavoriteCharacter(character)
+    fun addAndGetFavoriteCharacter() =
+        runTest {
+            val character =
+                CharacterEntity(
+                    id = 1,
+                    name = "Rick",
+                    status = "Alive",
+                    species = "Human",
+                    type = "",
+                    gender = "Male",
+                    origin = Origin("Earth", ""),
+                    location = Location("Earth", ""),
+                    image = "",
+                    episode = emptyList(),
+                    url = "",
+                    created = "",
+                )
+            dao.addFavoriteCharacter(character)
 
-        val favorites = dao.getFavoriteCharacters().first()
-        assertEquals(1, favorites.size)
-        assertEquals("Rick", favorites[0].name)
-    }
-
-    @Test
-    fun removeFavoriteCharacter() = runTest {
-        val character = CharacterEntity(
-            id = 1,
-            name = "Rick",
-            status = "Alive",
-            species = "Human",
-            type = "",
-            gender = "Male",
-            origin = Origin("Earth", ""),
-            location = Location("Earth", ""),
-            image = "",
-            episode = emptyList(),
-            url = "",
-            created = ""
-        )
-        dao.addFavoriteCharacter(character)
-        dao.removeFavoriteCharacter(character)
-
-        val favorites = dao.getFavoriteCharacters().first()
-        assertTrue(favorites.isEmpty())
-    }
+            val favorites = dao.getFavoriteCharacters().first()
+            assertEquals(1, favorites.size)
+            assertEquals("Rick", favorites[0].name)
+        }
 
     @Test
-    fun isFavoriteCharacterPresent() = runTest {
-        val character = CharacterEntity(
-            id = 1,
-            name = "Rick",
-            status = "Alive",
-            species = "Human",
-            type = "",
-            gender = "Male",
-            origin = Origin("Earth", ""),
-            location = Location("Earth", ""),
-            image = "",
-            episode = emptyList(),
-            url = "",
-            created = ""
-        )
-        dao.addFavoriteCharacter(character)
+    fun removeFavoriteCharacter() =
+        runTest {
+            val character =
+                CharacterEntity(
+                    id = 1,
+                    name = "Rick",
+                    status = "Alive",
+                    species = "Human",
+                    type = "",
+                    gender = "Male",
+                    origin = Origin("Earth", ""),
+                    location = Location("Earth", ""),
+                    image = "",
+                    episode = emptyList(),
+                    url = "",
+                    created = "",
+                )
+            dao.addFavoriteCharacter(character)
+            dao.removeFavoriteCharacter(character)
 
-        assertTrue(dao.isFavoriteCharacterPresent(1))
-        assertFalse(dao.isFavoriteCharacterPresent(2))
-    }
+            val favorites = dao.getFavoriteCharacters().first()
+            assertTrue(favorites.isEmpty())
+        }
+
+    @Test
+    fun isFavoriteCharacterPresent() =
+        runTest {
+            val character =
+                CharacterEntity(
+                    id = 1,
+                    name = "Rick",
+                    status = "Alive",
+                    species = "Human",
+                    type = "",
+                    gender = "Male",
+                    origin = Origin("Earth", ""),
+                    location = Location("Earth", ""),
+                    image = "",
+                    episode = emptyList(),
+                    url = "",
+                    created = "",
+                )
+            dao.addFavoriteCharacter(character)
+
+            assertTrue(dao.isFavoriteCharacterPresent(1))
+            assertFalse(dao.isFavoriteCharacterPresent(2))
+        }
 }

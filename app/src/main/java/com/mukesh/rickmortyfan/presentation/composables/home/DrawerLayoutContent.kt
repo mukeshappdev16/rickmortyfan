@@ -32,37 +32,40 @@ import kotlinx.coroutines.launch
 fun DrawerLayoutContent(
     drawerState: DrawerState,
     user: RickMortyUser?,
-    logoutClicked: () -> Unit
+    logoutClicked: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
         ) {
             Icon(
                 imageVector = Icons.Default.Person,
                 contentDescription = stringResource(R.string.profile_picture),
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
+                modifier =
+                    Modifier
+                        .size(50.dp)
+                        .clip(CircleShape),
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = user?.name ?: ""
+                text = user?.name ?: "",
             )
         }
         HorizontalDivider()
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clickable {
-                    scope.launch { drawerState.close() }
-                }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable {
+                        scope.launch { drawerState.close() }
+                    },
         ) {
             Icon(imageVector = Icons.Default.Settings, contentDescription = null)
             Spacer(modifier = Modifier.width(4.dp))
@@ -71,15 +74,16 @@ fun DrawerLayoutContent(
         HorizontalDivider()
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clickable {
-                    scope.launch {
-                        drawerState.close()
-                        logoutClicked()
-                    }
-                }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable {
+                        scope.launch {
+                            drawerState.close()
+                            logoutClicked()
+                        }
+                    },
         ) {
             Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = null)
             Spacer(modifier = Modifier.width(4.dp))

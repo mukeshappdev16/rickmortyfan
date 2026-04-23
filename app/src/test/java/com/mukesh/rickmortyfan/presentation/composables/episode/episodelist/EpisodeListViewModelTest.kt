@@ -24,7 +24,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EpisodeListViewModelTest {
-
     private lateinit var viewModel: EpisodeListViewModel
     private val networkManager: NetworkManager = mockk()
     private val getEpisodeListUseCase: GetEpisodeListUseCase = mockk()
@@ -41,55 +40,59 @@ class EpisodeListViewModelTest {
     }
 
     @Test
-    fun `getEpisodes should update state with success when network is available`() = runTest {
-        // Given
-        val episodes = Episodes(
-            info = Info(count = 1, pages = 1, next = "", prev = null),
-            episodes = listOf(mockk<Episode>(relaxed = true))
-        )
-        every { networkManager.isNetworkAvailable() } returns true
-        every { getEpisodeListUseCase(1) } returns flowOf(Resource.Success(episodes))
+    fun `getEpisodes should update state with success when network is available`() =
+        runTest {
+            // Given
+            val episodes =
+                Episodes(
+                    info = Info(count = 1, pages = 1, next = "", prev = null),
+                    episodes = listOf(mockk<Episode>(relaxed = true)),
+                )
+            every { networkManager.isNetworkAvailable() } returns true
+            every { getEpisodeListUseCase(1) } returns flowOf(Resource.Success(episodes))
 
-        // When
-        viewModel = EpisodeListViewModel(networkManager, getEpisodeListUseCase)
-        advanceUntilIdle()
+            // When
+            viewModel = EpisodeListViewModel(networkManager, getEpisodeListUseCase)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.episodeListState.value
-        assertEquals(episodes.episodes, state.list)
-        assertEquals(false, state.isLoading)
-        assertEquals(false, state.noInternet)
-    }
-
-    @Test
-    fun `getEpisodes should update state with noInternet when network is unavailable`() = runTest {
-        // Given
-        every { networkManager.isNetworkAvailable() } returns false
-
-        // When
-        viewModel = EpisodeListViewModel(networkManager, getEpisodeListUseCase)
-        advanceUntilIdle()
-
-        // Then
-        val state = viewModel.episodeListState.value
-        assertTrue(state.noInternet)
-        assertEquals(false, state.isLoading)
-    }
+            // Then
+            val state = viewModel.episodeListState.value
+            assertEquals(episodes.episodes, state.list)
+            assertEquals(false, state.isLoading)
+            assertEquals(false, state.noInternet)
+        }
 
     @Test
-    fun `getEpisodes should update state with error when use case returns error`() = runTest {
-        // Given
-        val errorMessage = "An error occurred"
-        every { networkManager.isNetworkAvailable() } returns true
-        every { getEpisodeListUseCase(1) } returns flowOf(Resource.Error(errorMessage))
+    fun `getEpisodes should update state with noInternet when network is unavailable`() =
+        runTest {
+            // Given
+            every { networkManager.isNetworkAvailable() } returns false
 
-        // When
-        viewModel = EpisodeListViewModel(networkManager, getEpisodeListUseCase)
-        advanceUntilIdle()
+            // When
+            viewModel = EpisodeListViewModel(networkManager, getEpisodeListUseCase)
+            advanceUntilIdle()
 
-        // Then
-        val state = viewModel.episodeListState.value
-        assertEquals(errorMessage, state.errorMessage)
-        assertEquals(false, state.isLoading)
-    }
+            // Then
+            val state = viewModel.episodeListState.value
+            assertTrue(state.noInternet)
+            assertEquals(false, state.isLoading)
+        }
+
+    @Test
+    fun `getEpisodes should update state with error when use case returns error`() =
+        runTest {
+            // Given
+            val errorMessage = "An error occurred"
+            every { networkManager.isNetworkAvailable() } returns true
+            every { getEpisodeListUseCase(1) } returns flowOf(Resource.Error(errorMessage))
+
+            // When
+            viewModel = EpisodeListViewModel(networkManager, getEpisodeListUseCase)
+            advanceUntilIdle()
+
+            // Then
+            val state = viewModel.episodeListState.value
+            assertEquals(errorMessage, state.errorMessage)
+            assertEquals(false, state.isLoading)
+        }
 }

@@ -7,15 +7,18 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RickMortyCharacterApi {
-
     @GET("character")
     suspend fun getAllCharacters(
-        @Query("page") page: Int
+        @Query("page") page: Int,
     ): CharacterListResponse
 
     @GET("character/{charId}")
-    suspend fun getCharacterDetail(@Path("charId") charId: String): CharacterDto
+    suspend fun getCharacterDetail(
+        @Path("charId") charId: String,
+    ): CharacterDto
 
     @GET("character/{multipleCharId}")
-    suspend fun getMultipleCharacters(@Path("multipleCharId") multipleCharId: String): List<CharacterDto>
+    suspend fun getMultipleCharacters(
+        @Path("multipleCharId") multipleCharId: String,
+    ): List<CharacterDto>
 }

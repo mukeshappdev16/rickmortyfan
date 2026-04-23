@@ -4,7 +4,7 @@ import com.mukesh.rickmortyfan.domain.modal.character.Location
 
 data class LocationDto(
     val name: String,
-    val url: String
+    val url: String,
 )
 
 fun LocationDto.toLocation(): Location {

@@ -32,7 +32,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EpisodeDetailActivity : ComponentActivity() {
-
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +51,14 @@ class EpisodeDetailActivity : ComponentActivity() {
                             title = {
                                 Text(
                                     text = "Episode Detail",
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                             },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Go back"
+                                        contentDescription = "Go back",
                                     )
                                 }
                             },
@@ -74,32 +73,35 @@ class EpisodeDetailActivity : ComponentActivity() {
                                     }
                                 }) {
                                     Icon(
-                                        imageVector = if (episodeDetailScreenState.isFavorite) {
-                                            Icons.Default.Favorite
-                                        } else {
-                                            Icons.Default.FavoriteBorder
-                                        },
+                                        imageVector =
+                                            if (episodeDetailScreenState.isFavorite) {
+                                                Icons.Default.Favorite
+                                            } else {
+                                                Icons.Default.FavoriteBorder
+                                            },
                                         contentDescription = "Mark as favorite",
-                                        tint = if (episodeDetailScreenState.isFavorite) {
-                                            Color.Red
-                                        } else {
-                                            Color.Black
-                                        }
+                                        tint =
+                                            if (episodeDetailScreenState.isFavorite) {
+                                                Color.Red
+                                            } else {
+                                                Color.Black
+                                            },
                                     )
                                 }
                             },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                            )
+                            colors =
+                                TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                    actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
                         )
-                    }
+                    },
                 ) { innerPadding ->
                     EpisodeDetailScreen(
                         episodeDetailScreenState = episodeDetailScreenState,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     ) {
                         episodeDetailViewModel.getEpisodeDetail(episodeId)
                     }

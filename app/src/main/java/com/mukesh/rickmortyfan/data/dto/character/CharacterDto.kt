@@ -14,7 +14,7 @@ data class CharacterDto(
     val species: String,
     val status: String,
     val type: String,
-    val url: String
+    val url: String,
 )
 
 fun CharacterDto.toCharacterDescription(): CharacterDescription {
@@ -30,6 +30,6 @@ fun CharacterDto.toCharacterDescription(): CharacterDescription {
         species = this.species,
         status = this.status,
         type = this.type,
-        url = this.url
+        url = this.url,
     )
 }

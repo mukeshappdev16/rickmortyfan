@@ -40,7 +40,7 @@ class LocationDetailActivity : ComponentActivity() {
         setContent {
             RickMortyFanTheme {
                 val viewModel: LocationDetailViewModel = hiltViewModel()
-                val state by viewModel.stateDetailState
+                val state by viewModel.state
                 LaunchedEffect(locationId) {
                     viewModel.getLocationDetail(locationId)
                 }
@@ -52,14 +52,14 @@ class LocationDetailActivity : ComponentActivity() {
                             title = {
                                 Text(
                                     text = "Location Detail",
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                             },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Go back"
+                                        contentDescription = "Go back",
                                     )
                                 }
                             },
@@ -74,32 +74,35 @@ class LocationDetailActivity : ComponentActivity() {
                                     }
                                 }) {
                                     Icon(
-                                        imageVector = if (state.isFavorite) {
-                                            Icons.Default.Favorite
-                                        } else {
-                                            Icons.Default.FavoriteBorder
-                                        },
+                                        imageVector =
+                                            if (state.isFavorite) {
+                                                Icons.Default.Favorite
+                                            } else {
+                                                Icons.Default.FavoriteBorder
+                                            },
                                         contentDescription = "Mark as favorite",
-                                        tint = if (state.isFavorite) {
-                                            Color.Red
-                                        } else {
-                                            Color.Black
-                                        }
+                                        tint =
+                                            if (state.isFavorite) {
+                                                Color.Red
+                                            } else {
+                                                Color.Black
+                                            },
                                     )
                                 }
                             },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                            )
+                            colors =
+                                TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                    actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
                         )
-                    }
+                    },
                 ) { innerPadding ->
                     LocationDetailScreen(
                         state = state,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     ) {
                         viewModel.getLocationDetail(locationId)
                     }

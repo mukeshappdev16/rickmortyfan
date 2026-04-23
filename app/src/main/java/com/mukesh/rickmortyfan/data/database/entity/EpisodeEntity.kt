@@ -14,7 +14,7 @@ data class EpisodeEntity(
     val episode: String,
     val name: String,
     val url: String,
-    val characters: List<String>
+    val characters: List<String>,
 )
 
 fun EpisodeEntity.toEpisode(): Episode {
@@ -25,7 +25,7 @@ fun EpisodeEntity.toEpisode(): Episode {
         episode = episode,
         id = id,
         name = name,
-        url = url
+        url = url,
     )
 }
 
@@ -37,6 +37,6 @@ fun Episode.toEpisodeEntity(): EpisodeEntity {
         id = id,
         name = name,
         url = url,
-        characters = characters
+        characters = characters,
     )
 }

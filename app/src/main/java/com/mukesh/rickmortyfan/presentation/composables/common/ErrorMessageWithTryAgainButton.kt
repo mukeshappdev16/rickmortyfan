@@ -20,18 +20,19 @@ import androidx.compose.ui.unit.dp
 fun ErrorMessageWithTryAgainButton(
     errorMessage: String,
     butonLabel: String = "",
-    onTryAgainClick: () -> Unit = {}
+    onTryAgainClick: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = errorMessage,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
 
             Spacer(modifier = Modifier.height(16.dp))

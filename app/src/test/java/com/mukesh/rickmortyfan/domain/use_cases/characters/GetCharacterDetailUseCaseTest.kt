@@ -15,7 +15,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetCharacterDetailUseCaseTest {
-
     private lateinit var getCharacterDetailUseCase: GetCharacterDetailUseCase
     private val repository: CharactersRepository = mockk()
 
@@ -25,33 +24,35 @@ class GetCharacterDetailUseCaseTest {
     }
 
     @Test
-    fun `invoke should emit Loading and then Success when repository returns data`() = runTest {
-        // Given
-        val character = mockk<CharacterDescription>()
-        coEvery { repository.getCharacterDetail("1") } returns character
+    fun `invoke should emit Loading and then Success when repository returns data`() =
+        runTest {
+            // Given
+            val character = mockk<CharacterDescription>()
+            coEvery { repository.getCharacterDetail("1") } returns character
 
-        // When & Then
-        getCharacterDetailUseCase("1").test {
-            assertTrue(awaitItem() is Resource.Loading)
-            val success = awaitItem()
-            assertTrue(success is Resource.Success)
-            assertEquals(character, success.data)
-            awaitComplete()
+            // When & Then
+            getCharacterDetailUseCase("1").test {
+                assertTrue(awaitItem() is Resource.Loading)
+                val success = awaitItem()
+                assertTrue(success is Resource.Success)
+                assertEquals(character, success.data)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `invoke should emit Loading and then Error when repository throws exception`() = runTest {
-        // Given
-        coEvery { repository.getCharacterDetail("1") } throws Exception("Error")
+    fun `invoke should emit Loading and then Error when repository throws exception`() =
+        runTest {
+            // Given
+            coEvery { repository.getCharacterDetail("1") } throws Exception("Error")
 
-        // When & Then
-        getCharacterDetailUseCase("1").test {
-            assertTrue(awaitItem() is Resource.Loading)
-            val error = awaitItem()
-            assertTrue(error is Resource.Error)
-            assertEquals("Something went wrong. Please try again later", error.message)
-            awaitComplete()
+            // When & Then
+            getCharacterDetailUseCase("1").test {
+                assertTrue(awaitItem() is Resource.Loading)
+                val error = awaitItem()
+                assertTrue(error is Resource.Error)
+                assertEquals("Something went wrong. Please try again later", error.message)
+                awaitComplete()
+            }
         }
-    }
 }

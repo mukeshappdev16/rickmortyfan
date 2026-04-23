@@ -56,15 +56,16 @@ fun CharacterDetailScreen(
     noInternetTryAgainClicked: () -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         when {
             characterDetailScreenState.noInternet -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
-                    butonLabel = stringResource(R.string.action_try_again)
+                    butonLabel = stringResource(R.string.action_try_again),
                 ) {
                     noInternetTryAgainClicked()
                 }
@@ -82,7 +83,7 @@ fun CharacterDetailScreen(
                 characterDetailScreenState.characterDescription?.let {
                     CharacterDetail(
                         characterDescription = it,
-                        episodeList = characterDetailScreenState.episodes
+                        episodeList = characterDetailScreenState.episodes,
                     )
                 }
             }
@@ -93,7 +94,7 @@ fun CharacterDetailScreen(
 @Composable
 private fun CharacterDetail(
     characterDescription: CharacterDescription,
-    episodeList: List<Episode>
+    episodeList: List<Episode>,
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -108,64 +109,70 @@ private fun CharacterDetail(
 @Composable
 private fun CharacterDetailPortrait(
     characterDescription: CharacterDescription,
-    episodeList: List<Episode>
+    episodeList: List<Episode>,
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .verticalScroll(scrollState)
+                .fillMaxSize(),
     ) {
         // Hero Image with Gradient Overlay
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
         ) {
             AsyncImage(
                 model = characterDescription.image,
                 error = painterResource(R.drawable.account_circle_24),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
 
             // Gradient Overlay for text readability
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
-                                MaterialTheme.colorScheme.background
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+                                        MaterialTheme.colorScheme.background,
+                                    ),
+                                startY = 300f,
                             ),
-                            startY = 300f
-                        )
-                    )
+                        ),
             )
 
             // Name and Status over Image
             Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(24.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(24.dp),
             ) {
                 StatusBadgeDetail(characterDescription.status)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = characterDescription.name,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
         ) {
             Spacer(modifier = Modifier.height(8.dp))
             CharacterInfoContent(characterDescription, episodeList)
@@ -176,44 +183,48 @@ private fun CharacterDetailPortrait(
 @Composable
 private fun CharacterDetailLandscape(
     characterDescription: CharacterDescription,
-    episodeList: List<Episode>
+    episodeList: List<Episode>,
 ) {
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         // Left Side: Sticky Image
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
         ) {
             AsyncImage(
                 model = characterDescription.image,
                 error = painterResource(R.drawable.account_circle_24),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
 
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.2f),
-                                MaterialTheme.colorScheme.background
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors =
+                                    listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.background.copy(alpha = 0.2f),
+                                        MaterialTheme.colorScheme.background,
+                                    ),
+                                startX = 400f,
                             ),
-                            startX = 400f
-                        )
-                    )
+                        ),
             )
 
             Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(24.dp)
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(24.dp),
             ) {
                 StatusBadgeDetail(characterDescription.status)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -221,7 +232,7 @@ private fun CharacterDetailLandscape(
                     text = characterDescription.name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }
@@ -229,11 +240,12 @@ private fun CharacterDetailLandscape(
         // Right Side: Scrollable Details
         val scrollState = rememberScrollState()
         Column(
-            modifier = Modifier
-                .weight(1.2f)
-                .fillMaxHeight()
-                .verticalScroll(scrollState)
-                .padding(24.dp)
+            modifier =
+                Modifier
+                    .weight(1.2f)
+                    .fillMaxHeight()
+                    .verticalScroll(scrollState)
+                    .padding(24.dp),
         ) {
             CharacterInfoContent(characterDescription, episodeList)
         }
@@ -243,22 +255,22 @@ private fun CharacterDetailLandscape(
 @Composable
 private fun CharacterInfoContent(
     characterDescription: CharacterDescription,
-    episodeList: List<Episode>
+    episodeList: List<Episode>,
 ) {
     // Stats Grid
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         InfoCardDetail(
             label = stringResource(R.string.label_gender),
             value = characterDescription.gender,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         InfoCardDetail(
             label = stringResource(R.string.label_species),
             value = characterDescription.species,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 
@@ -270,13 +282,13 @@ private fun CharacterInfoContent(
     LocationSection(
         icon = Icons.Default.Public,
         title = stringResource(R.string.label_origin),
-        location = characterDescription.origin?.name ?: ""
+        location = characterDescription.origin?.name ?: "",
     )
     Spacer(modifier = Modifier.height(20.dp))
     LocationSection(
         icon = Icons.Default.LocationOn,
         title = stringResource(R.string.label_last_known_location),
-        location = characterDescription.location?.name ?: ""
+        location = characterDescription.location?.name ?: "",
     )
 
     if (episodeList.isNotEmpty()) {
@@ -286,7 +298,7 @@ private fun CharacterInfoContent(
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 1.5.sp
+            letterSpacing = 1.5.sp,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -302,22 +314,25 @@ private fun CharacterInfoContent(
 
 @Composable
 fun StatusBadgeDetail(status: String) {
-    val color = when (status.lowercase()) {
-        "alive" -> Color(0xFF4CAF50)
-        "dead" -> Color(0xFFF44336)
-        else -> Color.White
-    }
+    val color =
+        when (status.lowercase()) {
+            "alive" -> Color(0xFF4CAF50)
+            "dead" -> Color(0xFFF44336)
+            else -> Color.White
+        }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color.copy(alpha = 0.2f), RoundedCornerShape(100.dp))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+        modifier =
+            Modifier
+                .background(color.copy(alpha = 0.2f), RoundedCornerShape(100.dp))
+                .padding(horizontal = 12.dp, vertical = 6.dp),
     ) {
         Box(
-            modifier = Modifier
-                .size(8.dp)
-                .background(color, CircleShape)
+            modifier =
+                Modifier
+                    .size(8.dp)
+                    .background(color, CircleShape),
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
@@ -325,51 +340,61 @@ fun StatusBadgeDetail(status: String) {
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Black,
             color = color,
-            letterSpacing = 1.sp
+            letterSpacing = 1.sp,
         )
     }
 }
 
 @Composable
-fun InfoCardDetail(label: String, value: String, modifier: Modifier = Modifier) {
+fun InfoCardDetail(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
-            .padding(16.dp)
+        modifier =
+            modifier
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+                .padding(16.dp),
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Black,
-            letterSpacing = 1.sp
+            letterSpacing = 1.sp,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
 
 @Composable
-fun LocationSection(icon: ImageVector, title: String, location: String) {
+fun LocationSection(
+    icon: ImageVector,
+    title: String,
+    location: String,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top,
     ) {
         Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .size(40.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 icon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
@@ -379,13 +404,13 @@ fun LocationSection(icon: ImageVector, title: String, location: String) {
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
-                letterSpacing = 1.sp
+                letterSpacing = 1.sp,
             )
             Text(
                 text = location,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
     }
@@ -397,17 +422,17 @@ fun EpisodeItemDetail(episode: Episode) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(0.dp)
+        elevation = CardDefaults.cardElevation(0.dp),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = Icons.Default.Videocam,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
@@ -415,13 +440,13 @@ fun EpisodeItemDetail(episode: Episode) {
                     text = episode.episode,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = episode.name,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
             }
         }

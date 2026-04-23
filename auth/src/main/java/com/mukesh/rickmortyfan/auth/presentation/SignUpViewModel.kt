@@ -12,37 +12,41 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
-    private val signUpUseCase: SignUpUseCase
-) : ViewModel() {
+class SignUpViewModel
+    @Inject
+    constructor(
+        private val signUpUseCase: SignUpUseCase,
+    ) : ViewModel() {
+        private val _state = mutableStateOf(SignUpState())
+        val state: State<SignUpState> = _state
 
-    private val _state = mutableStateOf(SignUpState())
-    val state: State<SignUpState> = _state
-
-    fun signUp(email: String, password: String) {
-        if (email.isEmpty() || email.isBlank()) {
-            _state.value = SignUpState(error = "Email cannot be empty")
-            return
-        }
-        if (password.isEmpty() || password.isBlank()) {
-            _state.value = SignUpState(error = "Password cannot be empty")
-            return
-        }
-        signUpUseCase(email, password).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    _state.value = SignUpState(isSuccess = true)
-                }
-
-                is Resource.Error -> {
-                    _state.value =
-                        SignUpState(error = result.message ?: "An unknown error occurred")
-                }
-
-                is Resource.Loading -> {
-                    _state.value = SignUpState(isLoading = true)
-                }
+        fun signUp(
+            email: String,
+            password: String,
+        ) {
+            if (email.isEmpty() || email.isBlank()) {
+                _state.value = SignUpState(error = "Email cannot be empty")
+                return
             }
-        }.launchIn(viewModelScope)
+            if (password.isEmpty() || password.isBlank()) {
+                _state.value = SignUpState(error = "Password cannot be empty")
+                return
+            }
+            signUpUseCase(email, password).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.value = SignUpState(isSuccess = true)
+                    }
+
+                    is Resource.Error -> {
+                        _state.value =
+                            SignUpState(error = result.message ?: "An unknown error occurred")
+                    }
+
+                    is Resource.Loading -> {
+                        _state.value = SignUpState(isLoading = true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
     }
-}

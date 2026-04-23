@@ -4,7 +4,7 @@ import com.mukesh.rickmortyfan.domain.modal.character.Origin
 
 data class OriginDto(
     val name: String,
-    val url: String
+    val url: String,
 )
 
 fun OriginDto.toOrigin(): Origin {

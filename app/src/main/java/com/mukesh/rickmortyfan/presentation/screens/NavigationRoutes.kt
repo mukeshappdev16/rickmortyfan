@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.mukesh.rickmortyfan.R
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 object CharactersRoute
 
@@ -32,38 +31,41 @@ object FavoriteRoute
 
 @Serializable
 object ProfileRoute
+
 enum class Screen(
     val route: Any,
     val titleResId: Int,
     val icon: ImageVector,
-    val unselectedIcon: ImageVector
+    val unselectedIcon: ImageVector,
 ) {
     HOME(
-        CharactersRoute, R.string.screen_characters, Icons.Default.Home,
-        Icons.Outlined.Home
+        CharactersRoute,
+        R.string.screen_characters,
+        Icons.Default.Home,
+        Icons.Outlined.Home,
     ),
     LOCATION(
         LocationsRoute,
         R.string.screen_locations,
         Icons.Default.LocationOn,
-        Icons.Outlined.LocationOn
+        Icons.Outlined.LocationOn,
     ),
     EPISODES(
         EpisodesRoute,
         R.string.screen_episodes,
         Icons.Default.Videocam,
-        Icons.Outlined.Videocam
+        Icons.Outlined.Videocam,
     ),
     FAVORITE(
         FavoriteRoute,
         R.string.screen_favorite,
         Icons.Default.Favorite,
-        Icons.Outlined.FavoriteBorder
+        Icons.Outlined.FavoriteBorder,
     ),
     PROFILE(
         ProfileRoute,
         R.string.screen_profile,
         Icons.Default.Person,
-        Icons.Outlined.Person
-    )
+        Icons.Outlined.Person,
+    ),
 }

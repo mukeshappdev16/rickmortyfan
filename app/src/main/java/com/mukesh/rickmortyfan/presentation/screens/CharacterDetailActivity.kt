@@ -52,14 +52,14 @@ class CharacterDetailActivity : ComponentActivity() {
                             title = {
                                 Text(
                                     text = "Character Detail",
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                             },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Go back"
+                                        contentDescription = "Go back",
                                     )
                                 }
                             },
@@ -74,34 +74,37 @@ class CharacterDetailActivity : ComponentActivity() {
                                     }
                                 }) {
                                     Icon(
-                                        imageVector = if (characterDetailScreenState.isFavorite) {
-                                            Icons.Default.Favorite
-                                        } else {
-                                            Icons.Default.FavoriteBorder
-                                        },
+                                        imageVector =
+                                            if (characterDetailScreenState.isFavorite) {
+                                                Icons.Default.Favorite
+                                            } else {
+                                                Icons.Default.FavoriteBorder
+                                            },
                                         contentDescription = "Mark as favorite",
-                                        tint = if (characterDetailScreenState.isFavorite) {
-                                            Color.Red
-                                        } else {
-                                            Color.Black
-                                        }
+                                        tint =
+                                            if (characterDetailScreenState.isFavorite) {
+                                                Color.Red
+                                            } else {
+                                                Color.Black
+                                            },
                                     )
                                 }
                             },
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                                actionIconContentColor = MaterialTheme.colorScheme.onSurface
-                            )
+                            colors =
+                                TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                    actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                ),
                         )
-                    }
+                    },
                 ) { innerPadding ->
                     CharacterDetailScreen(
                         modifier = Modifier.padding(innerPadding),
-                        characterDetailScreenState = characterDetailScreenState
+                        characterDetailScreenState = characterDetailScreenState,
                     ) {
-                        //No internet try again clicked listener
+                        // No internet try again clicked listener
                         characterDetailViewModel.getCharacterDetail(charId)
                     }
                 }

@@ -46,14 +46,15 @@ fun EpisodeListScreen(
 ) {
     val listState = rememberLazyListState()
 
-    val shouldLoadMore = remember {
-        derivedStateOf {
-            val totalItemsCount = listState.layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            // Load more when we are 5 items away from the end
-            lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+    val shouldLoadMore =
+        remember {
+            derivedStateOf {
+                val totalItemsCount = listState.layoutInfo.totalItemsCount
+                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                // Load more when we are 5 items away from the end
+                lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+            }
         }
-    }
 
     LaunchedEffect(shouldLoadMore.value) {
         if (shouldLoadMore.value && !episodeListState.isPaginating && !episodeListState.endReached) {
@@ -62,15 +63,16 @@ fun EpisodeListScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
     ) {
         when {
             episodeListState.noInternet && episodeListState.list.isEmpty() -> {
                 ErrorMessageWithTryAgainButton(
                     errorMessage = stringResource(R.string.error_no_internet),
-                    butonLabel = stringResource(R.string.action_try_again)
+                    butonLabel = stringResource(R.string.action_try_again),
                 ) {
                     noInternetTryAgainClicked()
                 }
@@ -90,7 +92,7 @@ fun EpisodeListScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(16.dp),
-                    state = listState
+                    state = listState,
                 ) {
                     itemsIndexed(episodeListState.list) { index, item ->
                         EpisodeListRow(item, onClickListener)
@@ -100,14 +102,15 @@ fun EpisodeListScreen(
                     if (episodeListState.isPaginating) {
                         item {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(32.dp),
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = MaterialTheme.colorScheme.primary,
                                 )
                             }
                         }
@@ -121,17 +124,19 @@ fun EpisodeListScreen(
 @Composable
 private fun EpisodeListRow(
     episode: Episode,
-    onClickListener: (Episode) -> Unit
+    onClickListener: (Episode) -> Unit,
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClickListener(episode) },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClickListener(episode) },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -139,7 +144,7 @@ private fun EpisodeListRow(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Black,
-                letterSpacing = 1.sp
+                letterSpacing = 1.sp,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -148,7 +153,7 @@ private fun EpisodeListRow(
                 text = episode.name,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -156,7 +161,7 @@ private fun EpisodeListRow(
             Text(
                 text = stringResource(R.string.released_prefix, episode.airDate),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -166,26 +171,29 @@ private fun EpisodeListRow(
 @Composable
 fun EpisodeListScreenPreview() {
     RickMortyFanTheme {
-        val sampleEpisode = Episode(
-            id = 1,
-            name = "Pilot",
-            airDate = "December 2, 2013",
-            episode = "S01E01",
-            characters = listOf(),
-            url = "",
-            created = ""
-        )
+        val sampleEpisode =
+            Episode(
+                id = 1,
+                name = "Pilot",
+                airDate = "December 2, 2013",
+                episode = "S01E01",
+                characters = listOf(),
+                url = "",
+                created = "",
+            )
         EpisodeListScreen(
-            episodeListState = EpisodeListState(
-                list = listOf(
-                    sampleEpisode,
-                    sampleEpisode.copy(id = 2, name = "Lawnmower Dog", episode = "S01E02"),
-                    sampleEpisode.copy(id = 3, name = "Anatomy Park", episode = "S01E03"),
-                    sampleEpisode.copy(id = 4, name = "M. Night Shaym-Aliens!", episode = "S01E04"),
-                    sampleEpisode.copy(id = 5, name = "Meeseeks and Destroy", episode = "S01E05")
-                )
-            ),
-            onClickListener = {}
+            episodeListState =
+                EpisodeListState(
+                    list =
+                        listOf(
+                            sampleEpisode,
+                            sampleEpisode.copy(id = 2, name = "Lawnmower Dog", episode = "S01E02"),
+                            sampleEpisode.copy(id = 3, name = "Anatomy Park", episode = "S01E03"),
+                            sampleEpisode.copy(id = 4, name = "M. Night Shaym-Aliens!", episode = "S01E04"),
+                            sampleEpisode.copy(id = 5, name = "Meeseeks and Destroy", episode = "S01E05"),
+                        ),
+                ),
+            onClickListener = {},
         )
     }
 }

@@ -9,7 +9,7 @@ data class LocationDto(
     val dimension: String,
     val residents: List<String>,
     val url: String,
-    val created: String
+    val created: String,
 )
 
 fun LocationDto.toLocationDetail(): LocationDetail {
@@ -20,6 +20,6 @@ fun LocationDto.toLocationDetail(): LocationDetail {
         dimension = dimension,
         residents = residents,
         url = url,
-        created = created
+        created = created,
     )
 }

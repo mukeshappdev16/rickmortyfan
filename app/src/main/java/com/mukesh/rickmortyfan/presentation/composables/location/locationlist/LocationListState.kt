@@ -9,5 +9,5 @@ data class LocationListState(
     val noInternet: Boolean = false,
     val list: List<LocationDetail> = emptyList(),
     val page: Int = 1,
-    val endReached: Boolean = false
+    val endReached: Boolean = false,
 )

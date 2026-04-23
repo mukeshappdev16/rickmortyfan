@@ -22,89 +22,91 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LocationDetailViewModel @Inject constructor(
-    private val networkManager: NetworkManager,
-    private val getLocationDetailUseCase: GetLocationDetailUseCase,
-    private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase,
-    private val addFavoriteLocationUseCase: AddFavoriteLocationUseCase,
-    private val removeFavoriteLocationUseCase: RemoveFavoriteLocationUseCase,
-    private val isFavoriteLocationUseCase: IsFavoriteLocationUseCase
-) : ViewModel() {
+class LocationDetailViewModel
+    @Inject
+    constructor(
+        private val networkManager: NetworkManager,
+        private val getLocationDetailUseCase: GetLocationDetailUseCase,
+        private val getMultipleCharacterUseCase: GetMultipleCharacterUseCase,
+        private val addFavoriteLocationUseCase: AddFavoriteLocationUseCase,
+        private val removeFavoriteLocationUseCase: RemoveFavoriteLocationUseCase,
+        private val isFavoriteLocationUseCase: IsFavoriteLocationUseCase,
+    ) : ViewModel() {
+        private val _state: MutableState<LocationDetailScreenState> =
+            mutableStateOf(LocationDetailScreenState())
+        val state: State<LocationDetailScreenState> = _state
 
-    private val _state: MutableState<LocationDetailScreenState> =
-        mutableStateOf(LocationDetailScreenState())
-    val stateDetailState: State<LocationDetailScreenState> = _state
-
-    fun getLocationDetail(locationId: String) {
-        if (!networkManager.isNetworkAvailable()) {
-            _state.value = LocationDetailScreenState(noInternet = true)
-            return
-        }
-        getLocationDetailUseCase(locationId).onEach { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    _state.value = LocationDetailScreenState(isLoading = true)
-                }
-
-                is Resource.Success -> {
-                    _state.value = LocationDetailScreenState(location = result.data)
-                    result.data?.residents?.let { residents ->
-                        getResidents(Utils.getIdsFromUrlList(residents))
+        fun getLocationDetail(locationId: String) {
+            if (!networkManager.isNetworkAvailable()) {
+                _state.value = LocationDetailScreenState(noInternet = true)
+                return
+            }
+            getLocationDetailUseCase(locationId).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = LocationDetailScreenState(isLoading = true)
                     }
-                    isFavoriteLocation(result.data?.id ?: 0)
-                }
 
-                is Resource.Error -> {
-                    _state.value = LocationDetailScreenState(
-                        errorMessage = result.message ?: "An unexpected error occurred"
-                    )
+                    is Resource.Success -> {
+                        _state.value = LocationDetailScreenState(location = result.data)
+                        result.data?.residents?.let { residents ->
+                            getResidents(Utils.getIdsFromUrlList(residents))
+                        }
+                        isFavoriteLocation(result.data?.id ?: 0)
+                    }
+
+                    is Resource.Error -> {
+                        _state.value =
+                            LocationDetailScreenState(
+                                errorMessage = result.message ?: "An unexpected error occurred",
+                            )
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+
+        private fun getResidents(residentIds: List<String>) {
+            if (residentIds.isEmpty()) return
+
+            getMultipleCharacterUseCase(residentIds).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _state.value =
+                            _state.value.copy(
+                                residents = result.data ?: emptyList(),
+                            )
+                    }
+
+                    else -> { // Handle error or loading if needed
+                    }
+                }
+            }.launchIn(viewModelScope)
+        }
+
+        fun addFavoriteLocation(locationDetail: LocationDetail) {
+            viewModelScope.launch {
+                val isAdded = addFavoriteLocationUseCase(locationDetail)
+                if (isAdded > 0) {
+                    _state.value =
+                        _state.value.copy(isFavorite = true)
                 }
             }
-        }.launchIn(viewModelScope)
-    }
+        }
 
-    private fun getResidents(residentIds: List<String>) {
-        if (residentIds.isEmpty()) return
-
-        getMultipleCharacterUseCase(residentIds).onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    _state.value = _state.value.copy(
-                        residents = result.data ?: emptyList()
-                    )
-                }
-
-                else -> { /* Handle error or loading if needed */
+        fun removeFavoriteLocation(locationDetail: LocationDetail) {
+            viewModelScope.launch {
+                val isRemoved = removeFavoriteLocationUseCase(locationDetail)
+                if (isRemoved == 1) {
+                    _state.value =
+                        _state.value.copy(isFavorite = false)
                 }
             }
-        }.launchIn(viewModelScope)
-    }
+        }
 
-    fun addFavoriteLocation(locationDetail: LocationDetail) {
-        viewModelScope.launch {
-            val isAdded = addFavoriteLocationUseCase(locationDetail)
-            if (isAdded > 0) {
-                _state.value =
-                    _state.value.copy(isFavorite = true)
+        fun isFavoriteLocation(locationId: Int) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val isFavorite = isFavoriteLocationUseCase(locationId)
+                _state.value = _state.value.copy(isFavorite = isFavorite)
             }
         }
     }
-
-    fun removeFavoriteLocation(locationDetail: LocationDetail) {
-        viewModelScope.launch {
-            val isRemoved = removeFavoriteLocationUseCase(locationDetail)
-            if (isRemoved == 1) {
-                _state.value =
-                    _state.value.copy(isFavorite = false)
-            }
-        }
-    }
-
-    fun isFavoriteLocation(locationId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isFavorite = isFavoriteLocationUseCase(locationId)
-            _state.value = _state.value.copy(isFavorite = isFavorite)
-        }
-    }
-
-}

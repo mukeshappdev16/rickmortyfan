@@ -9,12 +9,16 @@ import retrofit2.http.Query
 interface RickMortyEpisodesApi {
     @GET("episode")
     suspend fun getAllEpisodes(
-        @Query("page") page: Int
+        @Query("page") page: Int,
     ): EpisodesResponse
 
     @GET("episode/{episodeId}")
-    suspend fun getEpisodeDetail(@Path("episodeId") episodeId: String): EpisodeDto
+    suspend fun getEpisodeDetail(
+        @Path("episodeId") episodeId: String,
+    ): EpisodeDto
 
     @GET("episode/{multipleEpisodesId}")
-    suspend fun getMultipleEpisodes(@Path("multipleEpisodesId") multipleEpisodesId: String): List<EpisodeDto>
+    suspend fun getMultipleEpisodes(
+        @Path("multipleEpisodesId") multipleEpisodesId: String,
+    ): List<EpisodeDto>
 }

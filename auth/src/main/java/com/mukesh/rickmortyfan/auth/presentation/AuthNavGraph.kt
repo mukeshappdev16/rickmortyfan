@@ -7,10 +7,10 @@ import androidx.navigation.navigation
 
 fun NavGraphBuilder.authNavGraph(
     navController: NavHostController,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
 ) {
     navigation<AuthGraph>(
-        startDestination = LoginRoute
+        startDestination = LoginRoute,
     ) {
         composable<LoginRoute> {
             LoginScreen(
@@ -19,7 +19,7 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 onSignUpClick = {
                     navController.navigate(SignUpRoute)
-                }
+                },
             )
         }
         composable<SignUpRoute> {
@@ -27,7 +27,7 @@ fun NavGraphBuilder.authNavGraph(
                 onLoginSuccess = onLoginSuccess,
                 onLoginClick = {
                     navController.popBackStack()
-                }
+                },
             )
         }
     }
